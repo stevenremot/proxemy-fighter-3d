@@ -9,6 +9,10 @@ export class Camera {
 	_threeCamera = threeCamera
     };
 
+    get threeCamera() {
+	return _threeCamera;
+    };
+
     lookAt(vector) {
 	_threeCamera.lookAt(vector)
     };

@@ -1,32 +1,40 @@
 import THREE from "mrdoob/three.js";
+import {Context as RenderContext} from "./render/context";
+import {World} from "./world";
 import {KeyboardInput} from './input/keyboard';
-import {Camera} from './render/camera';
 
 class App {
     constructor() {
-        this.scene = new THREE.Scene();
-        this.camera = new Camera(
-	    new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
+        let scene = new THREE.Scene();
+        let camera = new THREE.PerspectiveCamera(
+	    75,
+	    window.innerWidth / window.innerHeight,
+	    0.1,
+	    1000
 	);
-        this.renderer = new THREE.WebGLRenderer();
+        let renderer = new THREE.WebGLRenderer();
 
-        this.renderer.setSize( window.innerWidth, window.innerHeight );
-        document.body.appendChild( this.renderer.domElement );
+        let renderContext = new RenderContext(renderer, camera, scene);
+        this.world = new World(renderContext);
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild(renderer.domElement);
         this.setupScene();
     }
 
     setupScene() {
         let geometry = new THREE.BoxGeometry( 1, 1, 1 );
         let material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        this.cube = new THREE.Mesh( geometry, material );
-        this.scene.add(this.cube);
-        this.camera.move(new THREE.Vector3(0,0,5));
+        let model = new THREE.Mesh( geometry, material );
+        this.cube = this.world.createObject();
+        this.cube.model = model;
+
+        this.world.renderContext.camera.move(new THREE.Vector3(0,0,5));
     }
 
     update() {
-        this.cube.rotation.x += 0.1;
-        this.cube.rotation.y += 0.1;
-        this.renderer.render(this.scene, this.camera);
+        this.cube.rotate(0.1, 0.1, 0);
+        this.world.renderContext.render();
     }
 }
 
@@ -39,6 +47,9 @@ function render () {
 
 render();
 
-let input = new KeyboardInput(document, app.renderer.domElement);
-input.onDirectionChanged((dx, dy) => console.log('Direction', dx, dy));
-input.onPointerMoved((dx, dy) => console.log('Pointer', dx, dy));
+let input = new KeyboardInput(document, app.world.renderContext.domElement);
+input
+    .onDirectionChanged((dx, dy) => console.log('Direction', dx, dy))
+    .onPointerMoved((dx, dy) => console.log('Pointer', dx, dy))
+    .onFireStart(() => console.log('Start fire'))
+    .onFireEnd(() => console.log('End fire'));

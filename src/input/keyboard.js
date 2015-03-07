@@ -27,7 +27,9 @@ export class KeyboardInput {
     constructor(document, canvas) {
         this._callbacks = {
             onDirectionChanged: [],
-            onPointerMoved: []
+            onPointerMoved: [],
+            onFireStart: [],
+            onFireEnd: []
         };
 
         this._downKeys = {
@@ -56,6 +58,8 @@ export class KeyboardInput {
             canvas.webkitRequestPointerLock;
 
         canvas.addEventListener('mousemove', (evt) => this._handleMouseMove(evt));
+        canvas.addEventListener('mousedown', (evt) => this._handleMouseDown(evt));
+        canvas.addEventListener('mouseup', (evt) => this._handleMouseUp(evt));
         canvas.addEventListener('click', () => canvas.requestPointerLock());
     }
 
@@ -89,6 +93,32 @@ export class KeyboardInput {
      */
     onPointerMoved(callback) {
         this._callbacks.onPointerMoved.push(callback);
+        return this;
+    }
+
+    /**
+     * @description
+     * Register a callback to call when the user is starting fire.
+     *
+     * @param {Function} callback
+     *
+     * @returns this
+     */
+    onFireStart(callback) {
+        this._callbacks.onFireStart.push(callback);
+        return this;
+    }
+
+    /**
+     * @description
+     * Register a callback to call when the user is ending fire.
+     *
+     * @param {Function} callback
+     *
+     * @returns this
+     */
+    onFireEnd(callback) {
+        this._callbacks.onFireEnd.push(callback);
         return this;
     }
 
@@ -136,5 +166,13 @@ export class KeyboardInput {
             event.movementX || event.mozMovementX || event.webkitMovementX || 0,
             -(event.movementY || event.mozMovementY || event.webkitMovementY || 0)
         );
+    }
+
+    _handleMouseDown() {
+        execCallbacks(this._callbacks.onFireStart);
+    }
+
+    _handleMouseUp() {
+        execCallbacks(this._callbacks.onFireEnd);
     }
 }
