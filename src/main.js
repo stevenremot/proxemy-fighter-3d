@@ -37,5 +37,8 @@ function render () {
 render();
 
 let input = new KeyboardInput(document, app.renderer.domElement);
-input.onDirectionChanged((dx, dy) => console.log('Direction', dx, dy));
-input.onPointerMoved((dx, dy) => console.log('Pointer', dx, dy));
+input
+    .onDirectionChanged((dx, dy) => console.log('Direction', dx, dy))
+    .onPointerMoved((dx, dy) => console.log('Pointer', dx, dy))
+    .onFireStart(() => console.log('Start fire'))
+    .onFireEnd(() => console.log('End fire'));
