@@ -36,5 +36,6 @@ function render () {
 
 render();
 
-let input = new KeyboardInput(document);
-input.onDirectionChanged((dx, dy) => console.log(dx, dy));
+let input = new KeyboardInput(document, app.renderer.domElement);
+input.onDirectionChanged((dx, dy) => console.log('Direction', dx, dy));
+input.onPointerMoved((dx, dy) => console.log('Pointer', dx, dy));
