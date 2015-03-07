@@ -1,4 +1,5 @@
 import THREE from "mrdoob/three.js";
+import {KeyboardInput} from './input/keyboard';
 
 class App {
     constructor() {
@@ -34,3 +35,6 @@ function render () {
 }
 
 render();
+
+let input = new KeyboardInput(document);
+input.onDirectionChanged((dx, dy) => console.log(dx, dy));

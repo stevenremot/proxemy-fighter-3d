@@ -12,4 +12,3 @@ System.config({
     "mrdoob/three.js": "github:mrdoob/three.js@r70"
   }
 });
-
