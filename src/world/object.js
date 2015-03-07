@@ -1,9 +1,18 @@
+/**
+ * @description
+ * Game object linked to a world.
+ *
+ * It can be displayed and have collisions.
+ */
 export class WorldObject {
     constructor(world) {
         this.world = world;
         this._model = null;
     }
 
+    /**
+     * @property {THREE.Mesh} model
+     */
     get model() {
         return this._model;
     }
@@ -20,6 +29,18 @@ export class WorldObject {
         }
     }
 
+    /**
+     * @description
+     * Rotate the object in space.
+     *
+     * Will apply rotations in the order X, Y, Z.
+     *
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} z
+     *
+     * @returns this
+     */
     rotate(x, y, z) {
         this.model.rotation.x += x;
         this.model.rotation.y += y;

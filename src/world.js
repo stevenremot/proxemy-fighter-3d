@@ -11,6 +11,12 @@ export class World {
         this.renderContext = renderContext;
     }
 
+    /**
+     * @description
+     * Create a new object linked to the world.
+     *
+     * @returns {WorldObject}
+     */
     createObject() {
         return new WorldObject(this);
     }
