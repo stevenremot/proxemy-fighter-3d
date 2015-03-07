@@ -1,0 +1,15 @@
+{
+  "jspm": {
+    "directories": {
+      "lib": "src",
+      "packages": "jspm_packages"
+    },
+    "dependencies": {
+      "mrdoob/three.js": "github:mrdoob/three.js@r70"
+    }
+  },
+  "devDependencies": {
+    "jspm": "~0.14.0",
+    "http-server": "~0.7.5"
+  }
+}
