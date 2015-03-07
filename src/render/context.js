@@ -28,18 +28,48 @@ export class Context {
         this.camera = new Camera(threeCamera);
     }
 
+    /**
+     * @description
+     * Add a THREE model to the scene.
+     *
+     * @param {THREE.Mesh} model
+     *
+     * @returns this
+     */
     addModel(model) {
         this.scene.add(model);
+        return this;
     }
 
+    /**
+     * @description
+     * Remove a THREE model from the scene.
+     *
+     * @param {THREE.Mesh} model
+     *
+     * @returns this
+     */
     removeModel(model) {
         this.scene.remove(model);
+        return this;
     }
 
+    /**
+     * @description
+     * Render the current scene.
+     *
+     * @returns this
+     */
     render() {
         this.renderer.render(this.scene, this.camera.threeCamera);
+        return this;
     }
 
+    /**
+     * Return the canvas in which the rendering is done.
+     *
+     * @returns {HTMLCanvasElement}
+     */
     get domElement() {
         return this.renderer.domElement;
     }

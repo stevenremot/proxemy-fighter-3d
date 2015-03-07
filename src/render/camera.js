@@ -6,25 +6,25 @@ import THREE from "mrdoob/three.js";
  */
 export class Camera {
     constructor(threeCamera) {
-	_threeCamera = threeCamera
+	this._threeCamera = threeCamera
     };
 
     get threeCamera() {
-	return _threeCamera;
+	return this._threeCamera;
     };
 
     lookAt(vector) {
-	_threeCamera.lookAt(vector)
+	this._threeCamera.lookAt(vector)
     };
 
     move(vector) {
-	_threeCamera.position.x += vector.x
-	_threeCamera.position.y += vector.y
-	_threeCamera.position.z += vector.z
+	this._threeCamera.position.x += vector.x
+	this._threeCamera.position.y += vector.y
+	this._threeCamera.position.z += vector.z
     };
 
     setPosition(position) {
-	_threeCamera.position = position
+	this._threeCamera.position = position
     };
     
     /**
@@ -34,11 +34,11 @@ export class Camera {
      * @param shipOrientation: EulerAngles? Quaternion?
     */
     setup(shipPosition, shipOrientation) {
-	setPosition(shipPosition)
+	this.setPosition(shipPosition)
 
 	// todo: define/compute intelligentOffset
 	let intelligentOffset = new THREE.Vector3(0,0,0)
-	move(intelligentOffset)
+	this.move(intelligentOffset)
 
 	// todo: manage orientation
     };
