@@ -1,8 +1,7 @@
 import THREE from "mrdoob/three.js";
 import {Context as RenderContext} from "./render/context";
 import {World} from "./world";
-import {KeyboardInput} from './input/keyboard';
-import {TouchInput} from './input/touch';
+import {Aggregate as Input} from './input/aggregate';
 
 var dtheta = 0;
 var dphi = 0;
@@ -79,7 +78,7 @@ function render () {
 
 render();
 
-let input = new TouchInput(document, app.world.renderContext.domElement);
+let input = new Input(document, app.world.renderContext.domElement);
 input
     .onDirectionChanged((dx, dy) => {
         dtheta = dy/100;
