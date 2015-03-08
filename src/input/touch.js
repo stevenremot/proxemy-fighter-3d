@@ -110,6 +110,7 @@ export class TouchInput {
             if (joystickTouch === touch.identifier) {
                 this._joystick.hide();
                 this._touches.joystick = null;
+                execCallbacks(this._callbacks.onDirectionChanged, 0, 0);
                 break;
             }
         }
