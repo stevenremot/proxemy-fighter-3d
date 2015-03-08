@@ -13,6 +13,12 @@ export class SphericalVector {
         this.phi = phi;
     }
 
+    set(r, theta, phi) {
+        this.r = r;
+        this.theta = theta;
+        this.phi = phi;
+    }
+
     _regularizePhi() {
         if (this.phi < 0)
             this.phi += Math.PI * 2;
@@ -45,20 +51,20 @@ export class SphericalVector {
     }
 }
 
-export function fromGlCoordinates(vector) {
-    return new THREE.Vector3(vector.z, vector.x, vector.y);
+export function fromGlCoordinates(glVector, vector) {
+    vector.set(glVector.z, glVector.x, glVector.y);
 }
 
-export function toGlCoordinates(vector) {
-    return new THREE.Vector3(vector.y, vector.z, vector.x);
+export function toGlCoordinates(vector, glVector) {
+    glVector.set(vector.y, vector.z, vector.x);
 }
 
 /**
- * @param {THREE.Vector3} cartesian coordinates (x, y, z). z is up coordinate
+ * @param[in] {THREE.Vector3} cartesian coordinates (x, y, z). z is up coordinate
  * 
- * @return {SphericalVector} spherical coordinates (r, theta, phi). theta is colatitude, phi is longitude
+ * @param[out] {SphericalVector} spherical coordinates (r, theta, phi). theta is colatitude, phi is longitude
  */
-export function cartesianToSpherical(vector) {
+export function cartesianToSpherical(vector, spherical) {
     let r = vector.length();
     
     let theta = 0;
@@ -69,19 +75,16 @@ export function cartesianToSpherical(vector) {
     if (phi < 0)
         phi += 2*Math.PI;
 
-    return new SphericalVector(r, theta, phi);
+    spherical.set(r, theta, phi);
 }
 
 /**
- * @param {SphericalVector} spherical coordinates (r, theta, phi). theta is colatitude, phi is longitude
+ * @param[in] {SphericalVector} spherical coordinates (r, theta, phi). theta is colatitude, phi is longitude
  *
- * @return {THREE.Vector3} cartesian coordinates (x, y, z). z is up coordinate
+ * @param[out] {THREE.Vector3} cartesian coordinates (x, y, z). z is up coordinate
  */
-export function sphericalToCartesian(spherical) {
-    cartesian = new THREE.Vector3();
+export function sphericalToCartesian(spherical, cartesian) {
     cartesian.x = spherical.r * Math.sin(spherical.theta) * Math.cos(spherical.phi);
     cartesian.y = spherical.r * Math.sin(spherical.theta) * Math.sin(spherical.phi);
     cartesian.z = spherical.r * Math.cos(spherical.theta);
-
-    return cartesian;
 }

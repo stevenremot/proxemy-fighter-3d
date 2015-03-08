@@ -9,6 +9,9 @@ export class Camera {
     constructor(threeCamera) {
         this._threeCamera = threeCamera;
         this._thetaMultiplier = 1;
+        
+        this._worldPosition = new THREE.Vector3(0,0,0);
+        this._sphericalPosition = new MathUtils.SphericalVector(0,0,0);
     }
 
     get threeCamera() {
@@ -44,31 +47,40 @@ export class Camera {
      */
     sphericalMove(dtheta, dphi) {
         // convert to spherical coordinates
-        let spherical = MathUtils.cartesianToSpherical(
-            MathUtils.fromGlCoordinates(this._threeCamera.position)
+        MathUtils.fromGlCoordinates(
+            this._threeCamera.position,
+            this._worldPosition
+        );
+        MathUtils.cartesianToSpherical(
+            this._worldPosition,
+            this._sphericalPosition
         );
         
         // apply theta rotation
         // if it is around a pole, theta dynamics change 
         // and the camera up vector must be inversed
-        let lastPhi = spherical.phi;
-        spherical.addTheta(this._thetaMultiplier*dtheta);
-        if (lastPhi != spherical.phi)
+        let lastPhi = this._sphericalPosition.phi;
+        this._sphericalPosition.addTheta(this._thetaMultiplier*dtheta);
+        if (lastPhi != this._sphericalPosition.phi)
         {
             let lastMultiplier = this._thetaMultiplier;
-            this._recomputeMultiplier(spherical.phi);
+            this._recomputeMultiplier(this._sphericalPosition.phi);
             if (lastMultiplier != this._thetaMultiplier)
                 this._threeCamera.up.multiplyScalar(-1);
         }
         
         // apply phi rotation, no problem here
-        spherical.addPhi(dphi);
+        this._sphericalPosition.addPhi(dphi);
         
         // give the newly computed position to the camera
         // update its orientation through lookAt
-        this.setPosition(
-            MathUtils.toGlCoordinates(
-                MathUtils.sphericalToCartesian(spherical))
+        MathUtils.sphericalToCartesian(
+            this._sphericalPosition, 
+            this._worldPosition
+        );
+        MathUtils.toGlCoordinates(
+            this._worldPosition,
+            this._threeCamera.position
         );
         this.lookAt(new THREE.Vector3(0,0,0));
     }
