@@ -4,6 +4,9 @@ import {World} from "./world";
 import {KeyboardInput} from './input/keyboard';
 import {TouchInput} from './input/touch';
 
+var dtheta = 0;
+var dphi = 0;
+
 class App {
     constructor() {
         let scene = new THREE.Scene();
@@ -61,7 +64,7 @@ class App {
     }
 
     update() {
-        this.world.renderContext.camera.sphericalMove(0.02, 0.02);
+        this.world.renderContext.camera.sphericalMove(dtheta, dphi);
         //this.cube.rotate(0.1, 0.1, 0);
         this.world.renderContext.render();
     }
@@ -78,7 +81,11 @@ render();
 
 let input = new TouchInput(document, app.world.renderContext.domElement);
 input
-    .onDirectionChanged((dx, dy) => console.log('Direction', dx, dy))
+    .onDirectionChanged((dx, dy) => {
+        dtheta = dy/100;
+        dphi = dx/100;
+        console.log(dtheta, dphi);
+    })
     .onPointerMoved((dx, dy) => console.log('Pointer', dx, dy))
     .onFireStart(() => console.log('Start fire'))
     .onFireEnd(() => console.log('End fire'));
