@@ -29,6 +29,32 @@ export class WorldObject {
         }
     }
 
+    get position() {
+        return this._model && this._model.position;
+    }
+
+    set position(position) {
+        if (this._model) {
+            this._model.position.copy(position);
+        }
+    }
+
+    get up() {
+        return this._model && this._model.up;
+    }
+
+    set up(up) {
+        if (this._model) {
+            this._model.up.copy(up);
+        }
+    }
+
+    lookAt(position) {
+        if (this._model) {
+            this._model.lookAt(position);
+        }
+    }
+
     /**
      * @description
      * Rotate the object in space.

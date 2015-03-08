@@ -1,6 +1,7 @@
 import THREE from "mrdoob/three.js";
 import {Context as RenderContext} from "./render/context";
 import {World} from "./world";
+import {Ship} from "./world/ship";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 
@@ -58,14 +59,18 @@ class App {
             geometry,
             new THREE.MeshFaceMaterial(materials)
         );
-        this.cube = this.world.createObject();
-        this.cube.model = model;
+        // this.cube = this.world.createObject();
+        // this.cube.model = model;
+
+        this.ship = new Ship(this.world, 50, 1);
+        this.ship.position = new THREE.Vector3(50, 0, 0);
 
         this.world.renderContext.camera.move(new THREE.Vector3(0,0,100));
     }
 
     update() {
-        this.world.renderContext.camera.sphericalMove(dtheta, dphi);
+        this.ship.moveOnSphere(dtheta, dphi);
+        this.ship.lookAt(new THREE.Vector3(0, 0, 0));
         //this.cube.rotate(0.1, 0.1, 0);
         this.world.renderContext.render();
     }
