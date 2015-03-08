@@ -41,7 +41,7 @@ export class SphericalVector {
 
     addTheta(dtheta) {
         this.theta += dtheta;
-        this._regularizeTheta();        
+        this._regularizeTheta();
     }
 }
 
@@ -55,16 +55,16 @@ export function toGlCoordinates(vector) {
 
 /**
  * @param {THREE.Vector3} cartesian coordinates (x, y, z). z is up coordinate
- * 
+ *
  * @return {SphericalVector} spherical coordinates (r, theta, phi). theta is colatitude, phi is longitude
  */
 export function cartesianToSpherical(vector) {
     let r = vector.length();
-    
+
     let theta = 0;
     if (Math.abs(r) > EPSILON)
         theta = Math.acos(vector.z / r);
-    
+
     let phi = Math.atan2(vector.y, vector.x);
     if (phi < 0)
         phi += 2*Math.PI;
@@ -78,7 +78,7 @@ export function cartesianToSpherical(vector) {
  * @return {THREE.Vector3} cartesian coordinates (x, y, z). z is up coordinate
  */
 export function sphericalToCartesian(spherical) {
-    cartesian = new THREE.Vector3();
+    let cartesian = new THREE.Vector3();
     cartesian.x = spherical.r * Math.sin(spherical.theta) * Math.cos(spherical.phi);
     cartesian.y = spherical.r * Math.sin(spherical.theta) * Math.sin(spherical.phi);
     cartesian.z = spherical.r * Math.cos(spherical.theta);
