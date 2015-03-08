@@ -1,4 +1,4 @@
-import THREE from "mrdoob/three.js"
+import THREE from "mrdoob/three.js";
 
 const EPSILON = 1e-6;
 
