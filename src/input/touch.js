@@ -1,4 +1,4 @@
-import {execCallbacks} from "./util";
+import {execCallbacks} from "src/core/util";
 import {Joystick} from "./touch/joystick";
 
 /**

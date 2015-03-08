@@ -35,12 +35,32 @@
             .joystick-head {
                 fill: #c0c0c0;
             }
+
+            #lifebar {
+                position: absolute;
+                width: 200px;
+                height: 40px;
+            }
+
+            .lifebar-bg {
+                fill: #338833;
+                stroke: #113311;
+                stroke-width: 2
+            }
+
+            .lifebar-bar {
+                fill: #00ff00;
+            }
         </style>
     </head>
     <body>
         <svg id="touch-joystick" viewBox="-2.5 -2.5 5 5">
             <circle class="joystick-base" cx="0" cy="0" r="1" />
             <circle class="joystick-head" cx="0" cy="0" r="1.5" />
+        </svg>
+        <svg id ="lifebar" viewBox="0 0 102 20">
+          <rect class="lifebar-bg" x="0" y="0" width="102" height="20" rx="5" ry="5"/>
+          <rect class="lifebar-bar" x="1" y="1" width="100" height="18" rx="5" ry="5"/>
         </svg>
         <script src="jspm_packages/babel-polyfill.js"></script>
         <script src="jspm_packages/system.js"></script>

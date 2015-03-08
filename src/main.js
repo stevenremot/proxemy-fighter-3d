@@ -2,9 +2,11 @@ import THREE from "mrdoob/three.js";
 import {Context as RenderContext} from "./render/context";
 import {World} from "./world";
 import {Aggregate as Input} from './input/aggregate';
+import {Hud} from "./hud";
 
 var dtheta = 0;
 var dphi = 0;
+var hp = 10;
 
 class App {
     constructor() {
@@ -78,6 +80,8 @@ function render () {
 
 render();
 
+let hud = new Hud(document, hp);
+
 let input = new Input(document, app.world.renderContext.domElement);
 input
     .onDirectionChanged((dx, dy) => {
@@ -87,4 +91,8 @@ input
     })
     .onPointerMoved((dx, dy) => console.log('Pointer', dx, dy))
     .onFireStart(() => console.log('Start fire'))
-    .onFireEnd(() => console.log('End fire'));
+    .onFireEnd(() => {
+        console.log('End fire');
+        hp -= Math.random();
+        hud.handleLifeChanged(hp);
+    });

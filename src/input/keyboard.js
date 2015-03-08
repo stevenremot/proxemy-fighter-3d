@@ -1,4 +1,4 @@
-import {execCallbacks} from "./util";
+import {execCallbacks} from "src/core/util";
 
 const KEY_DIRECTIONS = {
     Left: [-1, 0],
