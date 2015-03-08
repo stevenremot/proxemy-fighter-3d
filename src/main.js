@@ -23,30 +23,45 @@ class App {
     }
 
     setupScene() {
-        let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        let geometry = new THREE.BoxGeometry(32, 32, 32, 1, 1, 1);
         
         let canvas = document.createElement("canvas");
         let context = canvas.getContext("2d");
+        
         context.fillStyle="red";
         context.fillRect(0,0,32,32);
-
-        let imgData = context.getImageData(0,0,32,32);
-        let texture = new THREE.Texture(imgData);
-        texture.needsUpdate = true; 
+        let redData = context.getImageData(0,0,32,32);
+        let red = new THREE.Texture(redData);
+        red.needsUpdate = true;
         
-        let material = new THREE.MeshBasicMaterial({
-            map: texture
-        });
+        context.fillStyle="blue";
+        context.fillRect(0,0,32,32);
+        let blueData = context.getImageData(0,0,32,32)
+        let blue = new THREE.Texture(blueData); 
+        blue.needsUpdate = true;
         
-        let model = new THREE.Mesh( geometry, material );
+        let materials = [
+            new THREE.MeshBasicMaterial({map: red}),
+            new THREE.MeshBasicMaterial({map: blue}),
+            new THREE.MeshBasicMaterial({color: 0x00ff00}),
+            new THREE.MeshBasicMaterial({color: 0xffff00}),
+            new THREE.MeshBasicMaterial({color: 0xff00ff}),
+            new THREE.MeshBasicMaterial({color: 0x00ffff})
+        ];
+        
+        let model = new THREE.Mesh(
+            geometry,
+            new THREE.MeshFaceMaterial(materials)
+        );
         this.cube = this.world.createObject();
         this.cube.model = model;
 
-        this.world.renderContext.camera.move(new THREE.Vector3(0,0,5));
+        this.world.renderContext.camera.move(new THREE.Vector3(0,0,100));
     }
 
     update() {
-        this.cube.rotate(0.1, 0.1, 0);
+        this.world.renderContext.camera.sphericalMove(0.02, 0.02);
+        //this.cube.rotate(0.1, 0.1, 0);
         this.world.renderContext.render();
     }
 }
