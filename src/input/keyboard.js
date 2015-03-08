@@ -1,12 +1,4 @@
-/**
- * @description
- * Execute all callbacks, passing them args as arguments.
- */
-function execCallbacks(callbacks, ...args) {
-    for (let callback of callbacks) {
-        callback(...args);
-    }
-}
+import {execCallbacks} from "./util";
 
 const KEY_DIRECTIONS = {
     Left: [-1, 0],
