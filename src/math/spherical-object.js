@@ -1,12 +1,14 @@
 import * as MathUtils from "src/math/utils";
 import THREE from "mrdoob/three.js";
 
+let position = new THREE.Vector3(0, 0, 0);
+
 /**
  * @description
  * A mixin for objects that can move around a sphere.
  *
  * An object wanting to use this mixin must have the following properties
- * available for reading :
+ * available for reading and writing :
  *   - {THREE.Vector3} position
  *   - {THREE.Vector3} up
  */
@@ -60,7 +62,7 @@ export var SphericalObject = {
             let lastMultiplier = this._thetaMultiplier;
             this._recomputeMultiplier(this._sphericalPosition.phi);
             if (lastMultiplier != this._thetaMultiplier)
-                this.up.multiplyScalar(-1);
+                this.up = this.up.multiplyScalar(-1);
         }
 
         // apply phi rotation, no problem here
@@ -74,7 +76,10 @@ export var SphericalObject = {
         );
         MathUtils.toGlCoordinates(
             this._worldPosition,
-            this._threeCamera.position
+            position
         );
+
+        // Set it externaly in case there is a setter function
+        this.position = position;
     }
 };
