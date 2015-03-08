@@ -16,7 +16,11 @@ export class TouchInput {
 
         this._touches = {
             joystick: null,
-            pointer: null
+            pointer: {
+                identifier: null,
+                pageX: null,
+                pageY: null
+            }
         };
 
         this._canvas = canvas;
@@ -98,6 +102,11 @@ export class TouchInput {
                 .resetHead()
                 .show()
                 .position = [touch.pageX, touch.pageY];
+        } else {
+            this._touches.pointer.identifier = touch.identifier;
+            this._touches.pointer.pageX = touch.pageX;
+            this._touches.pointer.pageY = touch.pageY;
+            execCallbacks(this._callbacks.onFireStart);
         }
 
         event.preventDefault();
@@ -105,13 +114,17 @@ export class TouchInput {
 
     _handleTouchEnd(event) {
         let joystickTouch = this._touches.joystick;
+        let pointerTouch = this._touches.pointer;
+
         for (let i = 0, l = event.changedTouches.length; i < l; i++) {
             let touch = event.changedTouches[i];
             if (joystickTouch === touch.identifier) {
                 this._joystick.hide();
                 this._touches.joystick = null;
                 execCallbacks(this._callbacks.onDirectionChanged, 0, 0);
-                break;
+            } else if (pointerTouch && pointerTouch.identifier === touch.identifier) {
+                pointerTouch.identifier = null;
+                execCallbacks(this._callbacks.onFireEnd);
             }
         }
         event.preventDefault();
@@ -119,6 +132,8 @@ export class TouchInput {
 
     _handleTouchMove(event) {
         let joystickTouch = this._touches.joystick;
+        let pointerTouch = this._touches.pointer;
+
         for (let i = 0, l = event.changedTouches.length; i < l; i++) {
             let touch = event.changedTouches[i];
             if (joystickTouch === touch.identifier) {
@@ -130,7 +145,14 @@ export class TouchInput {
                     this._callbacks.onDirectionChanged,
                     ...this._joystick.direction
                 );
-                break;
+            } else if (pointerTouch && pointerTouch.identifier === touch.identifier) {
+                execCallbacks(
+                    this._callbacks.onPointerMoved,
+                    touch.pageX - pointerTouch.pageX,
+                    -(touch.pageY - pointerTouch.pageY)
+                );
+                pointerTouch.pageX = touch.pageX;
+                pointerTouch.pageY = touch.pageY;
             }
         }
         event.preventDefault();
