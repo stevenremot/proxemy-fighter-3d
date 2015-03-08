@@ -24,7 +24,20 @@ class App {
 
     setupScene() {
         let geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        let material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+        
+        let canvas = document.createElement("canvas");
+        let context = canvas.getContext("2d");
+        context.fillStyle="red";
+        context.fillRect(0,0,32,32);
+
+        let imgData = context.getImageData(0,0,32,32);
+        let texture = new THREE.Texture(imgData);
+        texture.needsUpdate = true; 
+        
+        let material = new THREE.MeshBasicMaterial({
+            map: texture
+        });
+        
         let model = new THREE.Mesh( geometry, material );
         this.cube = this.world.createObject();
         this.cube.model = model;
