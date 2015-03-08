@@ -63,7 +63,8 @@ class App {
     }
 
     update() {
-        this.world.renderContext.camera.sphericalMove(dtheta, dphi);
+        this.world.renderContext.camera.moveOnSphere(dtheta, dphi);
+        this.world.renderContext.camera.lookAt(new THREE.Vector3(0, 0, 0));
         //this.cube.rotate(0.1, 0.1, 0);
         this.world.renderContext.render();
     }
