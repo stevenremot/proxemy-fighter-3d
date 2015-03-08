@@ -59,6 +59,10 @@ export function toGlCoordinates(vector, glVector) {
     glVector.set(vector.y, vector.z, vector.x);
 }
 
+export function invertZAxis(vector) {
+    vector.setZ(-vector.z);
+}
+
 /**
  * @param[in] {THREE.Vector3} cartesian coordinates (x, y, z). z is up coordinate
  *

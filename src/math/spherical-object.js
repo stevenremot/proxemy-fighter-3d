@@ -13,14 +13,7 @@ let position = new THREE.Vector3(0, 0, 0);
  *   - {THREE.Vector3} up
  */
 export var SphericalObject = {
-    _thetaMultiplier: 1,
-
-    _recomputeMultiplier(phi) {
-        if (phi < Math.PI/2 || phi > 3*Math.PI/2)
-            this._thetaMultiplier = -1;
-        else
-            this._thetaMultiplier = 1;
-    },
+    _lookUp: true,
 
     /**
      * @description
@@ -47,6 +40,8 @@ export var SphericalObject = {
             this.position,
             this._worldPosition
         );
+        if (!this._lookUp)
+            MathUtils.invertZAxis(this._worldPosition);
         MathUtils.cartesianToSpherical(
             this._worldPosition,
             this._sphericalPosition
@@ -57,14 +52,7 @@ export var SphericalObject = {
         // and the camera up vector must be inversed
         let lastPhi = this._sphericalPosition.phi;
         this._sphericalPosition.addTheta(this._thetaMultiplier*dtheta);
-        if (lastPhi != this._sphericalPosition.phi)
-        {
-            let lastMultiplier = this._thetaMultiplier;
-            this._recomputeMultiplier(this._sphericalPosition.phi);
-            if (lastMultiplier != this._thetaMultiplier)
-                this.up = this.up.multiplyScalar(-1);
-        }
-
+        let changeUp = lastPhi != this._sphericalPosition.phi;
         // apply phi rotation, no problem here
         this._sphericalPosition.addPhi(dphi);
 
@@ -74,6 +62,8 @@ export var SphericalObject = {
             this._sphericalPosition,
             this._worldPosition
         );
+        if (!this._lookUp)
+            MathUtils.invertZAxis(this._worldPosition);
         MathUtils.toGlCoordinates(
             this._worldPosition,
             position
@@ -81,5 +71,11 @@ export var SphericalObject = {
 
         // Set it externaly in case there is a setter function
         this.position = position;
+
+        if (changeUp)
+        {
+           this._lookUp = !this._lookUp;
+           this.up = this.up.multiplyScalar(-1);
+        }
     }
 };
