@@ -2,6 +2,7 @@ import THREE from "mrdoob/three.js";
 import {Context as RenderContext} from "./render/context";
 import {World} from "./world";
 import {Ship} from "./world/ship";
+import {Boss} from "./world/boss";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 
@@ -26,6 +27,14 @@ class App {
         renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild(renderer.domElement);
         this.setupScene();
+    }
+
+    createBoss() {
+        this.boss = new Boss(this.world, 40);
+        this.boss
+            .addModule([0, Math.PI/3],[0, 2*Math.PI], 0xff0000)
+            .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], 0x00ff00)
+            .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], 0x0000ff);
     }
 
     setupScene() {
@@ -60,10 +69,12 @@ class App {
             new THREE.MeshFaceMaterial(materials)
         );
         // this.cube = this.world.createObject();
-        // this.cube.model = model;
-
+        // this.cube.model = model;      
+        
         this.ship = new Ship(this.world, 50, 1);
         this.ship.position = new THREE.Vector3(50, 0, 0);
+
+        this.createBoss();
 
         this.world.renderContext.camera.move(new THREE.Vector3(0,0,100));
     }
@@ -71,7 +82,6 @@ class App {
     update() {
         this.ship.moveOnSphere(dtheta, dphi);
         this.ship.lookAt(new THREE.Vector3(0, 0, 0));
-        //this.cube.rotate(0.1, 0.1, 0);
         this.world.renderContext.render();
     }
 }
