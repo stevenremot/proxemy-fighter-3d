@@ -94,7 +94,10 @@ input
         dphi = dx/100;
         console.log(dtheta, dphi);
     })
-    .onPointerMoved((dx, dy) => console.log('Pointer', dx, dy))
+    .onPointerMoved((dx, dy) => {
+        console.log('Pointer', dx, dy);
+        hud.handlePointerMoved(dx, dy);
+    })
     .onFireStart(() => console.log('Start fire'))
     .onFireEnd(() => {
         console.log('End fire');

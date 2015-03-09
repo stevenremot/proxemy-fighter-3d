@@ -40,6 +40,7 @@
                 position: absolute;
                 width: 200px;
                 height: 40px;
+                display: block;
             }
 
             .lifebar-bg {
@@ -51,6 +52,32 @@
             .lifebar-bar {
                 fill: #00ff00;
             }
+
+            #sights {
+                position: absolute;
+                width: 140px;
+                height: 80px;
+                top: 200px;
+                left: 200px;
+            }
+
+            .sights-center {
+                fill: none;
+                stroke: #0000ff;
+            }
+
+            .sights-box {
+                fill: none;
+                stroke: #0000ff;
+                stroke-width: 3;
+                stroke-linejoin: round;
+            }
+
+            .sights-lines {
+                fill: none;
+                stroke: #0000ff;
+                stroke-width: 3;
+            }
         </style>
     </head>
     <body>
@@ -61,6 +88,18 @@
         <svg id ="lifebar" viewBox="0 0 102 20">
           <rect class="lifebar-bg" x="0" y="0" width="102" height="20" rx="5" ry="5"/>
           <rect class="lifebar-bar" x="1" y="1" width="100" height="18" rx="5" ry="5"/>
+        </svg>
+        <svg id="sights" viewBox="-35 -20 70 40">
+          <polyline class="sights-center" points="-5,-2 -5,-5 5,-5 5,-2"/>
+          <polyline class="sights-center" points="-5,2 -5,5 5,5 5,2"/>
+          <polyline class="sights-box" points="-15,-6 -15,-10 -10,-10"/>
+          <polyline class="sights-box" points="-15,6 -15,10 -10,10"/>
+          <polyline class="sights-box" points="15,-6 15,-10 10,-10"/>
+          <polyline class="sights-box" points="15,6 15,10 10,10"/>
+          <polyline class="sights-lines" points="-32,0 -20,0"/>
+          <polyline class="sights-lines" points="32,0 20,0"/>
+          <polyline class="sights-lines" points="0,-18 0,-12"/>
+          <polyline class="sights-lines" points="0,18 0,12"/>
         </svg>
         <script src="jspm_packages/babel-polyfill.js"></script>
         <script src="jspm_packages/system.js"></script>
