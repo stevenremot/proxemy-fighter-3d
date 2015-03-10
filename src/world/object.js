@@ -49,6 +49,10 @@ export class WorldObject {
         }
     }
 
+    get matrix() {
+        return this._model.matrix;
+    }
+
     lookAt(position) {
         if (this._model) {
             this._model.lookAt(position);

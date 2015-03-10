@@ -9,8 +9,10 @@ let position = new THREE.Vector3(0, 0, 0);
  *
  * An object wanting to use this mixin must have the following properties
  * available for reading and writing :
+ *   - {THREE.Matrix4} matrix
  *   - {THREE.Vector3} position
  *   - {THREE.Vector3} up
+ *  -  {THREE.Vector3} forward
  */
 export var SphericalObject = {
     _lookUp: true,
@@ -19,7 +21,7 @@ export var SphericalObject = {
      * @description
      * Apply a elementary spherical movement to the camera.
      *
-     * Update object's position and up
+     * Update object's position, forward and up
      *
      * @param {Number} dtheta: up(>0) or down(<0) rotation
      *                         from the viewer perspective
@@ -27,55 +29,41 @@ export var SphericalObject = {
      *                       from the viewer perspective
      */
     moveOnSphere(dtheta, dphi) {
-        if (!("_worldPosition" in this)) {
-            this._worldPosition = new THREE.Vector3(0, 0, 0);
+        if (!("_sphericalObject" in this)) {
+            this._sphericalObject = {
+                forward: new THREE.Vector3(),
+                up: new THREE.Vector3(),
+                right: new THREE.Vector3(),
+                position: new THREE.Vector3(),
+                matrix: new THREE.Matrix4(),
+                rotationMatrix: new THREE.Matrix4(),
+                eulerAngle: new THREE.Euler()
+            };
         }
 
-        if (!("_sphericalPosition" in this)) {
-            this._sphericalPosition = new MathUtils.SphericalVector(0, 0, 0);
-        }
+        let s = this._sphericalObject;
+        s.forward.copy(this.forward);
+        s.up.copy(this.up);
+        s.right.crossVectors(s.forward, s.up);
+        s.position.copy(this.position);
 
-        // convert to spherical coordinates
-        MathUtils.fromGlCoordinates(
-            this.position,
-            this._worldPosition
-        );
-        if (!this._lookUp)
-            MathUtils.invertZAxis(this._worldPosition);
-        MathUtils.cartesianToSpherical(
-            this._worldPosition,
-            this._sphericalPosition
-        );
+        let l = s.position.length();
 
-        // apply theta rotation
-        // if it is around a pole, theta dynamics change
-        // and the camera up vector must be inversed
-        let lastPhi = this._sphericalPosition.phi;
-        this._sphericalPosition.addTheta(this._thetaMultiplier*dtheta);
-        let changeUp = lastPhi != this._sphericalPosition.phi;
-        // apply phi rotation, no problem here
-        this._sphericalPosition.addPhi(dphi);
+        s.eulerAngle.set(0, dtheta, dphi);
+        s.rotationMatrix.makeRotationFromEuler(s.eulerAngle);
+        s.matrix
+            .makeBasis(
+                s.forward,
+                s.up,
+                s.right
+            )
+            .multiply(s.rotationMatrix);
 
-        // give the newly computed position to the camera
-        // update its orientation through lookAt
-        MathUtils.sphericalToCartesian(
-            this._sphericalPosition,
-            this._worldPosition
-        );
-        if (!this._lookUp)
-            MathUtils.invertZAxis(this._worldPosition);
-        MathUtils.toGlCoordinates(
-            this._worldPosition,
-            position
-        );
-
-        // Set it externaly in case there is a setter function
-        this.position = position;
-
-        if (changeUp)
-        {
-           this._lookUp = !this._lookUp;
-           this.up = this.up.multiplyScalar(-1);
-        }
+        s.up.set(0, 1, 0).applyMatrix4(s.matrix).normalize();
+        s.position.set(-1, 0, 0).applyMatrix4(s.matrix).setLength(l);
+        s.forward.set(1, 0, 0).applyMatrix4(s.matrix).normalize();
+        this.position = s.position;
+        this.forward = s.forward;
+        this.up = s.up;
     }
 };

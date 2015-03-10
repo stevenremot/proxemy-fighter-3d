@@ -12,8 +12,7 @@ export class Ship extends WorldObject {
         this.model = new THREE.Mesh(geometry, material);
 
         this._thetaMultiplier = 1;
-
-        this._worldPosition = new THREE.Vector3(0,0,0);
+        this.forward = new THREE.Vector3(0, 0, -1);
     }
 }
 

@@ -69,28 +69,33 @@ class App {
             new THREE.MeshFaceMaterial(materials)
         );
         // this.cube = this.world.createObject();
-        // this.cube.model = model;      
-        
+        // this.cube.model = model;
+
         this.ship = new Ship(this.world, 50, 1);
         this.ship.position = new THREE.Vector3(50, 0, 0);
 
         this.createBoss();
 
-        this.world.renderContext.camera.move(new THREE.Vector3(0,0,100));
+        this.world.renderContext.camera.move(new THREE.Vector3(0,20,100));
     }
 
-    update() {
-        this.ship.moveOnSphere(dtheta, dphi);
+    update(delay) {
+        // this.ship.moveOnSphere(dtheta, dphi);
+        this.ship.moveOnSphere(100 * dphi * delay, 100 * dtheta * delay);
         this.ship.lookAt(new THREE.Vector3(0, 0, 0));
         this.world.renderContext.render();
     }
 }
 
 let app = new App();
+let lastTime = null;
 
-function render () {
+function render (time) {
     requestAnimationFrame( render );
-    app.update();
+    if (lastTime) {
+        app.update((time - lastTime) / 1000);
+    }
+    lastTime = time;
 }
 
 render();
@@ -100,12 +105,12 @@ let hud = new Hud(document, hp);
 let input = new Input(document, app.world.renderContext.domElement);
 input
     .onDirectionChanged((dx, dy) => {
-        dtheta = dy/100;
+        dtheta = -dy/100;
         dphi = dx/100;
-        console.log(dtheta, dphi);
+        // console.log(dtheta, dphi);
     })
     .onPointerMoved((dx, dy) => {
-        console.log('Pointer', dx, dy);
+        // console.log('Pointer', dx, dy);
         hud.handlePointerMoved(dx, dy);
     })
     .onFireStart(() => console.log('Start fire'))
