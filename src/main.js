@@ -6,8 +6,6 @@ import {Boss} from "./world/boss";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 
-var dtheta = 0;
-var dphi = 0;
 var hp = 10;
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
@@ -87,8 +85,7 @@ class App {
 
     update(delay) {
         // this.ship.moveOnSphere(dtheta, dphi);
-        this.ship.moveOnSphere(100 * dphi * delay, 100 * dtheta * delay);
-        this.ship.lookAt(ORIGIN);
+        this.ship.update(delay);
         this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
         this.world.renderContext.render();
     }
@@ -112,12 +109,10 @@ let hud = new Hud(document, hp);
 let input = new Input(document, app.world.renderContext.domElement);
 input
     .onDirectionChanged((dx, dy) => {
-        dtheta = -dy/100;
-        dphi = dx/100;
-        // console.log(dtheta, dphi);
+        app.ship.verticalSpeed = -dy;
+        app.ship.horizontalSpeed = dx;
     })
     .onPointerMoved((dx, dy) => {
-        // console.log('Pointer', dx, dy);
         hud.handlePointerMoved(dx, dy);
     })
     .onFireStart(() => console.log('Start fire'))

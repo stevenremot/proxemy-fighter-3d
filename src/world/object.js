@@ -61,6 +61,16 @@ export class WorldObject {
 
     /**
      * @description
+     * Function to override when creating a live object.
+     *
+     * @param {Number} dt - time elapsed in seconds since the last update
+     */
+    update(dt) {
+
+    }
+
+    /**
+     * @description
      * Rotate the object in space.
      *
      * Will apply rotations in the order X, Y, Z.
