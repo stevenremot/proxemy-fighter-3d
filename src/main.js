@@ -107,6 +107,7 @@ input
     .onDirectionChanged((dx, dy) => {
         dtheta = -dy/100;
         dphi = dx/100;
+        app.boss.modules[0].handleLifeChanged(1);
         // console.log(dtheta, dphi);
     })
     .onPointerMoved((dx, dy) => {
