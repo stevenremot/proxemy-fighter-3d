@@ -6,7 +6,7 @@ import {WorldObject} from "../object";
  * @description
  * The projectile shot by the player ship.
  */
-export class ShipShot extends WorldObject {
+export class ShipBullet extends WorldObject {
 
     /**
      * @constructor
@@ -26,6 +26,7 @@ export class ShipShot extends WorldObject {
         this.lookAt(position.clone().add(direction));
         this.direction = direction;
         this.lifeSpan = lifeSpan;
+
     }
 
     update(dt) {

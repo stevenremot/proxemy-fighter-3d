@@ -1,9 +1,14 @@
-import {WorldObject} from "./object";
-import {SphericalObject} from "src/math/spherical-object";
-import {addMixin}from "src/core/mixin";
 import THREE from "mrdoob/three.js";
 
+import {WorldObject} from "./object";
+import {SphericalObject} from "src/math/spherical-object";
+import {addMixin} from "src/core/mixin";
+import {ShipBullet} from "./bullet/ship";
+
 const ORIGIN = new THREE.Vector3(0, 0, 0);
+const SHOOT_FREQUENCY = 1 / 10;
+const BULLET_SPEED = 200;
+const BULLET_LIFE_SPAN = 2;
 
 export class Ship extends WorldObject {
     constructor(world, sphereRadius, angularSpeed) {
@@ -22,6 +27,14 @@ export class Ship extends WorldObject {
          * @property {Number}
          */
         this.horizontalSpeed = 0;
+
+        /**
+         * @property {Boolean}
+         */
+        this.isShooting = false;
+
+        this._shootCount = 0;
+        this._shootOffset = -2;
     }
 
     update(dt) {
@@ -29,6 +42,29 @@ export class Ship extends WorldObject {
             this.horizontalSpeed * dt,
             this.verticalSpeed * dt
         ).lookAt(ORIGIN);
+
+        if (this.isShooting) {
+            this._shootCount += dt;
+            while (this._shootCount > SHOOT_FREQUENCY) {
+                this._shootCount -= SHOOT_FREQUENCY;
+                this._shootOneBullet();
+            }
+        }
+    }
+
+    _shootOneBullet() {
+        let forward = this.forward;
+
+        this.world.createObject(
+            ShipBullet,
+            this.position.clone().add(
+                forward.clone().cross(this.up).multiplyScalar(this._shootOffset)
+            ),
+            forward.clone().multiplyScalar(BULLET_SPEED),
+            BULLET_LIFE_SPAN
+        );
+
+        this._shootOffset = -this._shootOffset;
     }
 }
 

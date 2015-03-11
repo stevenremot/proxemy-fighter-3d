@@ -3,7 +3,6 @@ import {Context as RenderContext} from "./render/context";
 import {World} from "./world";
 import {Ship} from "./world/ship";
 import {Boss} from "./world/boss";
-import {ShipShot} from "./world/shot/ship";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 
@@ -43,7 +42,7 @@ class App {
 
     setupScene() {
         this.ship = this.world.createObject(Ship, this.world, 50, 1);
-        this.ship.position = new THREE.Vector3(50, 0, 0);
+        this.ship.position = new THREE.Vector3(200, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
 
         this.createBoss();
@@ -93,19 +92,9 @@ input
     .onPointerMoved((dx, dy) => {
         hud.handlePointerMoved(dx, dy);
     })
-    .onFireStart(() => console.log('Start fire'))
+    .onFireStart(() => app.ship.isShooting = true)
     .onFireEnd(() => {
-        console.log('End fire');
         hp -= Math.random();
         hud.handleLifeChanged(hp);
+        app.ship.isShooting = false;
     });
-
-setInterval(
-    () => app.world.createObject(
-        ShipShot,
-        new THREE.Vector3(100, 100, 100),
-        new THREE.Vector3(-50, -50, -50),
-        5
-    ),
-    100
-);
