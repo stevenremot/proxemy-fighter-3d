@@ -8,6 +8,7 @@ export class WorldObject {
     constructor(world) {
         this.world = world;
         this._model = null;
+        this.id = null;
     }
 
     /**
@@ -86,5 +87,9 @@ export class WorldObject {
         this.model.rotation.y += y;
         this.model.rotation.z += z;
         return this;
+    }
+
+    destroy() {
+        this.world.destroy(this.id);
     }
 }

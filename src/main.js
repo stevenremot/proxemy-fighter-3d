@@ -3,6 +3,7 @@ import {Context as RenderContext} from "./render/context";
 import {World} from "./world";
 import {Ship} from "./world/ship";
 import {Boss} from "./world/boss";
+import {ShipShot} from "./world/shot/ship";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 
@@ -87,3 +88,13 @@ input
         hp -= Math.random();
         hud.handleLifeChanged(hp);
     });
+
+setInterval(
+    () => app.world.createObject(
+        ShipShot,
+        new THREE.Vector3(100, 100, 100),
+        new THREE.Vector3(-50, -50, -50),
+        5
+    ),
+    100
+);

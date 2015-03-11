@@ -9,7 +9,8 @@ import {WorldObject} from "./world/object";
 export class World {
     constructor(renderContext) {
         this.renderContext = renderContext;
-        this.objects = [];
+        this.objects = {};
+        this._count = 0;
     }
 
     /**
@@ -23,7 +24,8 @@ export class World {
      */
     createObject(objectClass, ...args) {
         let object = new objectClass(this, ...args);
-        this.objects.push(object);
+        object.id = this._count++;
+        this.objects[object.id] = object;
         return object;
     }
 
@@ -36,9 +38,28 @@ export class World {
      * @returns this
      */
     update(dt) {
-        for (let object of this.objects) {
-            object.update(dt);
+        for (let id in this.objects) {
+            this.objects[id].update(dt);
         }
+        return this;
+    }
+
+    /**
+     * @description
+     * Destroy object with provided id
+     *
+     * @param {Id} id
+     *
+     * @returns this
+     */
+    destroy(id) {
+        let object = this.objects[id];
+        delete this.objects[id];
+
+        if (object.model) {
+            this.renderContext.scene.remove(object.model);
+        }
+
         return this;
     }
 }
