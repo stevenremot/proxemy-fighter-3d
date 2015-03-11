@@ -3,15 +3,16 @@ import {Sights} from "./hud/sights";
 import {execCallbacks} from "./core/util";
 
 export class Hud {
-    constructor(document, max_hp) {
+    constructor(window, max_hp) {
         this._callbacks = {
             onLifeChanged: [],
             onPointerMoved: []
         };
-        
+        let document = window.document;
+
         this._lifebar = new Lifebar(document.getElementById('lifebar'), max_hp);
         this._lifebar.setPosition(5, 5);
-        this._sights = new Sights(document.getElementById('sights'), [200,200], 140, 80);
+        this._sights = new Sights(document.getElementById('sights'), window);
         this.registerDefaultCallbacks();
     }
 
@@ -48,5 +49,5 @@ export class Hud {
         execCallbacks(this._callbacks.onPointerMoved, dx, dy);
     }
 
-    
+
 }
