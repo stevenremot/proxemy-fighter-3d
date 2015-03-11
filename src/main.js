@@ -30,7 +30,7 @@ class App {
     }
 
     createBoss() {
-        this.boss = new Boss(this.world, 40);
+        this.boss = this.world.createObject(Boss, 40);
         this.boss
             .addModule([0, Math.PI/3],[0, 2*Math.PI], 0xff0000)
             .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], 0x00ff00)
@@ -38,40 +38,7 @@ class App {
     }
 
     setupScene() {
-        let geometry = new THREE.BoxGeometry(32, 32, 32, 1, 1, 1);
-
-        let canvas = document.createElement("canvas");
-        let context = canvas.getContext("2d");
-
-        context.fillStyle="red";
-        context.fillRect(0,0,32,32);
-        let redData = context.getImageData(0,0,32,32);
-        let red = new THREE.Texture(redData);
-        red.needsUpdate = true;
-
-        context.fillStyle="blue";
-        context.fillRect(0,0,32,32);
-        let blueData = context.getImageData(0,0,32,32);
-        let blue = new THREE.Texture(blueData);
-        blue.needsUpdate = true;
-
-        let materials = [
-            new THREE.MeshBasicMaterial({map: red}),
-            new THREE.MeshBasicMaterial({map: blue}),
-            new THREE.MeshBasicMaterial({color: 0x00ff00}),
-            new THREE.MeshBasicMaterial({color: 0xffff00}),
-            new THREE.MeshBasicMaterial({color: 0xff00ff}),
-            new THREE.MeshBasicMaterial({color: 0x00ffff})
-        ];
-
-        let model = new THREE.Mesh(
-            geometry,
-            new THREE.MeshFaceMaterial(materials)
-        );
-        // this.cube = this.world.createObject();
-        // this.cube.model = model;
-
-        this.ship = new Ship(this.world, 50, 1);
+        this.ship = this.world.createObject(Ship, this.world, 50, 1);
         this.ship.position = new THREE.Vector3(50, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
 
@@ -84,8 +51,7 @@ class App {
     }
 
     update(delay) {
-        // this.ship.moveOnSphere(dtheta, dphi);
-        this.ship.update(delay);
+        this.world.update(delay);
         this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
         this.world.renderContext.render();
     }
