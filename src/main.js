@@ -7,7 +7,9 @@ import {ShipShot} from "./world/shot/ship";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 
-var hp = 10;
+let hp = 10;
+const FPS = 60;
+const FRAME_DELAY = 1 / FPS;
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 
@@ -28,6 +30,7 @@ class App {
         renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild(renderer.domElement);
         this.setupScene();
+        this._frameTime = 0;
     }
 
     createBoss() {
@@ -52,9 +55,17 @@ class App {
     }
 
     update(delay) {
-        this.world.update(delay);
-        this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
-        this.world.renderContext.render();
+        this._frameTime += delay;
+        let changed = false;
+        while (this._frameTime >= FRAME_DELAY) {
+            this.world.update(FRAME_DELAY);
+            this._frameTime -= FRAME_DELAY;
+            changed = true;
+        }
+        if (changed) {
+            this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
+            this.world.renderContext.render();
+        }
     }
 }
 
