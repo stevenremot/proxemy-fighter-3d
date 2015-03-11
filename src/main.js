@@ -81,7 +81,7 @@ function render (time) {
 
 render();
 
-let hud = new Hud(document, hp);
+let hud = new Hud(window, hp);
 
 let input = new Input(document, app.world.renderContext.domElement);
 input
