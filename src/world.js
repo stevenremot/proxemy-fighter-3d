@@ -53,13 +53,8 @@ export class World {
      * @returns this
      */
     destroy(id) {
-        let object = this.objects[id];
+        this.objects[id].model = null;
         delete this.objects[id];
-
-        if (object.model) {
-            this.renderContext.scene.remove(object.model);
-        }
-
         return this;
     }
 }
