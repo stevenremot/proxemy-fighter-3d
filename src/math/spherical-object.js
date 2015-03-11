@@ -27,6 +27,8 @@ export var SphericalObject = {
      *                         from the viewer perspective
      * @param {Number} dphi: right(>0) or left(<0) rotation
      *                       from the viewer perspective
+     *
+     * @returns this
      */
     moveOnSphere(dtheta, dphi) {
         if (!("_sphericalObject" in this)) {
@@ -65,5 +67,7 @@ export var SphericalObject = {
         this.position = s.position;
         this.forward = s.forward;
         this.up = s.up;
+
+        return this;
     }
 };

@@ -9,6 +9,25 @@ import {SphericalObject} from "src/math/spherical-object";
 export class Camera {
     constructor(threeCamera) {
         this._threeCamera = threeCamera;
+
+        /**
+         * @property {WorldObject}
+         *
+         * @description
+         * The target object to follow
+         */
+        this.target = null;
+
+        /**
+         * @property {THREE.Vector3}
+         *
+         * @description
+         * The position relative to the target in its [right, up,
+         * forward] base.
+         *
+         * Actually, right is not took in account for now.
+         */
+        this.targetRelativePosition = null;
     }
 
     get threeCamera() {
@@ -35,6 +54,30 @@ export class Camera {
 
     get up() {
         return this._threeCamera.up;
+    }
+
+    /**
+     * @description
+     * Update camera's relative position to its target if it has one.
+     *
+     * @returns this
+     */
+    updateRelativePosition() {
+        if (this.target && this.targetRelativePosition) {
+            this.position = this.position
+                .copy(this.target.position)
+                .add(this.target.forward
+                         .clone()
+                         .multiplyScalar(this.targetRelativePosition.z)
+                )
+                .add(
+                    this.target.up
+                        .clone()
+                        .multiplyScalar(this.targetRelativePosition.y)
+                );
+            this._threeCamera.up = this.target.up;
+        }
+        return this;
     }
 
     /**

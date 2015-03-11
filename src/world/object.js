@@ -8,6 +8,7 @@ export class WorldObject {
     constructor(world) {
         this.world = world;
         this._model = null;
+        this.id = null;
     }
 
     /**
@@ -61,6 +62,16 @@ export class WorldObject {
 
     /**
      * @description
+     * Function to override when creating a live object.
+     *
+     * @param {Number} dt - time elapsed in seconds since the last update
+     */
+    update(dt) {
+
+    }
+
+    /**
+     * @description
      * Rotate the object in space.
      *
      * Will apply rotations in the order X, Y, Z.
@@ -76,5 +87,9 @@ export class WorldObject {
         this.model.rotation.y += y;
         this.model.rotation.z += z;
         return this;
+    }
+
+    destroy() {
+        this.world.destroy(this.id);
     }
 }
