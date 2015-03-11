@@ -86,6 +86,7 @@ let hud = new Hud(document, hp);
 let input = new Input(document, app.world.renderContext.domElement);
 input
     .onDirectionChanged((dx, dy) => {
+        app.boss.modules[0].handleLifeChanged(1);
         app.ship.verticalSpeed = -dy;
         app.ship.horizontalSpeed = dx;
     })
