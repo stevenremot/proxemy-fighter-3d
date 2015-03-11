@@ -10,9 +10,6 @@ export class Ship extends WorldObject {
         let geometry = new THREE.BoxGeometry(32, 4, 8);
         let material = new THREE.MeshBasicMaterial({ color: 0xc0c0c0 });
         this.model = new THREE.Mesh(geometry, material);
-
-        this._thetaMultiplier = 1;
-        this.forward = new THREE.Vector3(0, 0, -1);
     }
 }
 

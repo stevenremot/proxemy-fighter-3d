@@ -10,6 +10,8 @@ var dtheta = 0;
 var dphi = 0;
 var hp = 10;
 
+const ORIGIN = new THREE.Vector3(0, 0, 0);
+
 class App {
     constructor() {
         let scene = new THREE.Scene();
@@ -73,16 +75,21 @@ class App {
 
         this.ship = new Ship(this.world, 50, 1);
         this.ship.position = new THREE.Vector3(50, 0, 0);
+        this.ship.forward = new THREE.Vector3(-1, 0, 0);
 
         this.createBoss();
 
-        this.world.renderContext.camera.move(new THREE.Vector3(0,20,100));
+
+        let camera = this.world.renderContext.camera;
+        camera.target = this.ship;
+        camera.targetRelativePosition = new THREE.Vector3(0, 30, -30);
     }
 
     update(delay) {
         // this.ship.moveOnSphere(dtheta, dphi);
         this.ship.moveOnSphere(100 * dphi * delay, 100 * dtheta * delay);
-        this.ship.lookAt(new THREE.Vector3(0, 0, 0));
+        this.ship.lookAt(ORIGIN);
+        this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
         this.world.renderContext.render();
     }
 }
