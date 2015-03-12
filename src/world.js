@@ -38,9 +38,7 @@ export class World {
      * @returns this
      */
     update(dt) {
-        for (let id in this.objects) {
-            this.objects.get(id).update(dt);
-        }
+        this.objects.forEach((object) => object.update(dt));
         return this;
     }
 
@@ -53,7 +51,7 @@ export class World {
      * @returns this
      */
     destroy(id) {
-        this.objects[id].model = null;
+        this.objects.get(id).model = null;
         this.objects.delete(id);
         return this;
     }
