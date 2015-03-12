@@ -35,6 +35,7 @@ export class Ship extends WorldObject {
 
         this._shootCount = 0;
         this._shootOffset = -2;
+        this.aimedPoint = new THREE.Vector3();
     }
 
     update(dt) {
@@ -53,13 +54,14 @@ export class Ship extends WorldObject {
     }
 
     _shootOneBullet() {
-        let forward = this.forward;
+        let shootPosition = this.position.clone().add(
+            this.forward.clone().cross(this.up).multiplyScalar(this._shootOffset)
+        );
+        let forward = this.aimedPoint.clone().sub(shootPosition).normalize();
 
         this.world.createObject(
             ShipBullet,
-            this.position.clone().add(
-                forward.clone().cross(this.up).multiplyScalar(this._shootOffset)
-            ),
+            shootPosition,
             forward.clone().multiplyScalar(BULLET_SPEED),
             BULLET_LIFE_SPAN
         );

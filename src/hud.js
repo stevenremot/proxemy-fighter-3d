@@ -18,7 +18,7 @@ export class Hud {
 
     registerDefaultCallbacks() {
         this.onLifeChanged((current_hp) => this._lifebar.update(current_hp));
-        this.onPointerMoved((dx, dy) => this._sights.handleMove(dx, dy));
+        this.onPointerMoved((dx, dy, camera) => this._sights.handleMove(dx, dy, camera));
     }
 
     /**
@@ -44,9 +44,9 @@ export class Hud {
         execCallbacks(this._callbacks.onLifeChanged, current_hp);
     }
 
-    handlePointerMoved(dx, dy)
+    handlePointerMoved(dx, dy, camera)
     {
-        execCallbacks(this._callbacks.onPointerMoved, dx, dy);
+        execCallbacks(this._callbacks.onPointerMoved, dx, dy, camera);
     }
 
 

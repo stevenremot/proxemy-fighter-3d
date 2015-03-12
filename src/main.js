@@ -63,6 +63,7 @@ class App {
         }
         if (changed) {
             this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
+            this.world.renderContext.camera.updateAimedPoint();
             this.world.renderContext.render();
         }
     }
@@ -91,7 +92,7 @@ input
         app.ship.horizontalSpeed = dx;
     })
     .onPointerMoved((dx, dy) => {
-        hud.handlePointerMoved(dx, dy);
+        hud.handlePointerMoved(dx, dy, app.world.renderContext.camera);
     })
     .onFireStart(() => app.ship.isShooting = true)
     .onFireEnd(() => {
