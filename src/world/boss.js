@@ -1,5 +1,8 @@
+import THREE from 'mrdoob/three.js';
+
 import {Module} from "./boss/module";
 import {WorldObject} from "./object";
+import {Box} from "src/collision/box";
 
 export class Boss extends WorldObject {
     constructor(world, radius)
@@ -14,7 +17,20 @@ export class Boss extends WorldObject {
         let material = new THREE.MeshBasicMaterial({color: 0x999999});
         this.model = new THREE.Mesh(geometry, material);
 
+        this.collisionBody = new Box(
+            this.model.position.clone(),
+            new THREE.Vector3(radius, radius, radius),
+            this.model.quaternion.clone()
+        );
+        this.collisionGroup = "boss";
+
         this.modules = [];
+    }
+
+    onCollisionWith(object) {
+        if (object.collisionGroup === "player-shot") {
+            console.log('Ouch!');
+        }
     }
 
     addModule(thetaRange, phiRange, c)

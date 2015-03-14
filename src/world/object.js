@@ -8,6 +8,12 @@ export class WorldObject {
     constructor(world) {
         this.world = world;
         this._model = null;
+        this._collisionBody = null;
+
+        /**
+         * @param {Number} collisionGroup
+         */
+        this.collisionGroup = null;
         this.id = null;
     }
 
@@ -30,6 +36,37 @@ export class WorldObject {
         }
     }
 
+    /**
+     * @property {Object} collisionBody
+     *
+     * Has a function property collidesWith with takes another body as
+     * parameter and returns a boolean.
+     */
+    get collisionBody() {
+        return this._collisionBody;
+    }
+
+    set collisionBody(body) {
+        this._collisionBody = body;
+    }
+
+    /**
+     * @description
+     * Function called when the object enters in collision with
+     * another object.
+     *
+     * @param {WorldObject} object
+     */
+    onCollisionWith(object) {
+    }
+
+    /**
+     * @returns {Boolean}
+     */
+    hasCollisionBody() {
+        return this._collisionBody !== null;
+    }
+
     get position() {
         return this._model && this._model.position;
     }
@@ -37,6 +74,9 @@ export class WorldObject {
     set position(position) {
         if (this._model) {
             this._model.position.copy(position);
+        }
+        if (this._collisionBody) {
+            this._collisionBody.position = position;
         }
     }
 
@@ -57,6 +97,8 @@ export class WorldObject {
     lookAt(position) {
         if (this._model) {
             this._model.lookAt(position);
+
+            this._updateCollisionBodyQuaternion();
         }
     }
 
@@ -86,10 +128,19 @@ export class WorldObject {
         this.model.rotation.x += x;
         this.model.rotation.y += y;
         this.model.rotation.z += z;
+
+        this._updateCollisionBodyQuaternion();
+
         return this;
     }
 
     destroy() {
         this.world.destroy(this.id);
+    }
+
+    _updateCollisionBodyQuaternion() {
+        if (this._collisionBody) {
+            this._collisionBody.quaternion = this._model.quaternion;
+        }
     }
 }

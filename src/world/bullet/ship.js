@@ -1,6 +1,7 @@
 import THREE from "mrdoob/three.js";
 
 import {WorldObject} from "../object";
+import {Box} from "src/collision/box";
 
 /**
  * @description
@@ -22,11 +23,25 @@ export class ShipBullet extends WorldObject {
         let geometry = new THREE.BoxGeometry(1, 1, 4);
         let material = new THREE.MeshBasicMaterial({color: 0xc0c000});
         this.model = new THREE.Mesh(geometry, material);
+
         this.position = position;
         this.lookAt(position.clone().add(direction));
         this.direction = direction;
         this.lifeSpan = lifeSpan;
 
+        this.collisionBody = new Box(
+            this.position.clone(),
+            new THREE.Vector3(1, 1, 4),
+            this.model.quaternion.clone()
+        );
+
+        this.collisionGroup = "player-shot";
+    }
+
+    onCollisionWith(object) {
+        if (object.collisionGroup === "boss") {
+            this.destroy();
+        }
     }
 
     update(dt) {

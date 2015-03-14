@@ -39,7 +39,27 @@ export class World {
      */
     update(dt) {
         this.objects.forEach((object) => object.update(dt));
+        this._handleCollisions();
         return this;
+    }
+
+    _handleCollisions() {
+        let keys = [...this.objects.keys()];
+        for (let i = 0; i < keys.length; i++) {
+            let o1 = this.objects.get(keys[i]);
+
+            if (o1 !== undefined) {
+                for (let j = i+1; j < keys.length; j++) {
+                    let o2 = this.objects.get(keys[j]);
+                    if (o1.hasCollisionBody() &&
+                        o2 !== undefined && o2.hasCollisionBody() &&
+                        o1.collisionBody.collidesWith(o2.collisionBody)) {
+                        o1.onCollisionWith(o2);
+                        o2.onCollisionWith(o1);
+                    }
+                }
+            }
+        }
     }
 
     /**
