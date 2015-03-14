@@ -1,0 +1,95 @@
+html {
+    overflow: hidden;
+    font-family: Helvetica, Arial, Sans-Serif;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%
+}
+
+#game-start {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+
+    text-align: center;
+
+    z-index: 10;
+    padding-top: 20%;
+
+    font-size: 2rem;
+}
+
+#touch-joystick {
+    opacity: 0.8;
+    position: absolute;
+    display: none;
+}
+
+#touch-joystick {
+    width: 150px;
+    height: 150px;
+}
+
+.joystick-base {
+    fill: #a0a0a0;
+}
+
+.joystick-head {
+    fill: #c0c0c0;
+}
+
+#lifebar {
+    position: absolute;
+    width: 200px;
+    height: 40px;
+    display: none;
+}
+
+.lifebar-bg {
+    fill: #338833;
+    stroke: #113311;
+    stroke-width: 2
+}
+
+.lifebar-bar {
+    fill: #00ff00;
+}
+
+#sights {
+    position: absolute;
+    width: 140px;
+    height: 80px;
+    top: 200px;
+    left: 200px;
+    display: none;
+}
+
+.sights-center {
+    fill: none;
+    stroke: #0000ff;
+}
+
+.sights-box {
+    fill: none;
+    stroke: #0000ff;
+    stroke-width: 3;
+    stroke-linejoin: round;
+}
+
+.sights-lines {
+    fill: none;
+    stroke: #0000ff;
+    stroke-width: 3;
+}

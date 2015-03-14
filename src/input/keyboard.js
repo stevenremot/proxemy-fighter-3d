@@ -53,6 +53,7 @@ export class KeyboardInput {
         canvas.addEventListener('mousedown', (evt) => this._handleMouseDown(evt));
         canvas.addEventListener('mouseup', (evt) => this._handleMouseUp(evt));
         canvas.addEventListener('click', () => canvas.requestPointerLock());
+        canvas.requestPointerLock();
     }
 
     /**

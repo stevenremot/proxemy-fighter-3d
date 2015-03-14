@@ -19,8 +19,12 @@ class App {
         this.setupScene();
         this._frameTime = 0;
 
-        this.hud = new Hud(window, hp);
-        this.input = this.createInput(window);
+        this._startScreen = window.document.getElementById('game-start');
+
+        this._startScreen.addEventListener(
+            'click',
+            () => this.startGame(window)
+        );
     }
 
     createRenderContext(window) {
@@ -98,6 +102,14 @@ class App {
             this.world.renderContext.camera.updateAimedPoint();
             this.world.renderContext.render();
         }
+    }
+
+    startGame(window) {
+        this._startScreen.style.display = "none";
+        window.document.getElementById('lifebar').style.display = "block";
+        window.document.getElementById('sights').style.display = "block";
+        this.hud = new Hud(window, hp);
+        this.input = this.createInput(window);
     }
 }
 
