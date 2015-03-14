@@ -14,6 +14,16 @@ const ORIGIN = new THREE.Vector3(0, 0, 0);
 
 class App {
     constructor(window) {
+        this.world = new World(this.createRenderContext(window));
+
+        this.setupScene();
+        this._frameTime = 0;
+
+        this.hud = new Hud(window, hp);
+        this.input = this.createInput(window);
+    }
+
+    createRenderContext(window) {
         let scene = new THREE.Scene();
         let camera = new THREE.PerspectiveCamera(
             75,
@@ -24,16 +34,35 @@ class App {
         let renderer = new THREE.WebGLRenderer();
 
         let renderContext = new RenderContext(renderer, camera, scene);
-        this.world = new World(renderContext);
-
         renderer.setSize(window.innerWidth, window.innerHeight);
         window.addEventListener(
             "resize",
             () => renderContext.setSize(window.innerWidth, window.innerHeight)
         );
+
         document.body.appendChild(renderer.domElement);
-        this.setupScene();
-        this._frameTime = 0;
+        return renderContext;
+    }
+
+    createInput(window) {
+        let renderContext = this.world.renderContext;
+
+        let input = new Input(document, renderContext.domElement);
+        return input
+            .onDirectionChanged((dx, dy) => {
+                this.boss.modules[0].handleLifeChanged(1);
+                this.ship.verticalSpeed = -dy;
+                this.ship.horizontalSpeed = dx;
+            })
+            .onPointerMoved((dx, dy) => {
+                this.hud.handlePointerMoved(dx, dy, renderContext.camera);
+            })
+            .onFireStart(() => this.ship.isShooting = true)
+            .onFireEnd(() => {
+                hp -= Math.random();
+                this.hud.handleLifeChanged(hp);
+                this.ship.isShooting = false;
+            });
     }
 
     createBoss() {
@@ -50,7 +79,6 @@ class App {
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
 
         this.createBoss();
-
 
         let camera = this.world.renderContext.camera;
         camera.target = this.ship;
@@ -85,22 +113,3 @@ function render (time) {
 }
 
 render();
-
-let hud = new Hud(window, hp);
-
-let input = new Input(document, app.world.renderContext.domElement);
-input
-    .onDirectionChanged((dx, dy) => {
-        app.boss.modules[0].handleLifeChanged(1);
-        app.ship.verticalSpeed = -dy;
-        app.ship.horizontalSpeed = dx;
-    })
-    .onPointerMoved((dx, dy) => {
-        hud.handlePointerMoved(dx, dy, app.world.renderContext.camera);
-    })
-    .onFireStart(() => app.ship.isShooting = true)
-    .onFireEnd(() => {
-        hp -= Math.random();
-        hud.handleLifeChanged(hp);
-        app.ship.isShooting = false;
-    });
