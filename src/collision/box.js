@@ -45,11 +45,13 @@ export class Box {
             new THREE.Vector3(),
             new THREE.Vector3()
         ];
+        this._boundingBox = new THREE.Box3();
         this._dirty = true;
     }
 
     _updateElements() {
         this._updatePoints();
+        this._boundingBox.setFromPoints(this._points);
         this._updateEdges();
         this._dirty = false;
     }
@@ -132,6 +134,11 @@ export class Box {
 
     _collidesWithBox(box) {
         if (box._dirty) box._updateElements();
+
+        if (!this._boundingBox.isIntersectionBox(box._boundingBox)) {
+            return false;
+        }
+
         let edges = this._edges.concat(box._edges);
 
         for (let edge of edges) {
