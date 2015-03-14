@@ -5,11 +5,12 @@ export class Sights {
         this._w = w;
         this._h = h;
         this._window = window;
-        this._halfWidth = this.domElement.offsetWidth / 2;
-        this._halfHeight = this.domElement.offsetHeight / 2;
+        let clientRect = domElement.getBoundingClientRect();
+        this._halfWidth = clientRect.width / 2;
+        this._halfHeight = clientRect.height / 2;
         this._position = [
-            domElement.offsetLeft,
-            domElement.offsetTop
+            clientRect.x,
+            clientRect.y
         ];
     }
 
