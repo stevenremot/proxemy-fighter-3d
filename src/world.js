@@ -49,7 +49,7 @@ export class World {
             let o1 = this.objects.get(keys[i]);
 
             if (o1 !== undefined) {
-                for (let j = 0; j < keys.length; j++) {
+                for (let j = i+1; j < keys.length; j++) {
                     let o2 = this.objects.get(keys[j]);
                     if (o1.hasCollisionBody() &&
                         o2 !== undefined && o2.hasCollisionBody() &&
