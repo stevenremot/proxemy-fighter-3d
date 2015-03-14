@@ -13,7 +13,7 @@ const FRAME_DELAY = 1 / FPS;
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 
 class App {
-    constructor() {
+    constructor(window) {
         let scene = new THREE.Scene();
         let camera = new THREE.PerspectiveCamera(
             75,
@@ -26,7 +26,11 @@ class App {
         let renderContext = new RenderContext(renderer, camera, scene);
         this.world = new World(renderContext);
 
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        window.addEventListener(
+            "resize",
+            () => renderContext.setSize(window.innerWidth, window.innerHeight)
+        );
         document.body.appendChild(renderer.domElement);
         this.setupScene();
         this._frameTime = 0;
@@ -69,7 +73,7 @@ class App {
     }
 }
 
-let app = new App();
+let app = new App(window);
 let lastTime = null;
 
 function render (time) {

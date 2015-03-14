@@ -73,4 +73,13 @@ export class Context {
     get domElement() {
         return this.renderer.domElement;
     }
+
+    /**
+     * @description
+     * Resize the rendering area.
+     */
+    setSize(width, height) {
+        this.renderer.setSize(width, height);
+        this.camera.aspect = width / height;
+    }
 }

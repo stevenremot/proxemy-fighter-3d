@@ -118,7 +118,7 @@ export class Camera {
         this._topLeft.set(-this.halfFarWidth, this.halfFarHeight, -this.far);
         this._topRight.set(this.halfFarWidth, this.halfFarHeight, -this.far);
         this._bottomLeft.set(-this.halfFarWidth, -this.halfFarHeight, -this.far);
-        
+
         this._threeCamera.updateMatrixWorld();
         let matrixWorld = this._threeCamera.matrixWorld;
         this._topLeft.applyMatrix4(matrixWorld);
@@ -135,6 +135,18 @@ export class Camera {
                         .multiplyScalar(this.y_relative)
                 )
         );
+    }
+
+    /**
+     * @property {Number}
+     */
+    get aspect() {
+        return this._threeCamera.aspect;
+    }
+
+    set aspect(aspect) {
+        this._threeCamera.aspect = aspect;
+        this._threeCamera.updateProjectionMatrix();
     }
 }
 
