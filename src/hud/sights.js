@@ -9,8 +9,8 @@ export class Sights {
         this._halfWidth = clientRect.width / 2;
         this._halfHeight = clientRect.height / 2;
         this._position = [
-            clientRect.x,
-            clientRect.y
+            clientRect.left,
+            clientRect.top
         ];
     }
 
@@ -29,7 +29,7 @@ export class Sights {
         this.domElement.style.top = `${this._position[1]}px`;
 
         // update camera's x_relative and y_relative
-        // todo: there seems to be a lateral offset between the screen's x position and the camera 
+        // todo: there seems to be a lateral offset between the screen's x position and the camera
         // far plane position that increase when whe deviate from the center of the screen
         camera.x_relative = (this._position[0] + this._halfWidth) / this._window.innerWidth;
         camera.y_relative = (this._position[1] - this._halfHeight) / this._window.innerHeight;
