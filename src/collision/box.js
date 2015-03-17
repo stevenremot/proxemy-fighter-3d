@@ -114,6 +114,10 @@ export class Box {
         this._dirty = true;
     }
 
+    ensureNotDirty() {
+        if (this._dirty) this._updateElements();
+    }
+
     /**
      * @description
      * Returns true if it is in collision with the object, false otherwise.
@@ -123,7 +127,7 @@ export class Box {
      * @returns {Boolean}
      */
     collidesWith(object) {
-        if (this._dirty) this._updateElements();
+        this.ensureNotDirty();
 
         if (object instanceof Box) {
             return this._collidesWithBox(object);
@@ -133,7 +137,7 @@ export class Box {
     }
 
     _collidesWithBox(box) {
-        if (box._dirty) box._updateElements();
+        box.ensureNotDirty();
 
         if (!this._boundingBox.isIntersectionBox(box._boundingBox)) {
             return false;

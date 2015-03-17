@@ -139,7 +139,7 @@ export class WorldObject {
     }
 
     _updateCollisionBodyQuaternion() {
-        if (this._collisionBody) {
+        if (this._collisionBody && "quaternion" in this._collisionBody) {
             this._collisionBody.quaternion = this._model.quaternion;
         }
     }
