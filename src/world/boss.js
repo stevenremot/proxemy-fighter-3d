@@ -5,8 +5,7 @@ import {WorldObject} from "./object";
 import {Sphere} from "src/collision/sphere";
 
 export class Boss extends WorldObject {
-    constructor(world, radius)
-    {
+    constructor(world, radius) {
         super(world);
 
         this.radius = radius;
@@ -37,11 +36,22 @@ export class Boss extends WorldObject {
     onCollisionWith(object) {
         if (object.collisionGroup === "player-shot") {
             this._hud.handlePointsAdded(1);
+            // Using object position to check collision is not the
+            // most precise method, but it should be sufficient in our
+            // case.
+            let position = object.position;
+
+            for (let bossModule of this.modules) {
+                if (bossModule.isAlive() &&
+                    bossModule.isPointInAngularRange(position)) {
+                    bossModule.handleLifeChanged(object.power);
+                    break;
+                }
+            }
         }
     }
 
-    addModule(thetaRange, phiRange, c)
-    {
+    addModule(thetaRange, phiRange, c) {
         let life = 100 * Math.random();
         let material = new THREE.MeshBasicMaterial({color: c});
         this.modules.push(
