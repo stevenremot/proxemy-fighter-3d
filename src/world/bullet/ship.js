@@ -3,6 +3,8 @@ import THREE from "mrdoob/three.js";
 import {WorldObject} from "../object";
 import {Box} from "src/collision/box";
 
+const BULLET_POWER = 1;
+
 /**
  * @description
  * The projectile shot by the player ship.
@@ -28,6 +30,7 @@ export class ShipBullet extends WorldObject {
         this.lookAt(position.clone().add(direction));
         this.direction = direction;
         this.lifeSpan = lifeSpan;
+        this.power = BULLET_POWER;
 
         this.collisionBody = new Box(
             this.position.clone(),
