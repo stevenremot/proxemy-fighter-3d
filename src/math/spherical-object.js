@@ -67,6 +67,7 @@ export var SphericalObject = {
         this.position = s.position;
         this.forward = s.forward;
         this.up = s.up;
+        this.right = s.right;
 
         return this;
     }
