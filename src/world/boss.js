@@ -2,7 +2,7 @@ import THREE from 'mrdoob/three.js';
 
 import {Module} from "./boss/module";
 import {WorldObject} from "./object";
-import {Box} from "src/collision/box";
+import {Sphere} from "src/collision/sphere";
 
 export class Boss extends WorldObject {
     constructor(world, radius)
@@ -17,10 +17,9 @@ export class Boss extends WorldObject {
         let material = new THREE.MeshBasicMaterial({color: 0x999999});
         this.model = new THREE.Mesh(geometry, material);
 
-        this.collisionBody = new Box(
+        this.collisionBody = new Sphere(
             this.model.position.clone(),
-            new THREE.Vector3(radius, radius, radius),
-            this.model.quaternion.clone()
+            radius
         );
         this.collisionGroup = "boss";
 
