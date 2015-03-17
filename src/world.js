@@ -72,7 +72,21 @@ export class World {
      */
     destroy(id) {
         this.objects.get(id).model = null;
+        this.objects.get(id).onDestroy();
         this.objects.delete(id);
+        return this;
+    }
+
+    /**
+     * @description
+     * Destory all world objects.
+     *
+     * @returns this
+     */
+    clear() {
+        for (let [id, object] of this.objects) {
+            this.destroy(id);
+        }
         return this;
     }
 }

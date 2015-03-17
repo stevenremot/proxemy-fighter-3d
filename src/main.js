@@ -6,6 +6,10 @@ import {Boss} from "./world/boss";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 
+document.exitPointerLock = document.exitPointerLock    ||
+                           document.mozExitPointerLock ||
+                           document.webkitExitPointerLock;
+
 let hp = 10;
 const FPS = 60;
 const FRAME_DELAY = 1 / FPS;
@@ -20,10 +24,16 @@ class App {
         this._frameTime = 0;
 
         this._startScreen = window.document.getElementById('game-start');
+        this._endScreen = window.document.getElementById('game-end');
 
         this._startScreen.addEventListener(
             'click',
             () => this.startGame(window)
+        );
+
+        this._endScreen.addEventListener(
+            'click',
+            () => this.restartGame(window)
         );
     }
 
@@ -54,7 +64,6 @@ class App {
         let input = new Input(document, renderContext.domElement);
         return input
             .onDirectionChanged((dx, dy) => {
-                this.boss.modules[0].handleLifeChanged(1);
                 this.ship.verticalSpeed = -dy;
                 this.ship.horizontalSpeed = dx;
             })
@@ -72,6 +81,7 @@ class App {
     createBoss() {
         this.boss = this.world.createObject(Boss, 40);
         this.boss
+            .onDead(() => this.showEndScreen('You won!'))
             .addModule([0, Math.PI/3],[0, 2*Math.PI], 0xff0000)
             .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], 0x00ff00)
             .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], 0x0000ff);
@@ -104,13 +114,31 @@ class App {
         }
     }
 
+    restartGame(window) {
+        this.world.clear();
+        this.setupScene();
+        this.startGame(window);
+    }
+
     startGame(window) {
         this._startScreen.style.display = "none";
+        this._endScreen.style.display = "none";
+
         window.document.getElementById('lifebar').style.display = "block";
         window.document.getElementById('sights').style.display = "block";
         this.hud = new Hud(window, hp);
         this.boss.hud = this.hud;
         this.input = this.createInput(window);
+    }
+
+    showEndScreen(message) {
+        this.ship.isShooting = false;
+        document.exitPointerLock();
+        this._endScreen.querySelector('p').textContent = message;
+        this._endScreen.style.display = 'block';
+
+        window.document.getElementById('lifebar').style.display = "none";
+        window.document.getElementById('sights').style.display = "none";
     }
 }
 

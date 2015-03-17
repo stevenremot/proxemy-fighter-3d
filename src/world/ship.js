@@ -47,7 +47,7 @@ export class Ship extends WorldObject {
             this.horizontalSpeed * dt,
             this.verticalSpeed * dt
         ).lookAt(ORIGIN);
-        
+
         this._leftCannon.updatePosition();
         this._rightCannon.updatePosition();
         this._leftCannon.lookAt(this.aimedPoint);
@@ -75,6 +75,11 @@ export class Ship extends WorldObject {
         );
 
         this._shootOffset = -this._shootOffset;
+    }
+
+    onDestroy() {
+        this._leftCannon.model = null;
+        this._rightCannon.model = null;
     }
 }
 

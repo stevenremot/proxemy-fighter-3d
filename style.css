@@ -14,7 +14,7 @@ canvas {
     height: 100%
 }
 
-#game-start {
+.front-screen {
     position: absolute;
     left: 0;
     top: 0;
@@ -28,6 +28,10 @@ canvas {
 
     z-index: 10;
     font-size: 2rem;
+}
+
+#game-end {
+    display: none;
 }
 
 .center-box {

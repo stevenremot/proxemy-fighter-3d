@@ -143,4 +143,12 @@ export class WorldObject {
             this._collisionBody.quaternion = this._model.quaternion;
         }
     }
+
+    /**
+     * @description
+     * Method to call when an objet is destroyed by the world.
+     */
+    onDestroy() {
+
+    }
 }

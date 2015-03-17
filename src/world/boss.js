@@ -23,6 +23,7 @@ export class Boss extends WorldObject {
         this.collisionGroup = "boss";
 
         this.modules = [];
+        this._onDeadCallbacks = [];
     }
 
     get hud() {
@@ -48,6 +49,10 @@ export class Boss extends WorldObject {
                     break;
                 }
             }
+
+            if (!this.isAlive()) {
+                this._triggerOnDead();
+            }
         }
     }
 
@@ -63,5 +68,37 @@ export class Boss extends WorldObject {
                        life)
         );
         return this;
+    }
+
+    /**
+     * @description
+     * Register a callback to call when boss is dead.
+     *
+     * @returns this
+     */
+    onDead(callback) {
+        this._onDeadCallbacks.push(callback);
+        return this;
+    }
+
+    _triggerOnDead() {
+        for (let callback of this._onDeadCallbacks) {
+            callback();
+        }
+    }
+
+    /**
+     * @description
+     * Return true if at least one module is alive, false otherwise.
+     *
+     * @returns {Boolean}
+     */
+    isAlive() {
+        for (let bossModule of this.modules) {
+            if (bossModule.isAlive()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
