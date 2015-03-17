@@ -26,9 +26,17 @@ export class Boss extends WorldObject {
         this.modules = [];
     }
 
+    get hud() {
+        return this._hud;
+    }
+
+    set hud(hud) {
+        this._hud = hud;
+    }
+
     onCollisionWith(object) {
         if (object.collisionGroup === "player-shot") {
-            console.log('Ouch!');
+            this._hud.handlePointsAdded(1);
         }
     }
 

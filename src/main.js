@@ -109,6 +109,7 @@ class App {
         window.document.getElementById('lifebar').style.display = "block";
         window.document.getElementById('sights').style.display = "block";
         this.hud = new Hud(window, hp);
+        this.boss.hud = this.hud;
         this.input = this.createInput(window);
     }
 }
