@@ -31,7 +31,10 @@ export class Camera {
 
         this.x_relative = 0.5;
         this.y_relative = 0.5;
+
         this._precomputeFarPlaneDimensions();
+        this._globalTransformMatrix = new THREE.Matrix4();
+        this.frustum = new THREE.Frustum();
     }
 
     get threeCamera() {
@@ -104,13 +107,21 @@ export class Camera {
         let fov = this._threeCamera.fov * Math.PI / 180;
         let aspect = this._threeCamera.aspect;
         this.far = this._threeCamera.far;
-
+        
         this.halfFarHeight = Math.tan(fov / 2) * this.far;
         this.halfFarWidth = this.halfFarHeight * aspect;
 
         this._topLeft = new THREE.Vector3(-this.halfFarWidth, this.halfFarHeight, -this.far);
         this._topRight = new THREE.Vector3(this.halfFarWidth, this.halfFarHeight, -this.far);
         this._bottomLeft = new THREE.Vector3(-this.halfFarWidth, -this.halfFarHeight, -this.far);
+    }
+
+    computeFrustum() {
+        this._threeCamera.updateMatrix();
+        this._threeCamera.updateMatrixWorld();
+        this._globalTransformMatrix.set(this._threeCamera.projectionMatrix)
+            .multiply(this._threeCamera.matrixWorldInverse);
+        this.frustum.setFromMatrix(this._globalTransformMatrix);
     }
 
     updateAimedPoint() {

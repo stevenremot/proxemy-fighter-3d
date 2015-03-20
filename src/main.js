@@ -110,6 +110,7 @@ class App {
         if (changed) {
             this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
             this.world.renderContext.camera.updateAimedPoint();
+            this.world.renderContext.camera.computeFrustum();
             this.world.renderContext.render();
         }
     }
