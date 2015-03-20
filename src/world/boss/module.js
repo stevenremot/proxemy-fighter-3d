@@ -1,10 +1,12 @@
 import THREE from "mrdoob/three.js";
 
+import {addMixin} from 'src/core/mixin';
 import {cartesianToSpherical, SphericalVector, fromGlCoordinates}
     from "src/math/utils";
 import {WorldObject} from "src/world/object";
 import {FiniteStateMachine} from "src/core/fsm";
 import {Gatling} from "./turret/gatling";
+import {LifeContainer} from "src/world/life-container";
 
 // Temporary vectors allocated in order not to create them at runtime.
 let temporaryPosition = new THREE.Vector3();
@@ -48,6 +50,16 @@ export class Module extends WorldObject {
         for (let i = 0; i < 4; i++) {
             this.addWeapon(Math.random(), Math.random());
         }
+
+        this.onLifeChanged(
+            () => {
+                if (this.life < this.maxLife/2)
+                    this._fsm.callTransition("HalfBroken");
+
+                if (this.life <= 0)
+                    this._fsm.callTransition("Broken");
+            }
+        );
     }
 
     createFsm() {
@@ -65,26 +77,6 @@ export class Module extends WorldObject {
         this._fsm.setState("FullLife");
         this._fsm.addTransition("FullLife","HalfBroken");
         this._fsm.addTransition("HalfBroken","Broken");
-    }
-
-    handleLifeChanged(damage) {
-        this.life -= damage;
-
-        if (this.life < this.maxLife/2)
-            this._fsm.callTransition("HalfBroken");
-
-        if (this.life < 0)
-            this._fsm.callTransition("Broken");
-    }
-
-    /**
-     * @description
-     * Return true if the module still has life.
-     *
-     * @returns {Boolean}
-     */
-    isAlive() {
-        return this.life >= 0;
     }
 
     /**
@@ -134,3 +126,5 @@ export class Module extends WorldObject {
         this.weapons.delete(weapon);
     }
 }
+
+addMixin(Module, LifeContainer);

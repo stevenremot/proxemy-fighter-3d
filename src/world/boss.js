@@ -45,7 +45,7 @@ export class Boss extends WorldObject {
             for (let bossModule of this.modules) {
                 if (bossModule.isAlive() &&
                     bossModule.isPointInAngularRange(position)) {
-                    bossModule.handleLifeChanged(object.power);
+                    bossModule.hurt(object.power);
                     break;
                 }
             }
