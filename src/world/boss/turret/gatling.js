@@ -1,11 +1,13 @@
 import THREE from "mrdoob/three.js";
 
+import {addMixin}from 'src/core/mixin';
 import {SphericalVector, sphericalToCartesian, toGlCoordinates} from "src/math/utils";
 import {WorldObject} from "src/world/object";
 import {Cannon} from "src/world/weapons/cannon";
 import {Sphere} from "src/collision/sphere";
 import {Ship} from "src/world/ship";
 import {GatlingBullet} from "src/world/bullet/gatling";
+import {LifeContainer} from 'src/world/life-container';
 
 const ORIGIN = new THREE.Vector3();
 const RADIUS = 4;
@@ -50,6 +52,12 @@ export class Gatling extends WorldObject {
         );
         this.right = this.position.clone().cross(this.forward);
         this._count = 0;
+        this.life = 20;
+        this.onLifeChanged(
+            () => {
+                if (!this.isAlive()) this._bossModule.removeWeapon(this);
+            }
+        );
     }
 
     update(dt) {
@@ -70,6 +78,12 @@ export class Gatling extends WorldObject {
         }
     }
 
+    onCollisionWith(object) {
+        if (object.collisionGroup === 'player-shot') {
+            this.hurt(object.power);
+        }
+    }
+
     _shootBullet() {
         this.world.createObject(
             GatlingBullet,
@@ -82,3 +96,5 @@ export class Gatling extends WorldObject {
         this.cannon.destroy();
     }
 }
+
+addMixin(Gatling, LifeContainer);
