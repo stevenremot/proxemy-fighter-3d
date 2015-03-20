@@ -71,9 +71,12 @@ export class World {
      * @returns this
      */
     destroy(id) {
-        this.objects.get(id).model = null;
-        this.objects.get(id).onDestroy();
-        this.objects.delete(id);
+        let object = this.objects.get(id);
+        if (object) {
+            object.model = null;
+            object.onDestroy();
+            this.objects.delete(id);
+        }
         return this;
     }
 
@@ -88,5 +91,25 @@ export class World {
             this.destroy(id);
         }
         return this;
+    }
+
+    /**
+     * @description
+     * Return the object of the provided type in the world.
+     *
+     * If there are more than one object of this type, any one may be
+     * returned.
+     *
+     * @param {Function} Type
+     *
+     * @returns {WorldObject|null}
+     */
+    getObjectOfType(Type) {
+        for (let object of this.objects.values()) {
+            if (object instanceof Type) {
+                return object;
+            }
+        }
+        return null;
     }
 }

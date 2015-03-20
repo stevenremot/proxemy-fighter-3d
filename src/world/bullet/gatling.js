@@ -1,13 +1,13 @@
-import {StraightBullet} from './straight';
+import {StraightBullet} from "./straight";
 
 const BULLET_POWER = 1;
 const LIFE_SPAN = 1.5;
 
 /**
  * @description
- * The projectile shot by the player ship.
+ * The projectile shot by the gatling.
  */
-export class ShipBullet extends StraightBullet {
+export class GatlingBullet extends StraightBullet {
 
     /**
      * @constructor
@@ -21,10 +21,10 @@ export class ShipBullet extends StraightBullet {
             position: position,
             direction: direction,
             lifeSpan: LIFE_SPAN,
-            collisionGroup: 'player-shot',
-            collisionTargetGroup: 'boss',
+            collisionGroup: 'boss',
+            collisionTargetGroup: 'player',
             power: BULLET_POWER,
-            color: 0xc0c000
+            color: 0x00c0c0
         });
     }
 }

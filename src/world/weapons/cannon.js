@@ -2,16 +2,16 @@ import THREE from "mrdoob/three.js";
 import {WorldObject} from "src/world/object";
 
 const ORIGIN = new THREE.Vector3();
-const LENGTH = 25;
+const LENGTH = 20;
 /*
  * Orientable cannon modelisation
  * relativePosition is [rightOffset, upOffset]
  * parent is a spherical object
  */
 export class Cannon extends WorldObject {
-    constructor(world, parent, relativePosition) {
+    constructor(world, parent, [ relativeX, relativeY ]) {
         super(world);
-        
+
         let geometry = new THREE.CylinderGeometry(2, 2, LENGTH, 32, 1, false);
         let m = new THREE.Matrix4();
         m.makeTranslation(0,LENGTH/2,0);
@@ -24,8 +24,8 @@ export class Cannon extends WorldObject {
 
         this._parent = parent;
 
-        this._rightOffset = relativePosition[0];
-        this._upOffset = relativePosition[1];
+        this._rightOffset = relativeX;
+        this._upOffset = relativeY;
 
         this._shootPosition = new THREE.Vector3();
         this.forward = new THREE.Vector3(-1,0,0);

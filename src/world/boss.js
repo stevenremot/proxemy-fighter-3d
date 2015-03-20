@@ -45,7 +45,7 @@ export class Boss extends WorldObject {
             for (let bossModule of this.modules) {
                 if (bossModule.isAlive() &&
                     bossModule.isPointInAngularRange(position)) {
-                    bossModule.handleLifeChanged(object.power);
+                    bossModule.hurt(object.power);
                     break;
                 }
             }
@@ -60,12 +60,17 @@ export class Boss extends WorldObject {
         let life = 100 * Math.random();
         let material = new THREE.MeshBasicMaterial({color: c});
         this.modules.push(
-            new Module(this.world,
-                       this.radius+0.1,
-                       thetaRange,
-                       phiRange,
-                       material,
-                       life)
+            new Module(
+                this.world,
+                {
+                    radius: this.radius+0.1,
+                    thetaRange: thetaRange,
+                    phiRange: phiRange,
+                    material: material,
+                    life: life,
+                    boss: this
+                }
+            )
         );
         return this;
     }

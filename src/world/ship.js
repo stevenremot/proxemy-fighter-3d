@@ -9,7 +9,6 @@ import {Cannon} from "./weapons/cannon";
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1 / 10;
 const BULLET_SPEED = 200;
-const BULLET_LIFE_SPAN = 3;
 
 export class Ship extends WorldObject {
     constructor(world, sphereRadius, angularSpeed) {
@@ -38,8 +37,8 @@ export class Ship extends WorldObject {
         this._shootOffset = -2;
         this.aimedPoint = ORIGIN.clone();
 
-        this._leftCannon = new Cannon(world, this, [-2,0]);
-        this._rightCannon = new Cannon(world, this, [2,0]);
+        this._leftCannon = world.createObject(Cannon, this, [-2,0]);
+        this._rightCannon = world.createObject(Cannon, this, [2,0]);
     }
 
     update(dt) {
@@ -70,16 +69,15 @@ export class Ship extends WorldObject {
         this.world.createObject(
             ShipBullet,
             cannon.shootPosition,
-            cannon.forward.clone().multiplyScalar(BULLET_SPEED),
-            BULLET_LIFE_SPAN
+            cannon.forward.clone().multiplyScalar(BULLET_SPEED)
         );
 
         this._shootOffset = -this._shootOffset;
     }
 
     onDestroy() {
-        this._leftCannon.model = null;
-        this._rightCannon.model = null;
+        this._leftCannon.destroy();
+        this._rightCannon.destroy();
     }
 }
 
