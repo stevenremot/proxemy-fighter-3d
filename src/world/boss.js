@@ -106,4 +106,10 @@ export class Boss extends WorldObject {
         }
         return false;
     }
+
+    onDestroy() {
+        for (let bossModule of this.modules) {
+            bossModule.destroy();
+        }
+    }
 }
