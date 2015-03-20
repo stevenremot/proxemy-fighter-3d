@@ -5,18 +5,26 @@ import {SphericalObject} from "src/math/spherical-object";
 import {addMixin} from "src/core/mixin";
 import {ShipBullet} from "./bullet/ship";
 import {Cannon} from "./weapons/cannon";
+import {LifeContainer} from './life-container';
+import {Box} from 'src/collision/box';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1 / 10;
 const BULLET_SPEED = 200;
 
 export class Ship extends WorldObject {
-    constructor(world, sphereRadius, angularSpeed) {
+    constructor(world, sphereRadius, angularSpeed, maxLife) {
         super(world);
 
         let geometry = new THREE.BoxGeometry(32, 4, 8);
         let material = new THREE.MeshBasicMaterial({ color: 0xc0c0c0 });
         this.model = new THREE.Mesh(geometry, material);
+        this.collisionBody = new Box(
+            this.position,
+            new THREE.Vector3(32, 4, 8),
+            this.model.quaternion
+        );
+        this.collisionGroup = 'player';
 
         /**
          * @property {Number}
@@ -39,6 +47,9 @@ export class Ship extends WorldObject {
 
         this._leftCannon = world.createObject(Cannon, this, [-2,0]);
         this._rightCannon = world.createObject(Cannon, this, [2,0]);
+
+        this.maxLife = maxLife;
+        this.life = maxLife;
     }
 
     update(dt) {
@@ -58,6 +69,12 @@ export class Ship extends WorldObject {
                 this._shootCount -= SHOOT_FREQUENCY;
                 this._shootOneBullet();
             }
+        }
+    }
+
+    onCollisionWith(object) {
+        if (object.collisionGroup === 'boss_shot') {
+            this.hurt(object.power);
         }
     }
 
@@ -82,3 +99,4 @@ export class Ship extends WorldObject {
 }
 
 addMixin(Ship, SphericalObject);
+addMixin(Ship, LifeContainer);

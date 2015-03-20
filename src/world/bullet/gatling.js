@@ -21,7 +21,7 @@ export class GatlingBullet extends StraightBullet {
             position: position,
             direction: direction,
             lifeSpan: LIFE_SPAN,
-            collisionGroup: 'boss',
+            collisionGroup: 'boss_shot',
             collisionTargetGroup: 'player',
             power: BULLET_POWER,
             color: 0x00c0c0

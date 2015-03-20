@@ -11,8 +11,7 @@ import {Steerings} from "./ai/steerings";
 document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||
                            document.webkitExitPointerLock;
-
-let hp = 10;
+const MAX_LIFE = 50;
 const FPS = 60;
 const FRAME_DELAY = 1 / FPS;
 
@@ -37,6 +36,8 @@ class App {
             'click',
             () => this.restartGame(window)
         );
+
+        this.hud = new Hud(window, MAX_LIFE);
     }
 
     createRenderContext(window) {
@@ -74,8 +75,6 @@ class App {
             })
             .onFireStart(() => this.ship.isShooting = true)
             .onFireEnd(() => {
-                hp -= Math.random();
-                this.hud.handleLifeChanged(hp);
                 this.ship.isShooting = false;
             });
     }
@@ -90,9 +89,12 @@ class App {
     }
 
     setupScene() {
-        this.ship = this.world.createObject(Ship, this.world, 50, 1);
+        this.ship = this.world.createObject(Ship, 50, 1, MAX_LIFE);
         this.ship.position = new THREE.Vector3(200, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
+        this.ship.onLifeChanged(() => {
+            this.hud.handleLifeChanged(this.ship.life);
+        });
 
         let geometry = new THREE.BoxGeometry(10,10,10);
         let material = new THREE.MeshBasicMaterial({color: 0xffff00});
@@ -112,10 +114,14 @@ class App {
         this._frameTime += delay;
         let changed = false;
         while (this._frameTime >= FRAME_DELAY) {
-            this.world.update(FRAME_DELAY);
-            this.steerings.follow(this.ship.position);
-            this.steerings.computeSpeed();
-            this.cube.position.add(this.steerings._steeringSpeed.multiplyScalar(FRAME_DELAY));
+            if (this.isInGame()) {
+                this.world.update(FRAME_DELAY);
+
+                // TODO put this in the cube logic
+                this.steerings.follow(this.ship.position);
+                this.steerings.computeSpeed();
+                this.cube.position.add(this.steerings._steeringSpeed.multiplyScalar(FRAME_DELAY));
+            }
             this._frameTime -= FRAME_DELAY;
             changed = true;
         }
@@ -125,6 +131,10 @@ class App {
             this.world.renderContext.camera.computeFrustum();
             this.world.renderContext.render();
         }
+    }
+
+    isInGame() {
+        return this._startScreen.style.display === "none";
     }
 
     restartGame(window) {
@@ -139,7 +149,6 @@ class App {
 
         window.document.getElementById('lifebar').style.display = "block";
         window.document.getElementById('sights').style.display = "block";
-        this.hud = new Hud(window, hp);
         this.boss.hud = this.hud;
         this.input = this.createInput(window);
     }
