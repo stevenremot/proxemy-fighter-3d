@@ -38,8 +38,8 @@ export class Ship extends WorldObject {
         this._shootOffset = -2;
         this.aimedPoint = ORIGIN.clone();
 
-        this._leftCannon = new Cannon(world, this, [-2,0]);
-        this._rightCannon = new Cannon(world, this, [2,0]);
+        this._leftCannon = world.createObject(Cannon, this, [-2,0]);
+        this._rightCannon = world.createObject(Cannon, this, [2,0]);
     }
 
     update(dt) {
@@ -78,8 +78,8 @@ export class Ship extends WorldObject {
     }
 
     onDestroy() {
-        this._leftCannon.model = null;
-        this._rightCannon.model = null;
+        this._leftCannon.destroy();
+        this._rightCannon.destroy();
     }
 }
 
