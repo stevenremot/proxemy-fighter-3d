@@ -89,4 +89,24 @@ export class World {
         }
         return this;
     }
+
+    /**
+     * @description
+     * Return the object of the provided type in the world.
+     *
+     * If there are more than one object of this type, any one may be
+     * returned.
+     *
+     * @param {Function} Type
+     *
+     * @returns {WorldObject|null}
+     */
+    getObjectOfType(Type) {
+        for (let object of this.objects.values()) {
+            if (object instanceof Type) {
+                return object;
+            }
+        }
+        return null;
+    }
 }
