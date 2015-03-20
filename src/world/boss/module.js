@@ -57,7 +57,10 @@ export class Module extends WorldObject {
             () => {this.model.material.wireframe = true;}
         );
         this._fsm.addState("Broken").addCallback(
-            () => {this.model.material.visible = false;}
+            () => {
+                this.model.material.visible = false;
+                this.weapons.forEach(this.removeWeapon.bind(this));
+            }
         );
         this._fsm.setState("FullLife");
         this._fsm.addTransition("FullLife","HalfBroken");
@@ -96,7 +99,7 @@ export class Module extends WorldObject {
         fromGlCoordinates(position, temporaryPosition);
         cartesianToSpherical(temporaryPosition, temporarySphericalVector);
         let theta = temporarySphericalVector.theta,
-            phi  =(temporarySphericalVector.phi + Math.PI / 2) % (Math.PI * 2) ;
+            phi = (temporarySphericalVector.phi + Math.PI / 2) % (Math.PI * 2) ;
         return theta >= this._thetaRange[0] && theta <= this._thetaRange[1] &&
             phi >= this._phiRange[0] && phi <= this._phiRange[1];
     }
@@ -114,7 +117,7 @@ export class Module extends WorldObject {
         let theta = this._thetaRange[0] +
                 (this._thetaRange[1] - this._thetaRange[0]) * thetaRatio;
         let phi = this._phiRange[0] +
-                (this._phiRange[1] - this._phiRange[0]) * phiRatio;
+                (this._phiRange[1] - this._phiRange[0]) * phiRatio - Math.PI / 2;
         this.weapons.add(this.world.createObject(Gatling, this, theta, phi));
     }
 
