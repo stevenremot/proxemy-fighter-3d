@@ -9,6 +9,10 @@ function getLifeContainerStructure(lifeContainer) {
     return lifeContainer._lifeContainer;
 }
 
+function handleLifeChanged(lifeContainer) {
+    execCallbacks(getLifeContainerStructure(lifeContainer).lifeChangedCallbacks);
+}
+
 /**
  * @description
  * A mixin for objects that have a life bar and can take damages.
@@ -18,15 +22,11 @@ export let LifeContainer = {
 
     hurt(damages) {
         this.life -= damages;
-        this._handleLifeChanged();
+        handleLifeChanged(this);
     },
 
     isAlive() {
         return this.life > 0;
-    },
-
-    _handleLifeChanged() {
-        execCallbacks(getLifeContainerStructure(this).lifeChangedCallbacks);
     },
 
     onLifeChanged(callback) {
