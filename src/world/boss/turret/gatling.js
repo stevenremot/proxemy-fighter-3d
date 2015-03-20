@@ -5,10 +5,13 @@ import {WorldObject} from "src/world/object";
 import {Cannon} from "src/world/weapons/cannon";
 import {Sphere} from "src/collision/sphere";
 import {Ship} from "src/world/ship";
+import {GatlingBullet} from "src/world/bullet/gatling";
 
 const ORIGIN = new THREE.Vector3();
 const RADIUS = 4;
 const SEGMENTS = 32;
+const SHOOT_PERIOD = 0.5;
+const BULLET_SPEED = 200;
 
 let tmpSphericalVector = new SphericalVector();
 let tmpCartesianVector = new THREE.Vector3();
@@ -46,9 +49,10 @@ export class Gatling extends WorldObject {
             this.position.z
         );
         this.right = this.position.clone().cross(this.forward);
+        this._count = 0;
     }
 
-    update() {
+    update(dt) {
         let ship = this.world.getObjectOfType(Ship);
         let shipRelativePosition = tmpCartesianVector.copy(ship.position)
                 .sub(this.position);
@@ -57,7 +61,21 @@ export class Gatling extends WorldObject {
         if (this.position.dot(shipRelativePosition) > 0) {
             this.cannon.updatePosition();
             this.cannon.lookAt(ship.position);
+
+            this._count += dt;
+            while (this._count > SHOOT_PERIOD) {
+                this._shootBullet();
+                this._count -= SHOOT_PERIOD;
+            }
         }
+    }
+
+    _shootBullet() {
+        this.world.createObject(
+            GatlingBullet,
+            this.cannon.shootPosition,
+            this.cannon.forward.clone().multiplyScalar(BULLET_SPEED)
+        );
     }
 
     onDestroy() {

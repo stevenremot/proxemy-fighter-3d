@@ -71,9 +71,12 @@ export class World {
      * @returns this
      */
     destroy(id) {
-        this.objects.get(id).model = null;
-        this.objects.get(id).onDestroy();
-        this.objects.delete(id);
+        let object = this.objects.get(id);
+        if (object) {
+            object.model = null;
+            object.onDestroy();
+            this.objects.delete(id);
+        }
         return this;
     }
 
