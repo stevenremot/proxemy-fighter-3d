@@ -1,10 +1,12 @@
 import THREE from "mrdoob/three.js";
 import {Context as RenderContext} from "./render/context";
 import {World} from "./world";
+import {WorldObject} from "./world/object";
 import {Ship} from "./world/ship";
 import {Boss} from "./world/boss";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
+import {Steerings} from "./ai/steerings";
 
 document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||
@@ -92,6 +94,13 @@ class App {
         this.ship.position = new THREE.Vector3(200, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
 
+        let geometry = new THREE.BoxGeometry(10,10,10);
+        let material = new THREE.MeshBasicMaterial({color: 0xffff00});
+        this.cube = this.world.createObject(WorldObject);
+        this.cube.model = new THREE.Mesh(geometry, material);
+        this.cube.position = new THREE.Vector3(50,0,0);
+        this.steerings = new Steerings(this.cube);
+
         this.createBoss();
 
         let camera = this.world.renderContext.camera;
@@ -104,12 +113,16 @@ class App {
         let changed = false;
         while (this._frameTime >= FRAME_DELAY) {
             this.world.update(FRAME_DELAY);
+            this.steerings.follow(this.ship.position);
+            this.steerings.computeSpeed();
+            this.cube.position.add(this.steerings._steeringSpeed.multiplyScalar(FRAME_DELAY));
             this._frameTime -= FRAME_DELAY;
             changed = true;
         }
         if (changed) {
             this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
             this.world.renderContext.camera.updateAimedPoint();
+            this.world.renderContext.camera.computeFrustum();
             this.world.renderContext.render();
         }
     }
