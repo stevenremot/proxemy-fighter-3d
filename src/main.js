@@ -94,6 +94,9 @@ class App {
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
         this.ship.onLifeChanged(() => {
             this.hud.handleLifeChanged(this.ship.life);
+            if (!this.ship.isAlive()) {
+                this.showEndScreen('You lost :\'(');
+            }
         });
 
         let geometry = new THREE.BoxGeometry(10,10,10);
