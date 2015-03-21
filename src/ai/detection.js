@@ -19,7 +19,7 @@ export class Detector {
         let dir = dest.clone().sub(origin).normalize();
 
         let intersections = this._raycast(origin, dir);
-        if (intersections.length > 0) {
+        if (intersections.length > 0) {           
             let closestDistance = intersections[0].distance;
             if (closestDistance < dist)
                 return true;
@@ -28,9 +28,12 @@ export class Detector {
         dir = origin.clone().sub(dest).normalize();
         intersections = this._raycast(dest, dir);
         if (intersections.length > 0) {
-            let closestDistance = intersections[0].distance;
-            if (closestDistance < dist)
-                return true;
+            if (intersections[0].object.id != object.model.id)
+            {
+                let closestDistance = intersections[0].distance;
+                if (closestDistance < dist)
+                    return true;
+            }
         }
 
         return false;

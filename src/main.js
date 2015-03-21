@@ -7,6 +7,7 @@ import {Boss} from "./world/boss";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
 import {Steerings} from "./ai/steerings";
+import {Detector} from "./ai/detection";
 
 document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||
@@ -57,6 +58,8 @@ class App {
             () => renderContext.setSize(window.innerWidth, window.innerHeight)
         );
 
+        this.detector = new Detector(renderContext.camera, scene);
+
         document.body.appendChild(renderer.domElement);
         return renderContext;
     }
@@ -104,7 +107,8 @@ class App {
         this.cube = this.world.createObject(WorldObject);
         this.cube.model = new THREE.Mesh(geometry, material);
         this.cube.position = new THREE.Vector3(50,0,0);
-        this.steerings = new Steerings(this.cube);
+        this.steerings = new Steerings(this.cube, this.detector);
+        this.steerings.target = this.ship;
 
         this.createBoss();
 
@@ -121,7 +125,6 @@ class App {
                 this.world.update(FRAME_DELAY);
 
                 // TODO put this in the cube logic
-                this.steerings.follow(this.ship.position);
                 this.steerings.computeSpeed();
                 this.cube.position.add(this.steerings._steeringSpeed.multiplyScalar(FRAME_DELAY));
             }
