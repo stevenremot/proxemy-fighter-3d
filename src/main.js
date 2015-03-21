@@ -6,7 +6,7 @@ import {Ship} from "./world/ship";
 import {Boss} from "./world/boss";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
-import {AiVessel} from "./world/ai-vessel";
+import {BuddyCube} from "./world/ai-vessel";
 import {Detector} from "./ai/detection";
 
 document.exitPointerLock = document.exitPointerLock    ||
@@ -103,12 +103,9 @@ class App {
             }
         });
 
-        let geometry = new THREE.BoxGeometry(10,10,10);
-        let material = new THREE.MeshBasicMaterial({color: 0xffff00});
-        this.cube = this.world.createObject(AiVessel);
-        this.cube.model = new THREE.Mesh(geometry, material);
-        this.cube.position = new THREE.Vector3(50,0,0);
-        this.cube.target = this.ship;
+        
+        this.cube = this.world.createObject(BuddyCube, 30, this.ship);
+        this.cube.onDead(() => this.cube.destroy());
 
         this.createBoss();
 
