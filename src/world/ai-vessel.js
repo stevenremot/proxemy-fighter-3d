@@ -23,7 +23,7 @@ let tmpSphericalVector = new SphericalVector();
 export class AiVessel extends WorldObject {
     constructor(world, life) {
         super(world);
-        
+
         this._steerings = new Steerings(this, world.detector);
         this._speed = DEFAULT_SPEED;
         this._sphericalVelocity = new THREE.Vector2();
@@ -121,12 +121,15 @@ export class AiVessel extends WorldObject {
         }
     }
 
+    canCollideWith(object) {
+        return object.collisionGroup === 'player-shot';
+    }
+
     onCollisionWith(object) {
-        if (object.collisionGroup === 'player-shot') {
-            this.hurt(object.power);
-            
-            if (!this.isAlive())
-                this._triggerOnDead();
+        this.hurt(object.power);
+
+        if (!this.isAlive()) {
+            this._triggerOnDead();
         }
     }
 

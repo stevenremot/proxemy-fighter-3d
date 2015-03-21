@@ -57,9 +57,11 @@ export class StraightBullet extends WorldObject {
     }
 
     onCollisionWith(object) {
-        if (object.collisionGroup === this.collisionTargetGroup) {
-            this.destroy();
-        }
+        this.destroy();
+    }
+
+    canCollideWith(object) {
+        return object.collisionGroup === this.collisionTargetGroup;
     }
 
     update(dt) {

@@ -72,10 +72,12 @@ export class Ship extends WorldObject {
         }
     }
 
+    canCollideWith(object) {
+        return object.collisionGroup === 'boss_shot';
+    }
+
     onCollisionWith(object) {
-        if (object.collisionGroup === 'boss_shot') {
-            this.hurt(object.power);
-        }
+        this.hurt(object.power);
     }
 
     _shootOneBullet() {

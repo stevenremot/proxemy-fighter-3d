@@ -34,25 +34,27 @@ export class Boss extends WorldObject {
         this._hud = hud;
     }
 
+    canCollideWith(object) {
+        return object.collisionGroup === "player-shot";
+    }
+
     onCollisionWith(object) {
-        if (object.collisionGroup === "player-shot") {
-            this._hud.handlePointsAdded(1);
-            // Using object position to check collision is not the
-            // most precise method, but it should be sufficient in our
-            // case.
-            let position = object.position;
+        this._hud.handlePointsAdded(1);
+        // Using object position to check collision is not the
+        // most precise method, but it should be sufficient in our
+        // case.
+        let position = object.position;
 
-            for (let bossModule of this.modules) {
-                if (bossModule.isAlive() &&
-                    bossModule.isPointInAngularRange(position)) {
-                    bossModule.hurt(object.power);
-                    break;
-                }
+        for (let bossModule of this.modules) {
+            if (bossModule.isAlive() &&
+                bossModule.isPointInAngularRange(position)) {
+                bossModule.hurt(object.power);
+                break;
             }
+        }
 
-            if (!this.isAlive()) {
-                this._triggerOnDead();
-            }
+        if (!this.isAlive()) {
+            this._triggerOnDead();
         }
     }
 

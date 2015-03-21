@@ -52,8 +52,12 @@ export class World {
             if (o1 !== undefined) {
                 for (let j = i+1; j < keys.length; j++) {
                     let o2 = this.objects.get(keys[j]);
+                    let objectsCanCollide = o2 !== undefined &&
+                            (o1.canCollideWith(o2) || o2.canCollideWith(o1));
+
                     if (o1.hasCollisionBody() &&
-                        o2 !== undefined && o2.hasCollisionBody() &&
+                        objectsCanCollide &&
+                        o2.hasCollisionBody() &&
                         o1.collisionBody.collidesWith(o2.collisionBody)) {
                         o1.onCollisionWith(o2);
                         o2.onCollisionWith(o1);

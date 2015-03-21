@@ -1,5 +1,7 @@
 import THREE from 'mrdoob/three.js';
 
+let sqrt2 = Math.sqrt(2);
+
 /**
  * @description
  * Computes the range of the projection of points on edge.
@@ -45,13 +47,25 @@ export class Box {
             new THREE.Vector3(),
             new THREE.Vector3()
         ];
-        this._boundingBox = new THREE.Box3();
+        this.boundingBox = new THREE.Box3();
+        this._boundingBoxDirty = true;
         this._dirty = true;
+        this._bboxDirty = true;
+    }
+
+    updateBoundingBox() {
+        let boxSize = Math.max(this._size.x, this._size.y, this._size.z) * sqrt2;
+        this.boundingBox.setFromCenterAndSize(
+            this._position,
+            new THREE.Vector3(boxSize, boxSize, boxSize)
+        );
+
+        this._bboxDirty = false;
     }
 
     _updateElements() {
+        this.updateBoundingBox();
         this._updatePoints();
-        this._boundingBox.setFromPoints(this._points);
         this._updateEdges();
         this._dirty = false;
     }
@@ -88,6 +102,7 @@ export class Box {
     set position(position) {
         this._position.copy(position);
         this._dirty = true;
+        this._bboxDirty = true;
     }
 
     /**
@@ -100,6 +115,7 @@ export class Box {
     set size(size) {
         this._size.set(size);
         this._dirty = true;
+        this._bboxDirty = true;
     }
 
     /**
@@ -114,7 +130,12 @@ export class Box {
         this._dirty = true;
     }
 
+    ensureBboxNotDirty() {
+        if (this._bboxDirty) this.updateBoundingBox();
+    }
+
     ensureNotDirty() {
+        this.ensureBboxNotDirty();
         if (this._dirty) this._updateElements();
     }
 
@@ -127,7 +148,7 @@ export class Box {
      * @returns {Boolean}
      */
     collidesWith(object) {
-        this.ensureNotDirty();
+        this.ensureBboxNotDirty();
 
         if (object instanceof Box) {
             return this._collidesWithBox(object);
@@ -137,11 +158,13 @@ export class Box {
     }
 
     _collidesWithBox(box) {
-        box.ensureNotDirty();
-
-        if (!this._boundingBox.isIntersectionBox(box._boundingBox)) {
+        box.ensureBboxNotDirty();
+        if (!this.boundingBox.isIntersectionBox(box.boundingBox)) {
             return false;
         }
+
+        this.ensureNotDirty();
+        box.ensureNotDirty();
 
         let edges = this._edges.concat(box._edges);
 
