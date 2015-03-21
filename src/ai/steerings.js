@@ -9,7 +9,6 @@ let temporaryOrthoPoint = new THREE.Vector3();
  */
 const MIN_DISTANCE = 20;
 const REF_DISTANCE = 40;
-const BASE_SPEED = 20;
 
 export class Steerings {
     constructor(object, detector) {
@@ -41,7 +40,7 @@ export class Steerings {
         if (distance < REF_DISTANCE)
             intensity = distance / REF_DISTANCE;
 
-        targetPos.sub(this._object.position).normalize().multiplyScalar(intensity*BASE_SPEED);
+        targetPos.sub(this._object.position).normalize().multiplyScalar(intensity);
         this._components.get("follow").vector.copy(targetPos);
     }
 
@@ -64,7 +63,7 @@ export class Steerings {
 
             // go for it
             this._components.get("stayVisible").vector.copy(
-                orthoPoint.normalize().multiplyScalar(BASE_SPEED)
+                orthoPoint.normalize()
             );
         }
     }
@@ -75,5 +74,6 @@ export class Steerings {
             s.update();
             this._steeringSpeed.add(s.vector);
         }
+        return this._steeringSpeed;
     }
 }

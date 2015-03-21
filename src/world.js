@@ -7,8 +7,9 @@ import {WorldObject} from "./world/object";
  * Contains all systems: rendering, GUI, input and collision
  */
 export class World {
-    constructor(renderContext) {
+    constructor(renderContext, detector) {
         this.renderContext = renderContext;
+        this.detector = detector;
         this.objects = new Map();
         this._count = 0;
     }

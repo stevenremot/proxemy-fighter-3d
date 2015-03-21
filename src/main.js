@@ -6,7 +6,7 @@ import {Ship} from "./world/ship";
 import {Boss} from "./world/boss";
 import {Aggregate as Input} from './input/aggregate';
 import {Hud} from "./hud";
-import {Steerings} from "./ai/steerings";
+import {AiVessel} from "./world/ai-vessel";
 import {Detector} from "./ai/detection";
 
 document.exitPointerLock = document.exitPointerLock    ||
@@ -20,7 +20,8 @@ const ORIGIN = new THREE.Vector3(0, 0, 0);
 
 class App {
     constructor(window) {
-        this.world = new World(this.createRenderContext(window));
+        let params = this.createRenderContext(window);
+        this.world = new World(params.renderContext, params.detector);
 
         this.setupScene();
         this._frameTime = 0;
@@ -58,10 +59,10 @@ class App {
             () => renderContext.setSize(window.innerWidth, window.innerHeight)
         );
 
-        this.detector = new Detector(renderContext.camera, scene);
+        let detector = new Detector(renderContext.camera, scene);
 
         document.body.appendChild(renderer.domElement);
-        return renderContext;
+        return {renderContext: renderContext, detector: detector};
     }
 
     createInput(window) {
@@ -104,11 +105,10 @@ class App {
 
         let geometry = new THREE.BoxGeometry(10,10,10);
         let material = new THREE.MeshBasicMaterial({color: 0xffff00});
-        this.cube = this.world.createObject(WorldObject);
+        this.cube = this.world.createObject(AiVessel);
         this.cube.model = new THREE.Mesh(geometry, material);
         this.cube.position = new THREE.Vector3(50,0,0);
-        this.steerings = new Steerings(this.cube, this.detector);
-        this.steerings.target = this.ship;
+        this.cube.target = this.ship;
 
         this.createBoss();
 
@@ -123,10 +123,6 @@ class App {
         while (this._frameTime >= FRAME_DELAY) {
             if (this.isInGame()) {
                 this.world.update(FRAME_DELAY);
-
-                // TODO put this in the cube logic
-                this.steerings.computeSpeed();
-                this.cube.position.add(this.steerings._steeringSpeed.multiplyScalar(FRAME_DELAY));
             }
             this._frameTime -= FRAME_DELAY;
             changed = true;

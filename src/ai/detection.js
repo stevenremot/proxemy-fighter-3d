@@ -44,4 +44,8 @@ export class Detector {
         return this._raycaster.intersectObjects(this._scene.children);
     }
 
+    get frustum() {
+        return this._camera.frustum;
+    }
+
 }
