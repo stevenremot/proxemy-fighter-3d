@@ -39,7 +39,27 @@ class App {
             () => this.restartGame(window)
         );
 
+        this._aimedPos = {
+            x: 0,
+            y: 0
+        };
+
         this.hud = new Hud(window, MAX_LIFE);
+        this.hud.sights.onPositionChanged(
+            (x, y) => {
+                this._aimedPos.x = x;
+                this._aimedPos.y = y;
+            }
+        );
+    }
+
+    updateShipAimedPoint() {
+        this.world.renderContext.camera.getAimedPointForPosition(
+            this._aimedPos.x,
+            this._aimedPos.y,
+            200, // Depth, empirimagical value
+            this.ship.aimedPoint
+        );
     }
 
     createRenderContext(window) {
@@ -75,7 +95,7 @@ class App {
                 this.ship.horizontalSpeed = dx;
             })
             .onPointerMoved((dx, dy) => {
-                this.hud.handlePointerMoved(dx, dy, renderContext.camera);
+                this.hud.handlePointerMoved(dx, dy);
             })
             .onFireStart(() => this.ship.isShooting = true)
             .onFireEnd(() => {
@@ -103,7 +123,6 @@ class App {
             }
         });
 
-        
         this.cube = this.world.createObject(BuddyCube, 30, this.ship);
         this.cube.onDead(() => this.cube.destroy());
 
@@ -125,8 +144,10 @@ class App {
             changed = true;
         }
         if (changed) {
-            this.world.renderContext.camera.updateRelativePosition().lookAt(ORIGIN);
-            this.world.renderContext.camera.updateAimedPoint();
+            this.world.renderContext.camera
+                .updateRelativePosition()
+                .lookAt(ORIGIN);
+            this.updateShipAimedPoint();
             this.world.renderContext.camera.computeFrustum();
             this.world.renderContext.render();
         }

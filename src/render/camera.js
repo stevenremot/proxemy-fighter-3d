@@ -32,9 +32,9 @@ export class Camera {
         this.x_relative = 0.5;
         this.y_relative = 0.5;
 
-        this._precomputeFarPlaneDimensions();
         this._globalTransformMatrix = new THREE.Matrix4();
         this.frustum = new THREE.Frustum();
+        this._rayCaster = new THREE.Raycaster();
     }
 
     get threeCamera() {
@@ -83,6 +83,7 @@ export class Camera {
                         .multiplyScalar(this.targetRelativePosition.y)
                 );
             this._threeCamera.up = this.target.up;
+            this._threeCamera.updateMatrixWorld();
         }
         return this;
     }
@@ -103,19 +104,6 @@ export class Camera {
         // todo: manage orientation
     }
 
-    _precomputeFarPlaneDimensions() {
-        let fov = this._threeCamera.fov * Math.PI / 180;
-        let aspect = this._threeCamera.aspect;
-        this.far = this._threeCamera.far;
-        
-        this.halfFarHeight = Math.tan(fov / 2) * this.far;
-        this.halfFarWidth = this.halfFarHeight * aspect;
-
-        this._topLeft = new THREE.Vector3(-this.halfFarWidth, this.halfFarHeight, -this.far);
-        this._topRight = new THREE.Vector3(this.halfFarWidth, this.halfFarHeight, -this.far);
-        this._bottomLeft = new THREE.Vector3(-this.halfFarWidth, -this.halfFarHeight, -this.far);
-    }
-
     computeFrustum() {
         this._threeCamera.updateMatrix();
         this._threeCamera.updateMatrixWorld();
@@ -124,28 +112,12 @@ export class Camera {
         this.frustum.setFromMatrix(this._globalTransformMatrix);
     }
 
-    updateAimedPoint() {
-        // compute far plane
-        this._topLeft.set(-this.halfFarWidth, this.halfFarHeight, -this.far);
-        this._topRight.set(this.halfFarWidth, this.halfFarHeight, -this.far);
-        this._bottomLeft.set(-this.halfFarWidth, -this.halfFarHeight, -this.far);
-
-        this._threeCamera.updateMatrixWorld();
-        let matrixWorld = this._threeCamera.matrixWorld;
-        this._topLeft.applyMatrix4(matrixWorld);
-        this._topRight.applyMatrix4(matrixWorld);
-        this._bottomLeft.applyMatrix4(matrixWorld);
-
-        this.target.aimedPoint.copy(
-            this._topLeft.clone().add(
-                this._topRight.sub(this._topLeft)
-                    .multiplyScalar(this.x_relative)
-            )
-                .add(
-                    this._bottomLeft.sub(this._topLeft)
-                        .multiplyScalar(this.y_relative)
-                )
+    getAimedPointForPosition(x, y, depth, vector) {
+        this._rayCaster.setFromCamera(
+            { x: x, y: -y },
+            this._threeCamera
         );
+        this._rayCaster.ray.at(depth, vector);
     }
 
     /**

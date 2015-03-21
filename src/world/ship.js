@@ -24,6 +24,7 @@ export class Ship extends WorldObject {
             new THREE.Vector3(32, 4, 8),
             this.model.quaternion
         );
+
         this.collisionGroup = 'player';
 
         /**
