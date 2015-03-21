@@ -10,7 +10,7 @@ import {Box} from 'src/collision/box';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1 / 10;
-const BULLET_SPEED = 200;
+const BULLET_SPEED = 350;
 
 export class Ship extends WorldObject {
     constructor(world, sphereRadius, angularSpeed, maxLife) {
