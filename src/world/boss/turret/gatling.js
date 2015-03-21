@@ -78,10 +78,12 @@ export class Gatling extends WorldObject {
         }
     }
 
+    canCollideWith(object) {
+        return object.collisionGroup === 'player-shot';
+    }
+
     onCollisionWith(object) {
-        if (object.collisionGroup === 'player-shot') {
-            this.hurt(object.power);
-        }
+        this.hurt(object.power);
     }
 
     _shootBullet() {

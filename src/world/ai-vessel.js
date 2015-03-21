@@ -11,7 +11,7 @@ const DEFAULT_SPEED = 20;
 export class AiVessel extends WorldObject {
     constructor(world, life) {
         super(world);
-        
+
         this._steerings = new Steerings(this, world.detector);
         this._speed = DEFAULT_SPEED;
 
@@ -45,12 +45,15 @@ export class AiVessel extends WorldObject {
         this.lookAt(this.position.clone().add(velocity));
     }
 
+    canCollideWith(object) {
+        return object.collisionGroup === 'player-shot';
+    }
+
     onCollisionWith(object) {
-        if (object.collisionGroup === 'player-shot') {
-            this.hurt(object.power);
-            
-            if (!this.isAlive())
-                this._triggerOnDead();
+        this.hurt(object.power);
+
+        if (!this.isAlive()) {
+            this._triggerOnDead();
         }
     }
 

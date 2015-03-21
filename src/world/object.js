@@ -52,6 +52,22 @@ export class WorldObject {
 
     /**
      * @description
+     * Return true if the object can collide with the
+     * provided object, false otherwise.
+     *
+     * This method is called before checking collision to avoid doing
+     * heavy maths when not necesary.
+     *
+     * @param {WorldObject} object
+     *
+     * @returns {Boolean}
+     */
+    canCollideWith(object) {
+        return true;
+    }
+
+    /**
+     * @description
      * Function called when the object enters in collision with
      * another object.
      *
