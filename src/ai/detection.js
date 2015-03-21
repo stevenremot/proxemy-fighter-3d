@@ -39,9 +39,14 @@ export class Detector {
         return false;
     }
 
-    _raycast(origin, dir) {
+    raycast(origin, dir) {
         this._raycaster.set(origin, dir);
         return this._raycaster.intersectObjects(this._scene.children);
+    }
+
+    raycastToObject(origin, dir, object) {
+        this._raycaster.set(origin, dir);
+        return this._raycaster.intersectObject(object.model);
     }
 
     get frustum() {
