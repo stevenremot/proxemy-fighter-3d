@@ -2,6 +2,7 @@ import {Detector} from "./detection";
 
 let orthoPoint = new THREE.Vector3();
 let temporaryOrthoPoint = new THREE.Vector3();
+let tmpVelocity = new THREE.Vector3();
 
 /*
  * Steerings that drive the movement of an AI vessel
@@ -14,13 +15,27 @@ export class Steerings {
     constructor(object, detector) {
         this._object = object;
         this._detector = detector;
-        this._components = new Map();
-        this._steeringSpeed = new THREE.Vector3();
+        
+        // behaviour steerings that create a desired velocity
+        this._behaviour = new Map();
+        // steerings to avoid boss or other vessels
+        this._avoidance = new Map();
         
         this._target = null;
 
-        this._components.set("follow", {vector: new THREE.Vector3(), update: () => this.follow()});
-        this._components.set("stayVisible", {vector: new THREE.Vector3(), update: () => this.stayVisible()});
+        this._behaviour.set(
+            "follow",
+            {vector: new THREE.Vector3(), update: () => this.follow()}
+        );
+        this._behaviour.set(
+            "stayVisible",
+            {vector: new THREE.Vector3(), update: () => this.stayVisible()}
+        );
+
+        this._avoidance.set(
+            "avoidBoss",
+            {vector: new THREE.Vector3(), update: () => this.avoidBoss()}
+        );
     }
 
     get target() {
@@ -41,12 +56,12 @@ export class Steerings {
             intensity = distance / REF_DISTANCE;
 
         targetPos.sub(this._object.position).normalize().multiplyScalar(intensity);
-        this._components.get("follow").vector.copy(targetPos);
+        this._behaviour.get("follow").vector.copy(targetPos);
     }
 
     stayVisible() {
         if (this._detector.isVisible(this._object))
-            this._components.get("stayVisible").vector.set(0,0,0);
+            this._behaviour.get("stayVisible").vector.set(0,0,0);
         else {
             let frustum = this._detector.frustum;
             let intersectionDistance = NaN;
@@ -62,18 +77,31 @@ export class Steerings {
             }
 
             // go for it
-            this._components.get("stayVisible").vector.copy(
+            this._behaviour.get("stayVisible").vector.copy(
                 orthoPoint.normalize()
             );
         }
     }
+
+    avoidBoss() {
+        
+    }
     
-    computeSpeed() {
-        this._steeringSpeed.set(0,0,0);
-        for (let s of this._components.values()) {
+    computeDesiredVelocity() {
+        tmpVelocity.set(0,0,0);
+        for (let s of this._behaviour.values()) {
             s.update();
-            this._steeringSpeed.add(s.vector);
+            tmpVelocity.add(s.vector);
         }
-        return this._steeringSpeed;
+        return tmpVelocity;
+    }
+
+    computeAvoidance() {
+        tmpVelocity.set(0,0,0);
+        for (let s of this._avoidance.values()) {
+            s.update();
+            tmpVelocity.add(s.vector);
+        }
+        return tmpVelocity;
     }
 }

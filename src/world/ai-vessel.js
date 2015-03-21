@@ -12,8 +12,11 @@ import {Boss} from "src/world/boss";
 // for BuddyCube
 import {Box} from "src/collision/box";
 
+// reperform detection each 30 frames
+const DETECTION_FREQUENCY = 30;
+
 const ORIGIN = new THREE.Vector3(0,0,0);
-const EPSILON = 0.1;
+const ANGULAR_TOLERANCE = Math.PI / 6;
 const DEFAULT_SPEED = 20;
 
 let tmpDirection = new THREE.Vector3();
@@ -27,7 +30,9 @@ export class AiVessel extends WorldObject {
         this._steerings = new Steerings(this, world.detector);
         this._speed = DEFAULT_SPEED;
         this._sphericalVelocity = new THREE.Vector2();
+        this._sphericalTargetDistance = new THREE.Vector2();
         this._sphericalTarget = new SphericalVector();
+        this._detectionCount = 0;
 
         this.life = life;
 
@@ -86,24 +91,33 @@ export class AiVessel extends WorldObject {
         cartesianToSpherical(tmpPosition, tmpSphericalVector);
          let deltaTheta = Math.abs(tmpSphericalVector.theta - this._sphericalTarget.theta);
         let deltaPhi = Math.abs(tmpSphericalVector.phi - this._sphericalTarget.phi);
-        return deltaTheta < EPSILON && deltaPhi < EPSILON;
+
+        this._sphericalTargetDistance.set(deltaTheta, deltaPhi);
+        return deltaTheta < ANGULAR_TOLERANCE && deltaPhi < ANGULAR_TOLERANCE;
+    }
+
+    performDetection() {
+        tmpDirection.copy(this.target.position).sub(this.position).normalize();
+        let boss = this.world.getObjectOfType(Boss);
+        let intersections = this.world.detector.raycastToObject(
+            this.position, tmpDirection, boss);
+        if (intersections.length > 0) {
+            let distance = intersections[0].distance;
+            if (distance < this.position.distanceTo(this.target.position)) {
+                this.computeSphericalVelocity();
+                this._fsm.setState("Spherical");
+                return;
+            }
+        }
+        this._fsm.setState("Chase");
     }
 
     update(dt) {
-        if (this._fsm.currentState == "Detect") {
-            tmpDirection.copy(this.target.position).sub(this.position).normalize();
-            let boss = this.world.getObjectOfType(Boss);
-            let intersections = this.world.detector.raycastToObject(
-                this.position, tmpDirection, boss);
-            if (intersections.length > 0) {
-                let distance = intersections[0].distance;
-                if (distance < this.position.distanceTo(this.target.position)) {
-                    this.computeSphericalVelocity();
-                    this._fsm.setState("Spherical");
-                    return;
-                }
-            }
-            this._fsm.setState("Chase");
+        this._detectionCount++;
+        if (this._fsm.currentState == "Detect" || 
+(this._fsm.currentState != "Spherical" && this._detectionCount == DETECTION_FREQUENCY)) {
+            this.performDetection();
+            this._detectionCount = 0;
         }
         else if (this._fsm.currentState == "Spherical") {
             this.moveOnSphere(
@@ -114,7 +128,7 @@ export class AiVessel extends WorldObject {
                 this._fsm.setState("Chase");
         }
         else if (this._fsm.currentState == "Chase") {
-            let velocity = this._steerings.computeSpeed();
+            let velocity = this._steerings.computeDesiredVelocity();
             this.position.add(velocity.multiplyScalar(dt*this._speed));
 
             this.lookAt(this.position.clone().add(velocity));
@@ -122,14 +136,21 @@ export class AiVessel extends WorldObject {
     }
 
     canCollideWith(object) {
-        return object.collisionGroup === 'player-shot';
+        return object.collisionGroup === 'player-shot' || object.collisionGroup === 'boss';
     }
 
     onCollisionWith(object) {
-        this.hurt(object.power);
+        if (object.collisionGroup === 'player-shot')
+        {
+            this.hurt(object.power);
 
-        if (!this.isAlive()) {
-            this._triggerOnDead();
+            if (!this.isAlive()) {
+                this._triggerOnDead();
+            }
+        }
+        else if (object.collisionGroup == 'boss') {
+            tmpDirection.copy(this.position).normalize();
+            this.position.sub(tmpDirection.multiplyScalar(-this._speed));
         }
     }
 
