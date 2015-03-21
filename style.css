@@ -95,10 +95,13 @@ canvas {
     top: 200px;
     left: 200px;
     display: none;
+}
 
-    @media(max-width: 728px) {
-        top: 50px;
-        left: 50px;
+
+@media(max-width: 728px) {
+    #sights {
+        width: 50px;
+        height: 50px;
     }
 }
 
