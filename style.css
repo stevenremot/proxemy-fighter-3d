@@ -122,3 +122,21 @@ canvas {
     stroke: #0000ff;
     stroke-width: 3;
 }
+
+#fullscreen-button {
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+    z-index: 11;
+
+    width: 20px;
+    height: 20px;
+}
+
+#fullscreen-button .outer {
+    fill: white;
+}
+
+#fullscreen-button .inner {
+    fill: black;
+}

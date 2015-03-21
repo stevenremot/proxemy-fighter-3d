@@ -187,6 +187,44 @@ class App {
 let app = new App(window);
 let lastTime = null;
 
+function launchIntoFullscreen(element) {
+  if(element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if(element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if(element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if(element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  }
+}
+
+function exitFullscreen() {
+  if(document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if(document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if(document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
+}
+
+function isFullscreenEnabled() {
+    return !!(document.fullscreenElement ||
+              document.mozFullscreenElement ||
+              document.webkitFullscreenElement ||
+              document.msFullscreenElement);
+}
+
+document.getElementById('fullscreen-button').addEventListener('click', () => {
+    if (!isFullscreenEnabled()) {
+        launchIntoFullscreen(document.documentElement);
+    } else {
+        exitFullscreen();
+    }
+});
+
+
 function render (time) {
     requestAnimationFrame( render );
     if (lastTime) {
