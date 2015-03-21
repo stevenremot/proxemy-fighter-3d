@@ -66,7 +66,7 @@ export class Sphere {
     }
 
     _collideWithBox(box) {
-        box.ensureNotDirty();
+        box.ensureBboxNotDirty();
 
         if (!this.boundingBox.isIntersectionBox(box.boundingBox)) return false;
 
