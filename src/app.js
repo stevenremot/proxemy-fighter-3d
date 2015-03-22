@@ -17,7 +17,7 @@ const ORIGIN = new THREE.Vector3(0, 0, 0);
 
 export class App {
     constructor(window, startScreen, endScreen, models) {
-        let params = this.createRenderContext(window);
+        let params = this.createRenderContext(window, models);
         this.world = new World(params.renderContext, params.detector);
 
         this.setupScene();
@@ -55,7 +55,7 @@ export class App {
         );
     }
 
-    createRenderContext(window) {
+    createRenderContext(window, models) {
         let scene = new THREE.Scene();
         let camera = new THREE.PerspectiveCamera(
             75,
@@ -65,7 +65,7 @@ export class App {
         );
         let renderer = new THREE.WebGLRenderer();
 
-        let renderContext = new RenderContext(renderer, camera, scene);
+        let renderContext = new RenderContext(renderer, camera, scene, models);
         renderer.setSize(window.innerWidth, window.innerHeight);
         window.addEventListener(
             "resize",

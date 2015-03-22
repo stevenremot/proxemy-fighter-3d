@@ -8,7 +8,7 @@ import {Camera} from "./camera";
  * - scene
  */
 export class Context {
-    constructor(renderer, threeCamera, scene) {
+    constructor(renderer, threeCamera, scene, modelCollection) {
         /**
          * @description
          * Scene renderer
@@ -26,6 +26,8 @@ export class Context {
          * Well... camera
          */
         this.camera = new Camera(threeCamera);
+
+        this.modelCollection = modelCollection;
     }
 
     /**
