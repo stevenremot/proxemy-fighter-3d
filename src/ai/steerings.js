@@ -1,4 +1,5 @@
 import {Detector} from "./detection";
+import {Boss} from "src/world/boss";
 
 let orthoPoint = new THREE.Vector3();
 let temporaryOrthoPoint = new THREE.Vector3();
@@ -8,8 +9,11 @@ let tmpVelocity = new THREE.Vector3();
  * Steerings that drive the movement of an AI vessel
  *
  */
-const MIN_DISTANCE = 20;
-const REF_DISTANCE = 40;
+const FOLLOW_MIN = 20;
+const FOLLOW_MAX = 40;
+
+const AVOIDANCE_MIN = 5;
+const AVOIDANCE_MAX = 10;
 
 export class Steerings {
     constructor(object, detector) {
@@ -48,12 +52,12 @@ export class Steerings {
 
     follow() {
         let targetPos = this._target.position.clone().add(
-            this._target.forward.clone().multiplyScalar(MIN_DISTANCE));
+            this._target.forward.clone().multiplyScalar(FOLLOW_MIN));
 
         let distance = this._object.position.distanceTo(targetPos);
         let intensity = 1;
-        if (distance < REF_DISTANCE)
-            intensity = distance / REF_DISTANCE;
+        if (distance < FOLLOW_MAX)
+            intensity = distance / FOLLOW_MAX;
 
         targetPos.sub(this._object.position).normalize().multiplyScalar(intensity);
         this._behaviour.get("follow").vector.copy(targetPos);
@@ -84,7 +88,18 @@ export class Steerings {
     }
 
     avoidBoss() {
+        // this is ugly
+        let radius = this._object.world.getObjectOfType(Boss).radius;
+        let dist = Math.max(0, this._object.position.length()-radius);
         
+        let intensity = 1;
+        if (dist > AVOIDANCE_MIN && dist < AVOIDANCE_MAX)
+            intensity = (AVOIDANCE_MAX - dist) / (AVOIDANCE_MAX - AVOIDANCE_MIN);
+        else if (dist >= AVOIDANCE_MAX)
+            intensity = 0;
+
+        this._avoidance.get("avoidBoss").vector.copy(this._object.position).normalize().multiplyScalar(intensity);
+
     }
     
     computeDesiredVelocity() {
@@ -93,7 +108,7 @@ export class Steerings {
             s.update();
             tmpVelocity.add(s.vector);
         }
-        return tmpVelocity;
+        return tmpVelocity.normalize();
     }
 
     computeAvoidance() {
@@ -102,6 +117,6 @@ export class Steerings {
             s.update();
             tmpVelocity.add(s.vector);
         }
-        return tmpVelocity;
+        return tmpVelocity.normalize();
     }
 }

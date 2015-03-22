@@ -113,10 +113,11 @@ export class AiVessel extends WorldObject {
     }
 
     update(dt) {
-        this._detectionCount++;
-        if (this._fsm.currentState == "Detect" || 
-(this._fsm.currentState != "Spherical" && this._detectionCount == DETECTION_FREQUENCY)) {
-            this.performDetection();
+        // uncomment for an unpredictable behaviour :D
+        //this._detectionCount++;
+        if (this._fsm.currentState == "Detect" || this._detectionCount == DETECTION_FREQUENCY) {
+            if (this._fsm.currentState != "Spherical")
+                this.performDetection();
             this._detectionCount = 0;
         }
         else if (this._fsm.currentState == "Spherical") {
@@ -133,24 +134,21 @@ export class AiVessel extends WorldObject {
 
             this.lookAt(this.position.clone().add(velocity));
         }
+
+        // compute avoidance steerings
+        let avoidance = this._steerings.computeAvoidance();
+        this.position.add(avoidance.multiplyScalar(dt*this._speed));
     }
 
     canCollideWith(object) {
-        return object.collisionGroup === 'player-shot' || object.collisionGroup === 'boss';
+        return object.collisionGroup === 'player-shot';
     }
 
     onCollisionWith(object) {
-        if (object.collisionGroup === 'player-shot')
-        {
-            this.hurt(object.power);
+        this.hurt(object.power);
 
-            if (!this.isAlive()) {
-                this._triggerOnDead();
-            }
-        }
-        else if (object.collisionGroup == 'boss') {
-            tmpDirection.copy(this.position).normalize();
-            this.position.sub(tmpDirection.multiplyScalar(-this._speed));
+        if (!this.isAlive()) {
+            this._triggerOnDead();
         }
     }
 

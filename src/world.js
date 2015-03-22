@@ -117,4 +117,22 @@ export class World {
         }
         return null;
     }
+    
+    /**
+     * @description
+     * Return all objects of the provided type in the world in an Array.
+     *
+     * @param {Function} Type
+     *
+     * @returns {WorldObject|null}
+     */
+    getObjectsOfType(Type) {
+        let result = [];
+        for (let object of this.objects.values()) {
+            if (object instanceof Type) {
+                result.push(object);
+            }
+        }
+        return result;
+    }
 }
