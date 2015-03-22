@@ -144,7 +144,7 @@ export class App {
     }
 
     isInGame() {
-        return this._startScreen.isShown();
+        return !this._startScreen.isShown();
     }
 
     restartGame(window) {

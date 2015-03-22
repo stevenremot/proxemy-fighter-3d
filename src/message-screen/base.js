@@ -21,7 +21,7 @@ export class MessageScreen {
     }
 
     isShown() {
-        return this.domElement.style.display === "block";
+        return this.domElement.style.display !== "none";
     }
 
     get message() {
