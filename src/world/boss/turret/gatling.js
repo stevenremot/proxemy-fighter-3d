@@ -44,14 +44,16 @@ export class Gatling extends WorldObject {
         toGlCoordinates(tmpCartesianVector, this.model.position);
 
         this.collisionBody = new Sphere(this.model.position, RADIUS);
-        this.cannon = world.createObject(Cannon, this, [0, 0]);
+        let cannonModel = this.getModelFromCollection('gatling-cannon').clone();
+        cannonModel.scale.set(5, 5, 5);
+        this.cannon = world.createObject(Cannon, this, [0, 0], cannonModel);
         this.forward = new THREE.Vector3(
             this.position.y,
             this.position.x,
             this.position.z
         );
-        this.right = this.position.clone().cross(this.forward);
-        this.model.lookAt(this.right);
+        this.up = this.position.clone().normalize();
+        this.right = this.up.clone().cross(this.forward);
         this._count = 0;
         this.life = 20;
         this.onLifeChanged(
@@ -68,6 +70,12 @@ export class Gatling extends WorldObject {
 
         // As boss is at origin, position direction = up
         if (this.position.dot(shipRelativePosition) > 0) {
+            tmpCartesianVector.copy(shipRelativePosition).sub(
+                this.up.clone().multiplyScalar(this.up.dot(shipRelativePosition))
+            );
+            tmpCartesianVector.cross(this.up);
+            this.model.lookAt(this.position.clone().add(tmpCartesianVector));
+
             this.cannon.updatePosition();
             this.cannon.lookAt(ship.position);
 
