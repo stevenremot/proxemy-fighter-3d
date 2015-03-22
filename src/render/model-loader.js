@@ -6,7 +6,7 @@ import THREE from 'mrdoob/three.js';
  */
 export class ModelLoader {
     constructor() {
-        this._threeLoader = new THREE.OBJLoader();
+        this._threeLoader = new THREE.OBJMTLLoader();
     }
 
     /**
@@ -16,7 +16,7 @@ export class ModelLoader {
      * @param {Map} models - map whose keys are model names and values are URLs.
      *
      * @returns {Promise} A promise that resolves to a new Map associated model names
-     *                    and loaded objects.
+     *                    and loaded objects + materials.
      */
     loadModels(models) {
         let promises = [];
@@ -37,12 +37,20 @@ export class ModelLoader {
      * @description
      * Load the obj model located at the specified URL.
      *
+     * @param {String} url - URL, without *.obj
+     *
      * @returns {Promise} A promise that resolves to the 3D object
      *                    representing the obj model.
      */
     loadModel(url) {
         return new Promise((resolve, reject) => {
-            this._threeLoader.load(url, resolve, () => {}, reject);
+            this._threeLoader.load(
+                `${url}.obj`,
+                `${url}.mtl`,
+                resolve,
+                () => {},
+                reject
+            );
         });
     }
 }

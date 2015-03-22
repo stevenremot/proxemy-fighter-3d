@@ -3,7 +3,9 @@ import {App} from "./app";
 import {addFullscreenToElement} from "./fullscreen";
 import {MessageScreen} from "./message-screen/base";
 import {ModelLoader} from "./render/model-loader";
+import 'OBJMTLLoader';
 import 'OBJLoader';
+import 'MTLLoader';
 
 document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||
@@ -11,8 +13,8 @@ document.exitPointerLock = document.exitPointerLock    ||
 
 let loader = new ModelLoader();
 loader.loadModels(new Map([
-    ['gatling-base', 'assets/models/gatling-base.obj'],
-    ['gatling-cannon', 'assets/models/gatling-cannon.obj']
+    ['gatling-base', 'assets/models/gatling-base'],
+    ['gatling-cannon', 'assets/models/gatling-cannon']
 ])).then((models) => {
     let app = new App(
         window,
@@ -33,4 +35,4 @@ loader.loadModels(new Map([
     }
 
     render();
-}).catch((error) => console.log(error));
+});
