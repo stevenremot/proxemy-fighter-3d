@@ -16,7 +16,7 @@ const FRAME_DELAY = 1 / FPS;
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 
 export class App {
-    constructor(window, startScreen, endScreen) {
+    constructor(window, startScreen, endScreen, models) {
         let params = this.createRenderContext(window);
         this.world = new World(params.renderContext, params.detector);
 
@@ -41,6 +41,9 @@ export class App {
                 this._aimedPos.y = y;
             }
         );
+
+        this._startScreen.message = 'Click / touch to start';
+
     }
 
     updateShipAimedPoint() {
