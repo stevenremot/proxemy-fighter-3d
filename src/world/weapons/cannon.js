@@ -9,18 +9,22 @@ const LENGTH = 20;
  * parent is a spherical object
  */
 export class Cannon extends WorldObject {
-    constructor(world, parent, [ relativeX, relativeY ]) {
+    constructor(world, parent, [ relativeX, relativeY ], model) {
         super(world);
 
-        let geometry = new THREE.CylinderGeometry(2, 2, LENGTH, 32, 1, false);
-        let m = new THREE.Matrix4();
-        m.makeTranslation(0,LENGTH/2,0);
-        geometry.applyMatrix(m);
-        m.makeRotationX(Math.PI/2);
-        geometry.applyMatrix(m);
+        if (!model) {
+            let geometry = new THREE.CylinderGeometry(2, 2, LENGTH, 32, 1, false);
+            let m = new THREE.Matrix4();
+            m.makeTranslation(0,LENGTH/2,0);
+            geometry.applyMatrix(m);
+            m.makeRotationX(Math.PI/2);
+            geometry.applyMatrix(m);
 
-        let material = new THREE.MeshBasicMaterial({ color: 0xff1111 });
-        this.model = new THREE.Mesh(geometry, material);
+            let material = new THREE.MeshBasicMaterial({ color: 0xff1111 });
+            this.model = new THREE.Mesh(geometry, material);
+        } else {
+            this.model = model;
+        }
 
         this._parent = parent;
 

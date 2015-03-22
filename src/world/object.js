@@ -30,12 +30,12 @@ export class WorldObject {
         }
 
         if (typeof model === "string") {
-            let modelObject = this.world.renderContext.modelCollection.get(model);
+            let modelObject = this.getModelFromCollection(model);
             if (modelObject === undefined) {
-                throw new Exception(`Could not find model "${model} in collection"`);
+                throw new Error(`Could not find model "${model} in collection"`);
             }
             this._model = modelObject.clone();
-        }else {
+        } else {
             this._model = model;
         }
 
@@ -174,5 +174,9 @@ export class WorldObject {
      */
     onDestroy() {
 
+    }
+
+    getModelFromCollection(modelName) {
+        return this.world.renderContext.modelCollection.get(modelName);
     }
 }
