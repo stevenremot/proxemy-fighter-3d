@@ -63,6 +63,8 @@ export class App {
             0.1,
             1000
         );
+        this.light = new THREE.PointLight(0xffffff, 1, 500);
+        scene.add(this.light);
         let renderer = new THREE.WebGLRenderer();
 
         let renderContext = new RenderContext(renderer, camera, scene, models);
@@ -140,6 +142,7 @@ export class App {
             this.world.renderContext.camera
                 .updateRelativePosition()
                 .lookAt(ORIGIN);
+            this.light.position.copy(this.world.renderContext.camera.position);
             this.updateShipAimedPoint();
             this.world.renderContext.camera.computeFrustum();
             this.world.renderContext.render();
