@@ -35,9 +35,9 @@ export class Gatling extends WorldObject {
     constructor(world, bossModule, theta, phi) {
         super(world);
         this._bossModule = bossModule;
-        let geometry = new THREE.SphereGeometry(RADIUS, SEGMENTS, SEGMENTS);
-        let material = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
-        this.model = new THREE.Mesh(geometry, material);
+        this.model = 'gatling-base';
+        this.model.scale.set(5, 5, 5);
+        this.model.position.add(this.position.clone().normalize());
 
         tmpSphericalVector.set(bossModule.boss.radius, theta, phi);
         sphericalToCartesian(tmpSphericalVector, tmpCartesianVector);
@@ -51,6 +51,7 @@ export class Gatling extends WorldObject {
             this.position.z
         );
         this.right = this.position.clone().cross(this.forward);
+        this.model.lookAt(this.right);
         this._count = 0;
         this.life = 20;
         this.onLifeChanged(
