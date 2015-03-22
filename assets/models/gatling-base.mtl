@@ -1,0 +1,11 @@
+# Blender MTL File: 'gatling.blend'
+# Material Count: 1
+
+newmtl Gatling_metal
+Ns 337.254902
+Ka 0.000000 0.000000 0.000000
+Kd 0.141418 0.158834 0.551220
+Ks 0.856098 0.856098 0.856098
+Ni 1.000000
+d 1.000000
+illum 2
