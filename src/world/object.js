@@ -29,7 +29,15 @@ export class WorldObject {
             this.world.renderContext.removeModel(this._model);
         }
 
-        this._model = model;
+        if (typeof model === "string") {
+            let modelObject = this.world.renderContext.modelCollection.get(model);
+            if (modelObject === undefined) {
+                throw new Exception(`Could not find model "${model} in collection"`);
+            }
+            this._model = modelObject.clone();
+        }else {
+            this._model = model;
+        }
 
         if (model) {
             this.world.renderContext.addModel(this._model);
