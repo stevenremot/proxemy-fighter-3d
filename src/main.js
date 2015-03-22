@@ -14,7 +14,8 @@ document.exitPointerLock = document.exitPointerLock    ||
 let loader = new ModelLoader();
 loader.loadModels(new Map([
     ['gatling-base', 'assets/models/gatling-base'],
-    ['gatling-cannon', 'assets/models/gatling-cannon']
+    ['gatling-cannon', 'assets/models/gatling-cannon'],
+    ['ship', 'assets/models/ship']
 ])).then((models) => {
     let app = new App(
         window,

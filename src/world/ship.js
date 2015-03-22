@@ -16,9 +16,8 @@ export class Ship extends WorldObject {
     constructor(world, sphereRadius, angularSpeed, maxLife) {
         super(world);
 
-        let geometry = new THREE.BoxGeometry(32, 4, 8);
-        let material = new THREE.MeshBasicMaterial({ color: 0xc0c0c0 });
-        this.model = new THREE.Mesh(geometry, material);
+        this.model = 'ship';
+        this.model.scale.set(2,2,2);
         this.collisionBody = new Box(
             this.position,
             new THREE.Vector3(32, 4, 8),
@@ -47,8 +46,10 @@ export class Ship extends WorldObject {
         this.aimedPoint = ORIGIN.clone();
 
         this._leftCannon = world.createObject(Cannon, this, [-2,0]);
+        this._leftCannon.model.visible = false;
         this._rightCannon = world.createObject(Cannon, this, [2,0]);
-
+        this._rightCannon.model.visible = false;
+        
         this.maxLife = maxLife;
         this.life = maxLife;
     }
