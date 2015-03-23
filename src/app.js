@@ -64,7 +64,9 @@ export class App {
             1000
         );
         this.light = new THREE.PointLight(0xffffff, 1, 500);
+        this.shiplight = new THREE.PointLight(0xffffff, 1, 50);
         scene.add(this.light);
+        scene.add(this.shiplight);
         let renderer = new THREE.WebGLRenderer();
 
         let renderContext = new RenderContext(renderer, camera, scene, models);
@@ -143,6 +145,9 @@ export class App {
                 .updateRelativePosition()
                 .lookAt(ORIGIN);
             this.light.position.copy(this.world.renderContext.camera.position);
+            this.shiplight.position.copy(this.ship.position)
+                .add(this.ship.forward.clone().multiplyScalar(5))
+                .add(this.ship.up.clone().multiplyScalar(15));
             this.updateShipAimedPoint();
             this.world.renderContext.camera.computeFrustum();
             this.world.renderContext.render();
