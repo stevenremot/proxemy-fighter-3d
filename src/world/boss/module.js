@@ -8,6 +8,8 @@ import {FiniteStateMachine} from "src/core/fsm";
 import {Gatling} from "./turret/gatling";
 import {LifeContainer} from "src/world/life-container";
 
+const WEAPON_REVIVE_TIMEOUT = 20000;
+
 // Temporary vectors allocated in order not to create them at runtime.
 let temporaryPosition = new THREE.Vector3();
 let temporarySphericalVector = new SphericalVector(0, 0, 0);
@@ -46,6 +48,7 @@ export class Module extends WorldObject {
         this.boss = boss;
 
         this.createFsm();
+        this.weaponReviveTimeouts = new Set();
 
         for (let i = 0; i < 4; i++) {
             this.addWeapon(Math.random(), Math.random());
@@ -113,6 +116,17 @@ export class Module extends WorldObject {
         this.weapons.add(this.world.createObject(Gatling, this, theta, phi));
     }
 
+    startReviveWeaponTimeout() {
+        let timeout = window.setTimeout(
+            () => {
+                this.addWeapon(Math.random(), Math.random());
+                this.weaponReviveTimeouts.delete(timeout);
+            },
+            WEAPON_REVIVE_TIMEOUT
+        );
+        this.weaponReviveTimeouts.add(timeout);
+    }
+
     /**
      * @description
      * Remove a weapon from the module.
@@ -124,6 +138,8 @@ export class Module extends WorldObject {
     removeWeapon(weapon) {
         weapon.destroy();
         this.weapons.delete(weapon);
+        this.weaponReviveTimeouts.each(window.removeTimeout);
+        this.weaponReviveTimeouts.clear();
     }
 }
 

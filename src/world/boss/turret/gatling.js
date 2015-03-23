@@ -104,6 +104,7 @@ export class Gatling extends WorldObject {
 
     onDestroy() {
         this.cannon.destroy();
+        this._bossModule.startReviveWeaponTimeout();
     }
 }
 
