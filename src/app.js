@@ -106,7 +106,13 @@ export class App {
             .onDead(() => this.showEndScreen('You won!'))
             .addModule([0, Math.PI/3],[0, 2*Math.PI], 0xff0000)
             .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], 0x00ff00)
-            .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], 0x0000ff);
+            .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], 0x0000ff)
+            .addModule([Math.PI/2, 2 * Math.PI / 3], [0, 2 * Math.PI / 3], 0xcaca00)
+            .addModule([Math.PI/2, 2 * Math.PI / 3], [2 * Math.PI / 3, 4 * Math.PI / 3], 0x00caca)
+            .addModule([Math.PI/2, 2 * Math.PI / 3], [4 * Math.PI / 3, 2 * Math.PI], 0xca00ca)
+            .addModule([2 * Math.PI / 3, Math.PI], [0, Math.PI], 0xcacaca)
+            .addModule([2 * Math.PI / 3, Math.PI], [Math.PI, 2 * Math.PI], 0x50ca50);
+
     }
 
     setupScene() {
