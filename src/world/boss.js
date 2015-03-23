@@ -62,8 +62,8 @@ export class Boss extends WorldObject {
         let life = 200;
         let material = new THREE.MeshLambertMaterial({color: c});
         this.modules.push(
-            new Module(
-                this.world,
+            this.world.createObject(
+                Module,
                 {
                     radius: this.radius+0.1,
                     thetaRange: thetaRange,

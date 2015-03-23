@@ -8,7 +8,7 @@ import {FiniteStateMachine} from "src/core/fsm";
 import {Gatling} from "./turret/gatling";
 import {LifeContainer} from "src/world/life-container";
 
-const WEAPON_REVIVE_TIMEOUT = 20000;
+const WEAPON_REVIVE_TIMEOUT = 20;
 
 // Temporary vectors allocated in order not to create them at runtime.
 let temporaryPosition = new THREE.Vector3();
@@ -72,10 +72,7 @@ export class Module extends WorldObject {
             () => {this.model.material.wireframe = true;}
         );
         this._fsm.addState("Broken").addCallback(
-            () => {
-                this.model.material.visible = false;
-                this.weapons.forEach(this.removeWeapon.bind(this));
-            }
+            () => this.destroy()
         );
         this._fsm.setState("FullLife");
         this._fsm.addTransition("FullLife","HalfBroken");
@@ -117,14 +114,18 @@ export class Module extends WorldObject {
     }
 
     startReviveWeaponTimeout() {
-        let timeout = window.setTimeout(
-            () => {
+        this.weaponReviveTimeouts.add({ count: WEAPON_REVIVE_TIMEOUT});
+    }
+
+    update(dt) {
+        // Using values() to avoid iterating and deleting in the same object
+        for (let reviveObject of this.weaponReviveTimeouts.values()) {
+            reviveObject.count -= dt;
+            if (reviveObject.count < 0) {
                 this.addWeapon(Math.random(), Math.random());
-                this.weaponReviveTimeouts.delete(timeout);
-            },
-            WEAPON_REVIVE_TIMEOUT
-        );
-        this.weaponReviveTimeouts.add(timeout);
+                this.weaponReviveTimeouts.delete(reviveObject);
+            }
+        }
     }
 
     /**
@@ -138,8 +139,10 @@ export class Module extends WorldObject {
     removeWeapon(weapon) {
         weapon.destroy();
         this.weapons.delete(weapon);
-        this.weaponReviveTimeouts.each(window.removeTimeout);
-        this.weaponReviveTimeouts.clear();
+    }
+
+    onDestroy() {
+        this.weapons.forEach((w) => w.destroy());
     }
 }
 
