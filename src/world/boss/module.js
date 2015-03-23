@@ -28,13 +28,13 @@ export class Module extends WorldObject {
 
         let widthSegments = 24; //default value
         let heightSegments = 18; //default value
-        let geometry = new THREE.SphereGeometry(radius,
+        let geometry = new THREE.SphereGeometry(radius + 0.05,
                                                 widthSegments,
                                                 heightSegments,
-                                                phiRange[0],
-                                                phiRange[1]-phiRange[0],
-                                                thetaRange[0],
-                                                thetaRange[1]-thetaRange[0]);
+                                                phiRange[0] - 0.05,
+                                                phiRange[1]-phiRange[0] + 0.1,
+                                                thetaRange[0] - 0.05,
+                                                thetaRange[1]-thetaRange[0] + 0.1);
         this.model = new THREE.Mesh(geometry, material);
         this._thetaRange = thetaRange;
         this._phiRange = phiRange;
