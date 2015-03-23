@@ -3,9 +3,9 @@ import {App} from "./app";
 import {addFullscreenToElement} from "./fullscreen";
 import {MessageScreen} from "./message-screen/base";
 import {ModelLoader} from "./render/model-loader";
-import 'OBJMTLLoader';
-import 'OBJLoader';
-import 'MTLLoader';
+import 'lib/OBJMTLLoader';
+import 'lib/OBJLoader';
+import 'lib/MTLLoader';
 
 document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||
