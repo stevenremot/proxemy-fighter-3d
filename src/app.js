@@ -50,7 +50,7 @@ export class App {
         this.world.renderContext.camera.getAimedPointForPosition(
             this._aimedPos.x,
             this._aimedPos.y,
-            200, // Depth, empirimagical value
+            150, // Depth = ship position
             this.ship.aimedPoint
         );
     }
@@ -117,8 +117,8 @@ export class App {
     }
 
     setupScene() {
-        this.ship = this.world.createObject(Ship, 50, 1, MAX_LIFE);
-        this.ship.position = new THREE.Vector3(200, 0, 0);
+        this.ship = this.world.createObject(Ship, 1, MAX_LIFE);
+        this.ship.position = new THREE.Vector3(150, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
         this.ship.onLifeChanged(() => {
             this.hud.handleLifeChanged(this.ship.life);
