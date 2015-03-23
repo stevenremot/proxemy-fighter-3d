@@ -59,7 +59,7 @@ export class Boss extends WorldObject {
     }
 
     addModule(thetaRange, phiRange, c) {
-        let life = 100 * Math.random();
+        let life = 1000;
         let material = new THREE.MeshLambertMaterial({color: c});
         this.modules.push(
             new Module(
