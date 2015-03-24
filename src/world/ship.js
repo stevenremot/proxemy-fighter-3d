@@ -12,6 +12,25 @@ const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1 / 10;
 const BULLET_SPEED = 350;
 
+let tmpAimedPoint = new THREE.Vector3();
+
+export class ShipTurret extends WorldObject {
+    constructor(world) {
+        super(world);
+        this.model = 'ship-turret';
+        this.model.scale.set(2,2,2);
+
+        this._plane = new THREE.Plane();
+    }
+
+    lookAt(position) {
+        this._plane.setFromNormalAndCoplanarPoint(this.up, this.position);
+        this._plane.projectPoint(position, tmpAimedPoint);
+        super.lookAt(tmpAimedPoint);
+    }
+
+}
+
 export class Ship extends WorldObject {
     constructor(world, angularSpeed, maxLife) {
         super(world);
@@ -45,11 +64,10 @@ export class Ship extends WorldObject {
         this._shootOffset = -2;
         this.aimedPoint = ORIGIN.clone();
 
-        this._leftCannon = world.createObject(Cannon, this, [-2,0]);
-        this._leftCannon.model.visible = false;
-        this._rightCannon = world.createObject(Cannon, this, [2,0]);
-        this._rightCannon.model.visible = false;
-
+        this._turret = world.createObject(ShipTurret); 
+        this._cannon = world.createObject(Cannon, this, [0,7.5], 'ship-shotgun');
+        this._cannon.model.scale.set(2,2,2);
+        
         this.maxLife = maxLife;
         this.life = maxLife;
     }
@@ -60,10 +78,12 @@ export class Ship extends WorldObject {
             this.verticalSpeed * dt
         ).lookAt(ORIGIN);
 
-        this._leftCannon.updatePosition();
-        this._rightCannon.updatePosition();
-        this._leftCannon.lookAt(this.aimedPoint);
-        this._rightCannon.lookAt(this.aimedPoint);
+        this._turret.position.copy(this.position);
+        this._turret.up.copy(this.up);
+        this._cannon.updatePosition();
+        this._cannon.up.copy(this.up);
+        this._turret.lookAt(this.aimedPoint);
+        this._cannon.lookAt(this.aimedPoint);
 
         if (this.isShooting) {
             this._shootCount += dt;
@@ -83,22 +103,18 @@ export class Ship extends WorldObject {
     }
 
     _shootOneBullet() {
-        let cannon = this._leftCannon;
-        if (this._shootOffset < 0)
-            cannon = this._rightCannon;
-
         this.world.createObject(
             ShipBullet,
-            cannon.shootPosition,
-            cannon.forward.clone().multiplyScalar(BULLET_SPEED)
+            this._cannon.shootPosition,
+            this._cannon.forward.clone().multiplyScalar(BULLET_SPEED)
         );
 
         this._shootOffset = -this._shootOffset;
     }
 
     onDestroy() {
-        this._leftCannon.destroy();
-        this._rightCannon.destroy();
+        this._turret.destroy();
+        this._cannon.destroy();
     }
 }
 

@@ -15,7 +15,9 @@ let loader = new ModelLoader();
 loader.loadModels(new Map([
     ['gatling-base', 'assets/models/gatling-base'],
     ['gatling-cannon', 'assets/models/gatling-cannon'],
-    ['ship', 'assets/models/ship']
+    ['ship', 'assets/models/ship'],
+    ['ship-turret', 'assets/models/ship-turret'],
+    ['ship-shotgun', 'assets/models/ship-shotgun']
 ])).then((models) => {
     let app = new App(
         window,
