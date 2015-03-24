@@ -5,11 +5,12 @@ import {SphericalObject} from "src/math/spherical-object";
 import {addMixin} from "src/core/mixin";
 import {ShipBullet} from "./bullet/ship";
 import {Cannon} from "./weapons/cannon";
+import {Pattern} from "./weapons/pattern";
 import {LifeContainer} from './life-container';
 import {Box} from 'src/collision/box';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
-const SHOOT_FREQUENCY = 1 / 10;
+const SHOOT_FREQUENCY = 1/10;
 const BULLET_SPEED = 350;
 
 let tmpAimedPoint = new THREE.Vector3();
@@ -67,7 +68,10 @@ export class Ship extends WorldObject {
         this._turret = world.createObject(ShipTurret); 
         this._cannon = world.createObject(Cannon, this, [0,7.5], 'ship-shotgun');
         this._cannon.model.scale.set(2,2,2);
-        
+        this._pattern = new Pattern(2*SHOOT_FREQUENCY)
+            .addShoot([-2,0], 0)
+            .addShoot([2,0], SHOOT_FREQUENCY);
+
         this.maxLife = maxLife;
         this.life = maxLife;
     }
@@ -86,11 +90,7 @@ export class Ship extends WorldObject {
         this._cannon.lookAt(this.aimedPoint);
 
         if (this.isShooting) {
-            this._shootCount += dt;
-            while (this._shootCount > SHOOT_FREQUENCY) {
-                this._shootCount -= SHOOT_FREQUENCY;
-                this._shootOneBullet();
-            }
+            this._shootBullets(this._pattern.update(dt));
         }
     }
 
@@ -110,6 +110,16 @@ export class Ship extends WorldObject {
         );
 
         this._shootOffset = -this._shootOffset;
+    }
+
+    _shootBullets(positions) {
+        for (let pos of positions) {
+            this.world.createObject(
+                ShipBullet,
+                this._cannon.offsetedShootPosition(pos),
+                this._cannon.forward.clone().multiplyScalar(BULLET_SPEED)
+            );
+        }
     }
 
     onDestroy() {

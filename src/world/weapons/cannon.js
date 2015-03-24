@@ -3,6 +3,11 @@ import {WorldObject} from "src/world/object";
 
 const ORIGIN = new THREE.Vector3();
 const LENGTH = 20;
+
+let tmpUp = new THREE.Vector3();
+let tmpRight = new THREE.Vector3();
+let tmpOffsetedPosition = new THREE.Vector3();
+
 /*
  * Orientable cannon modelisation
  * relativePosition is [rightOffset, upOffset]
@@ -54,10 +59,26 @@ export class Cannon extends WorldObject {
             position.clone().sub(this.position).normalize()
         );
         super.lookAt(position);
+        this.model.updateMatrixWorld();
     }
 
     get shootPosition() {
         this._shootPosition.copy(this.position).add(this.forward.clone().multiplyScalar(LENGTH));
         return this._shootPosition;
+    }
+
+    offsetedShootPosition(offset) {
+        let rightOffset = offset[0];
+        let upOffset = offset[1];
+        tmpUp.set(0,1,0);
+        this.model.localToWorld(tmpUp);
+        tmpRight.set(1,0,0);
+        this.model.localToWorld(tmpRight);
+
+        this._shootPosition.copy(this.position).add(this.forward.clone().multiplyScalar(LENGTH));
+        tmpOffsetedPosition.copy(this._shootPosition)
+            .add(tmpRight.normalize().multiplyScalar(rightOffset))
+            .add(tmpUp.normalize().multiplyScalar(upOffset));
+        return tmpOffsetedPosition;        
     }
 }
