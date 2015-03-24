@@ -92,8 +92,8 @@ export class World {
      * @returns this
      */
     clear() {
-        for (let [id, object] of this.objects) {
-            this.destroy(id);
+        for (let pair of this.objects) {
+            this.destroy(pair[0]);
         }
         return this;
     }
@@ -117,7 +117,7 @@ export class World {
         }
         return null;
     }
-    
+
     /**
      * @description
      * Return all objects of the provided type in the world in an Array.

@@ -10,10 +10,9 @@ import {GatlingBullet} from "src/world/bullet/gatling";
 import {LifeContainer} from 'src/world/life-container';
 
 const ORIGIN = new THREE.Vector3();
-const RADIUS = 4;
-const SEGMENTS = 32;
+const RADIUS = 10;
 const SHOOT_PERIOD = 0.5;
-const BULLET_SPEED = 200;
+const BULLET_SPEED = 350;
 
 let tmpSphericalVector = new SphericalVector();
 let tmpCartesianVector = new THREE.Vector3();
@@ -105,6 +104,7 @@ export class Gatling extends WorldObject {
 
     onDestroy() {
         this.cannon.destroy();
+        this._bossModule.startReviveWeaponTimeout();
     }
 }
 

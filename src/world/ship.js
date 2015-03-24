@@ -13,7 +13,7 @@ const SHOOT_FREQUENCY = 1 / 10;
 const BULLET_SPEED = 350;
 
 export class Ship extends WorldObject {
-    constructor(world, sphereRadius, angularSpeed, maxLife) {
+    constructor(world, angularSpeed, maxLife) {
         super(world);
 
         this.model = 'ship';
@@ -49,7 +49,7 @@ export class Ship extends WorldObject {
         this._leftCannon.model.visible = false;
         this._rightCannon = world.createObject(Cannon, this, [2,0]);
         this._rightCannon.model.visible = false;
-        
+
         this.maxLife = maxLife;
         this.life = maxLife;
     }

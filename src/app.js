@@ -9,7 +9,7 @@ import {Detector} from "./ai/detection";
 import {BuddyCube} from "./world/ai-vessel";
 import {Aggregate as Input} from './input/aggregate';
 
-const MAX_LIFE = 50;
+const MAX_LIFE = 10;
 const FPS = 60;
 const FRAME_DELAY = 1 / FPS;
 
@@ -50,7 +50,7 @@ export class App {
         this.world.renderContext.camera.getAimedPointForPosition(
             this._aimedPos.x,
             this._aimedPos.y,
-            200, // Depth, empirimagical value
+            150, // Depth = ship position
             this.ship.aimedPoint
         );
     }
@@ -101,17 +101,24 @@ export class App {
     }
 
     createBoss() {
+        let moduleColor = 0x5000c0;
         this.boss = this.world.createObject(Boss, 40);
         this.boss
             .onDead(() => this.showEndScreen('You won!'))
-            .addModule([0, Math.PI/3],[0, 2*Math.PI], 0xff0000)
-            .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], 0x00ff00)
-            .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], 0x0000ff);
+            .addModule([0, Math.PI/3],[0, 2*Math.PI], moduleColor)
+            .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], moduleColor)
+            .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], moduleColor)
+            .addModule([Math.PI/2, 2 * Math.PI / 3], [0, 2 * Math.PI / 3], moduleColor)
+            .addModule([Math.PI/2, 2 * Math.PI / 3], [2 * Math.PI / 3, 4 * Math.PI / 3], moduleColor)
+            .addModule([Math.PI/2, 2 * Math.PI / 3], [4 * Math.PI / 3, 2 * Math.PI], moduleColor)
+            .addModule([2 * Math.PI / 3, Math.PI], [0, Math.PI], moduleColor)
+            .addModule([2 * Math.PI / 3, Math.PI], [Math.PI, 2 * Math.PI], moduleColor);
+
     }
 
     setupScene() {
-        this.ship = this.world.createObject(Ship, 50, 1, MAX_LIFE);
-        this.ship.position = new THREE.Vector3(200, 0, 0);
+        this.ship = this.world.createObject(Ship, 1, MAX_LIFE);
+        this.ship.position = new THREE.Vector3(150, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
         this.ship.onLifeChanged(() => {
             this.hud.handleLifeChanged(this.ship.life);
