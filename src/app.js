@@ -127,7 +127,7 @@ export class App {
 
         let camera = this.world.renderContext.camera;
         camera.target = this.ship;
-        camera.targetRelativePosition = new THREE.Vector3(0, 30, -40);
+        camera.targetRelativePosition = new THREE.Vector3(0, 40, -45);
     }
 
     update(delay) {
