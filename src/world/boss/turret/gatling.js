@@ -17,6 +17,9 @@ const BULLET_SPEED = 350;
 let tmpSphericalVector = new SphericalVector();
 let tmpCartesianVector = new THREE.Vector3();
 
+let tmpUp = new THREE.Vector3();
+let tmpPosition = new THREE.Vector3();
+
 /**
  * @description
  * Gatling gun attached to the boss.
@@ -55,6 +58,7 @@ export class Gatling extends WorldObject {
         this.right = this.up.clone().cross(this.forward);
         this._count = 0;
         this.life = 20;
+        this._ship = null;
         this.onLifeChanged(
             () => {
                 if (!this.isAlive()) this._bossModule.removeWeapon(this);
@@ -63,17 +67,19 @@ export class Gatling extends WorldObject {
     }
 
     update(dt) {
-        let ship = this.world.getObjectOfType(Ship);
+        let ship = this._ship || this.world.getObjectOfType(Ship);
         let shipRelativePosition = tmpCartesianVector.copy(ship.position)
                 .sub(this.position);
 
         // As boss is at origin, position direction = up
         if (this.position.dot(shipRelativePosition) > 0) {
             tmpCartesianVector.copy(shipRelativePosition).sub(
-                this.up.clone().multiplyScalar(this.up.dot(shipRelativePosition))
+                tmpUp.copy(this.up).multiplyScalar(this.up.dot(shipRelativePosition))
             );
             tmpCartesianVector.cross(this.up);
-            this.model.lookAt(this.position.clone().add(tmpCartesianVector));
+            this.model.lookAt(
+                tmpPosition.copy(this.position).add(tmpCartesianVector)
+            );
 
             this.cannon.updatePosition();
             this.cannon.lookAt(ship.position);
@@ -84,6 +90,7 @@ export class Gatling extends WorldObject {
                 this._count -= SHOOT_PERIOD;
             }
         }
+        this._ship = ship;
     }
 
     canCollideWith(object) {

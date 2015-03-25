@@ -1,7 +1,7 @@
 import {StraightBullet} from './straight';
 
 const BULLET_POWER = 1;
-const LIFE_SPAN = 1.5;
+const LIFE_SPAN = 0.5;
 
 /**
  * @description

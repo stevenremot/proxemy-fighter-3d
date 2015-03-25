@@ -53,6 +53,7 @@ export class App {
             150, // Depth = ship position
             this.ship.aimedPoint
         );
+        this.ship.updateCannonOrientation();
     }
 
     createRenderContext(window, models) {
@@ -140,14 +141,18 @@ export class App {
     update(delay) {
         this._frameTime += delay;
         let changed = false;
-        while (this._frameTime >= FRAME_DELAY) {
-            if (this.isInGame()) {
+
+        if (this.isInGame()) {
+            while (this._frameTime >= FRAME_DELAY) {
                 this.world.update(FRAME_DELAY);
+                this._frameTime -= FRAME_DELAY;
+                changed = true;
             }
-            this._frameTime -= FRAME_DELAY;
-            changed = true;
+        } else {
+            this._frameTime = 0;
         }
-        if (changed) {
+
+        if (changed || !this.isInGame()) {
             this.world.renderContext.camera
                 .updateRelativePosition()
                 .lookAt(ORIGIN);

@@ -3,6 +3,8 @@ import THREE from 'mrdoob/three.js';
 import {Box} from './box';
 
 let tmpVector = new THREE.Vector3();
+let tmpRelativePosition = new THREE.Vector3();
+let tmpProjection = new THREE.Vector3();
 
 /**
  * @description
@@ -70,20 +72,20 @@ export class Sphere {
 
         if (!this.boundingBox.isIntersectionBox(box.boundingBox)) return false;
 
-        let relativePosition = this.position.clone()
+        tmpRelativePosition.copy(this.position)
                 .sub(box.position)
                 .applyQuaternion(box.quaternion);
 
-        let projection = relativePosition.clone();
+        tmpProjection.copy(tmpRelativePosition);
 
         for (let axis of ['x', 'y', 'z']) {
             let halfSize = box.size[axis]/2;
-            projection[axis] = Math.min(
-                Math.max(projection[axis], -halfSize),
+            tmpProjection[axis] = Math.min(
+                Math.max(tmpProjection[axis], -halfSize),
                 halfSize
             );
         }
 
-        return projection.sub(relativePosition).length() <= this.radius;
+        return tmpProjection.sub(tmpRelativePosition).length() <= this.radius;
     }
 }

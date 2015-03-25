@@ -5,6 +5,8 @@ import {Box} from "src/collision/box";
 
 const BULLET_POWER = 1;
 
+let tmpPosition = new THREE.Vector3();
+
 /**
  * @description
  * The projectile shot by the player ship.
@@ -39,7 +41,7 @@ export class StraightBullet extends WorldObject {
         this.model = new THREE.Mesh(geometry, material);
 
         this.position = position;
-        this.lookAt(position.clone().add(direction));
+        this.lookAt(tmpPosition.copy(position).add(direction));
         this.direction = direction;
         this.lifeSpan = lifeSpan;
         this.power = BULLET_POWER;

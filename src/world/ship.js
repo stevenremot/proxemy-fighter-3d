@@ -65,7 +65,7 @@ export class Ship extends WorldObject {
         this._shootOffset = -2;
         this.aimedPoint = ORIGIN.clone();
 
-        this._turret = world.createObject(ShipTurret); 
+        this._turret = world.createObject(ShipTurret);
         this._cannon = world.createObject(Cannon, this, [0,7.5], 'ship-shotgun');
         this._cannon.model.scale.set(2,2,2);
         this._pattern = new Pattern(2*SHOOT_FREQUENCY)
@@ -86,12 +86,16 @@ export class Ship extends WorldObject {
         this._turret.up.copy(this.up);
         this._cannon.updatePosition();
         this._cannon.up.copy(this.up);
-        this._turret.lookAt(this.aimedPoint);
-        this._cannon.lookAt(this.aimedPoint);
+        this.updateCannonOrientation();
 
         if (this.isShooting) {
             this._shootBullets(this._pattern.update(dt));
         }
+    }
+
+    updateCannonOrientation() {
+        this._turret.lookAt(this.aimedPoint);
+        this._cannon.lookAt(this.aimedPoint);
     }
 
     canCollideWith(object) {
