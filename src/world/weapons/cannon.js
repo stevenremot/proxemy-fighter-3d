@@ -8,6 +8,10 @@ let tmpUp = new THREE.Vector3();
 let tmpRight = new THREE.Vector3();
 let tmpOffsetedPosition = new THREE.Vector3();
 
+let tmpParentPos = new THREE.Vector3();
+let tmpParentRight = new THREE.Vector3();
+let tmpParentUp = new THREE.Vector3();
+
 /*
  * Orientable cannon modelisation
  * relativePosition is [rightOffset, upOffset]
@@ -42,21 +46,21 @@ export class Cannon extends WorldObject {
     }
 
     updatePosition() {
-        let ppos = this._parent.position.clone();
-        let pright = this._parent.right.clone();
-        let pup = this._parent.up.clone();
+        tmpParentPos.copy(this._parent.position);
+        tmpParentRight.copy(this._parent.right);
+        tmpParentUp.copy(this._parent.up);
 
         this.position.copy(
-           ppos.add(
-                pright.multiplyScalar(this._rightOffset))
+           tmpParentPos.add(
+                tmpParentRight.multiplyScalar(this._rightOffset))
                 .add(
-                    pup.multiplyScalar(this._upOffset))
+                    tmpParentUp.multiplyScalar(this._upOffset))
         );
     }
 
     lookAt(position) {
         this.forward.copy(
-            position.clone().sub(this.position).normalize()
+            tmpParentPos.copy(position).sub(this.position).normalize()
         );
         super.lookAt(position);
         this.model.updateMatrixWorld();
@@ -79,6 +83,6 @@ export class Cannon extends WorldObject {
         tmpOffsetedPosition.copy(this._shootPosition)
             .add(tmpRight.normalize().multiplyScalar(rightOffset))
             .add(tmpUp.normalize().multiplyScalar(upOffset));
-        return tmpOffsetedPosition;        
+        return tmpOffsetedPosition;
     }
 }
