@@ -31,10 +31,10 @@ export class Steerings {
             "follow",
             {vector: new THREE.Vector3(), update: () => this.follow()}
         );
-        this._behaviour.set(
+        /*this._behaviour.set(
             "stayVisible",
             {vector: new THREE.Vector3(), update: () => this.stayVisible()}
-        );
+        );*/
 
         this._avoidance.set(
             "avoidBoss",

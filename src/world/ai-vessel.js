@@ -132,6 +132,8 @@ export class AiVessel extends WorldObject {
             let velocity = this._steerings.computeDesiredVelocity();
             this.position.add(velocity.multiplyScalar(dt*this._speed));
 
+            if (this.up.dot(this.target.up) < 0)
+                this.up.multiplyScalar(-1);
             this.lookAt(this.position.clone().add(velocity));
         }
 
@@ -174,9 +176,10 @@ export class BuddyCube extends AiVessel {
     constructor(world, life, ship) {
         super(world, life);
 
-        let geometry = new THREE.BoxGeometry(10,10,10);
+        /*let geometry = new THREE.BoxGeometry(10,10,10);
         let material = new THREE.MeshBasicMaterial({color: 0xff00ff});
-        this.model = new THREE.Mesh(geometry, material);
+        this.model = new THREE.Mesh(geometry, material);*/
+        this.model = 'miniship';
         this.position = new THREE.Vector3(-50,30,0);
         this.target = ship;
         this.forward = new THREE.Vector3(1,0,0);
