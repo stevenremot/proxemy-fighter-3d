@@ -2,6 +2,11 @@ import THREE from "mrdoob/three.js";
 import {addMixin} from "src/core/mixin";
 import {SphericalObject} from "src/math/spherical-object";
 
+const FOLLOWING_COEFFICIENT = 0.25;
+
+let tmpTarget = new THREE.Vector3();
+let tmpDistance = new THREE.Vector3();
+
 /**
  * @description
  * Camera
@@ -71,8 +76,7 @@ export class Camera {
      */
     updateRelativePosition() {
         if (this.target && this.targetRelativePosition) {
-            this.position = this.position
-                .copy(this.target.position)
+            tmpTarget.copy(this.target.position)
                 .add(this.target.forward
                          .clone()
                          .multiplyScalar(this.targetRelativePosition.z)
@@ -82,6 +86,12 @@ export class Camera {
                         .clone()
                         .multiplyScalar(this.targetRelativePosition.y)
                 );
+
+            tmpDistance.copy(tmpTarget).sub(this.position);
+            this.position = this.position.add(
+                tmpDistance.multiplyScalar(FOLLOWING_COEFFICIENT)
+            );
+
             this._threeCamera.up = this.target.up;
             this._threeCamera.updateMatrixWorld();
         }
