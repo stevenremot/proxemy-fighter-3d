@@ -9,8 +9,8 @@ let tmpVelocity = new THREE.Vector3();
  * Steerings that drive the movement of an AI vessel
  *
  */
-const FOLLOW_MIN = 20;
-const FOLLOW_MAX = 40;
+const FOLLOW_MIN = 50;
+const FOLLOW_MAX = 80;
 
 const AVOIDANCE_MIN = 5;
 const AVOIDANCE_MAX = 10;
