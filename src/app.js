@@ -145,17 +145,20 @@ export class App {
         if (this.isInGame()) {
             while (this._frameTime >= FRAME_DELAY) {
                 this.world.update(FRAME_DELAY);
+                this.world.renderContext.camera
+                    .updateRelativePosition()
+                    .lookAt(ORIGIN);
                 this._frameTime -= FRAME_DELAY;
                 changed = true;
             }
         } else {
             this._frameTime = 0;
-        }
-
-        if (changed || !this.isInGame()) {
             this.world.renderContext.camera
                 .updateRelativePosition()
                 .lookAt(ORIGIN);
+        }
+
+        if (changed || !this.isInGame()) {
             this.light.position.copy(this.world.renderContext.camera.position);
             this.shiplight.position.copy(this.ship.position)
                 .add(this.ship.forward.clone().multiplyScalar(5))
