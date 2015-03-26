@@ -22,6 +22,7 @@ const DEFAULT_SPEED = 20;
 let tmpDirection = new THREE.Vector3();
 let tmpPosition = new THREE.Vector3();
 let tmpSphericalVector = new SphericalVector();
+let tmpPlane = new THREE.Plane();
 
 export class AiVessel extends WorldObject {
     constructor(world, life) {
@@ -132,7 +133,9 @@ export class AiVessel extends WorldObject {
             let velocity = this._steerings.computeDesiredVelocity();
             this.position.add(velocity.multiplyScalar(dt*this._speed));
 
-            if (this.up.dot(this.target.up) < 0)
+            tmpPlane.setFromNormalAndCoplanarPoint(this.target.position, this.target.forward);
+            tmpPlane.projectPoint(this.up, tmpDirection);
+            if (tmpDirection.dot(this.target.up) < 0)
                 this.up.multiplyScalar(-1);
             this.lookAt(this.position.clone().add(velocity));
         }
