@@ -1,6 +1,7 @@
 import {WorldObject} from "./world/object";
 import {App} from "./app";
 import {addFullscreenToElement} from "./fullscreen";
+import {setupAppcache} from "./appcache";
 import {MessageScreen} from "./message-screen/base";
 import {ModelLoader} from "./render/model-loader";
 import 'lib/OBJMTLLoader';
@@ -28,6 +29,7 @@ loader.loadModels(new Map([
     );
     let lastTime = null;
 
+    setupAppcache(window.applicationCache, document.querySelector('#cache-update'));
     addFullscreenToElement(document.getElementById('fullscreen-button'));
 
     function render (time) {

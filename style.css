@@ -140,3 +140,58 @@ canvas {
 #fullscreen-button .inner {
     fill: black;
 }
+
+#cache-update {
+    width: 90%;
+    position: fixed;
+    left: 50%;
+    top: -50%;
+    z-index: 20;
+    box-sizing: border-box;
+
+    font-size: 1.5rem;
+
+    background-color: white;
+    border-radius: 2em;
+    padding: 10%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    transition: top 0.3s ease-out;
+}
+
+#cache-update.shown {
+    top: 50%;
+}
+
+#cache-update ul {
+    padding: 0;
+}
+
+#cache-update ul li {
+    display: inline-block;
+    margin-right: 2em;
+}
+
+#cache-update ul li a {
+    display: block;
+    border: 1px solid black;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    width: 3em;
+    text-decoration: none;
+    color: black;
+}
+
+#cache-update ul li a:hover {
+    transform: scale(1.1, 1.1);
+}
+
+#cache-update ul li:first-child a {
+    background-color: blue;
+    border: none;
+}
+
+#cache-update ul li:first-child a {
+    color: white;
+}
