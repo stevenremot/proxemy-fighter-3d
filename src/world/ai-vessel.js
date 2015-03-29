@@ -17,7 +17,7 @@ const DETECTION_FREQUENCY = 30;
 
 const ORIGIN = new THREE.Vector3(0,0,0);
 const ANGULAR_TOLERANCE = Math.PI / 6;
-const DEFAULT_SPEED = 20;
+const DEFAULT_SPEED = 40;
 
 let tmpDirection = new THREE.Vector3();
 let tmpPosition = new THREE.Vector3();
