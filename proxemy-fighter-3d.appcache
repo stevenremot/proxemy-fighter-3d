@@ -1,0 +1,24 @@
+CACHE MANIFEST
+# Proxemy fighter 3D v1.0
+
+/index.html
+/style.css
+/config.js
+/build.js
+
+/jspm_packages/babel-polyfill.js
+/jspm_packages/system.js
+/jspm_packages/es6-module-loader.js
+
+/assets/models/gatling-base.mtl
+/assets/models/gatling-cannon.mtl
+/assets/models/ship.mtl
+/assets/models/ship-turret.mtl
+/assets/models/ship-shotgun.mtl
+/assets/models/miniship.mtl
+/assets/models/gatling-base.obj
+/assets/models/gatling-cannon.obj
+/assets/models/ship.obj
+/assets/models/ship-turret.obj
+/assets/models/ship-shotgun.obj
+/assets/models/miniship.obj
