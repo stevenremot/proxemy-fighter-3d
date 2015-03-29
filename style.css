@@ -30,6 +30,10 @@ canvas {
     font-size: 2rem;
 }
 
+.front-screen h1 {
+    margin-bottom: 3em;
+}
+
 #game-end {
     display: none;
 }
@@ -38,6 +42,7 @@ canvas {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 70%;
     transform: translate(-50%, -50%);
 }
 
@@ -95,14 +100,6 @@ canvas {
     top: 200px;
     left: 200px;
     display: none;
-}
-
-
-@media(max-width: 728px) {
-    #sights {
-        width: 50px;
-        height: 50px;
-    }
 }
 
 .sights-center {
@@ -194,4 +191,22 @@ canvas {
 
 #cache-update ul li:first-child a {
     color: white;
+}
+
+#arrow-keys, #touch-screen-left, #mouse {
+    display: inline-block;
+    vertical-align: middle;
+    width: 4em;
+    margin: 0 1em;
+}
+
+#mouse {
+    width: 2em;
+}
+
+@media(max-width: 728px) {
+    #sights {
+        width: 50px;
+        height: 50px;
+    }
 }
