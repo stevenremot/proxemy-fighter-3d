@@ -108,7 +108,10 @@ export class Steerings {
             s.update();
             tmpVelocity.add(s.vector);
         }
-        return tmpVelocity.normalize();
+        if (tmpVelocity.lengthSq() > 1)
+            tmpVelocity.normalize();
+        
+        return tmpVelocity;
     }
 
     computeAvoidance() {
@@ -117,6 +120,9 @@ export class Steerings {
             s.update();
             tmpVelocity.add(s.vector);
         }
-        return tmpVelocity.normalize();
+        if (tmpVelocity.lengthSq() > 1)
+            tmpVelocity.normalize();
+        
+        return tmpVelocity;
     }
 }

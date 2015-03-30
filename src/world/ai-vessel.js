@@ -132,7 +132,8 @@ export class AiVessel extends WorldObject {
         else if (this._fsm.currentState == "Chase") {
             let velocity = this._steerings.computeDesiredVelocity();
             this.position.add(velocity.multiplyScalar(dt*this._speed));
-
+            
+            // let the up vector be consistent with target's up vector
             tmpPlane.setFromNormalAndCoplanarPoint(this.target.position, this.target.forward);
             tmpPlane.projectPoint(this.up, tmpDirection);
             if (tmpDirection.dot(this.target.up) < 0)
