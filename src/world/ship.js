@@ -12,6 +12,7 @@ import {Box} from 'src/collision/box';
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1/10;
 const BULLET_SPEED = 350;
+const ANGULAR_SPEED = 0.75;
 
 let tmpAimedPoint = new THREE.Vector3();
 
@@ -78,8 +79,8 @@ export class Ship extends WorldObject {
 
     update(dt) {
         this.moveOnSphere(
-            this.horizontalSpeed * dt,
-            this.verticalSpeed * dt
+            this.horizontalSpeed * dt * ANGULAR_SPEED,
+            this.verticalSpeed * dt * ANGULAR_SPEED
         ).lookAt(ORIGIN);
 
         this._turret.position.copy(this.position);
