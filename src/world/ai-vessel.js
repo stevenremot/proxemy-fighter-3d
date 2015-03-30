@@ -8,8 +8,10 @@ import {addMixin} from "src/core/mixin";
 import {FiniteStateMachine} from "src/core/fsm";
 import {SphericalVector, fromGlCoordinates, cartesianToSpherical} from "src/math/utils";
 import {Boss} from "src/world/boss";
+import {Pattern} from "./weapons/pattern";
+import {GatlingBullet} from "./bullet/gatling";
+import {Cannon} from "./weapons/cannon";
 
-// for BuddyCube
 import {Box} from "src/collision/box";
 
 // reperform detection each 30 frames
@@ -19,6 +21,8 @@ const CHANGE_FREQUENCY = 3;
 const ORIGIN = new THREE.Vector3(0,0,0);
 const ANGULAR_TOLERANCE = Math.PI / 6;
 const DEFAULT_SPEED = 60;
+const SHOOT_FREQUENCY = 1/5;
+const BULLET_SPEED = 200;
 
 let tmpDirection = new THREE.Vector3();
 let tmpPosition = new THREE.Vector3();
@@ -34,13 +38,12 @@ export class AiVessel extends WorldObject {
         this._sphericalVelocity = new THREE.Vector2();
         this._sphericalTargetDistance = new THREE.Vector2();
         this._sphericalTarget = new SphericalVector();
+        
         this._detectionCount = 0;
         this._changeCount = 0;
 
         this.life = life;
-
-        this.collisionGroup = "ai";
-
+        this.collisionGroup = "boss";
         this._onDeadCallbacks = [];
 
         this.followTargets = [
@@ -51,6 +54,20 @@ export class AiVessel extends WorldObject {
             [-50, 50],
             [50, 50]
         ];
+        this._pattern = new Pattern(10 * SHOOT_FREQUENCY)
+            .addShoot([0,0], 0)
+            .addShoot([-5,0], 0)
+            .addShoot([5,0], 0)
+            .addShoot([0,0], 2*SHOOT_FREQUENCY)
+            .addShoot([0,5], 2*SHOOT_FREQUENCY)
+            .addShoot([0,-5], 2*SHOOT_FREQUENCY)
+            .addShoot([0,0], 4*SHOOT_FREQUENCY)
+            .addShoot([5,5], 4*SHOOT_FREQUENCY)
+            .addShoot([-5,-5], 4*SHOOT_FREQUENCY);
+
+        this._cannon = world.createObject(Cannon, this, [0,0]);
+        this._cannon.model.visible = false;
+        this._cannon.length = 10;
 
         this.createFsm();
     }
@@ -83,10 +100,19 @@ export class AiVessel extends WorldObject {
         this._speed = speed;
     }
 
+    _shootBullets(positions) {
+        for (let pos of positions) {
+            this.world.createObject(
+                GatlingBullet,
+                this._cannon.offsetedShootPosition(pos),
+                this._cannon.forward.clone().multiplyScalar(BULLET_SPEED)
+            );
+        }
+    }
+
     changeFollowTarget() {
         let n = Math.floor(Math.random() * this.followTargets.length);
 
-        console.log(n);
         this._steerings.followX = this.followTargets[n][0];
         this._steerings.followY = this.followTargets[n][1];
     }
@@ -178,6 +204,10 @@ export class AiVessel extends WorldObject {
 
                 this.up.copy(this.target.up);
                 this.lookAt(this.target.position);
+                this._cannon.updatePosition();
+                this._cannon.lookAt(this.target.position);
+
+                this._shootBullets(this._pattern.update(dt));
             }
         }
 
