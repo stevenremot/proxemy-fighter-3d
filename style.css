@@ -14,6 +14,20 @@ canvas {
     height: 100%
 }
 
+button {
+    background-color: white;
+    border-radius: 0.5em;
+    color: black;
+    font-size: 1em;
+    padding: 0.5em;
+    margin-top: 0.5em;
+}
+
+button:hover {
+    transform: scale(1.1, 1.1);
+    cursor: pointer;
+}
+
 .front-screen {
     position: absolute;
     left: 0;
@@ -34,16 +48,32 @@ canvas {
     margin-bottom: 3em;
 }
 
+
+.message {
+    position: fixed;
+    left: 50%;
+    bottom: 2.5em;
+    transform: translate(-50%, 0);
+}
+
+.front-screen button {
+    position: fixed;
+    left: 50%;
+    bottom: 0.5em;
+    transform: translate(-50%, 0);
+}
+
 #game-end {
     display: none;
 }
 
 .center-box {
-    position: absolute;
-    top: 50%;
+    position: fixed;
+    top: 10%;
+    bottom: 10%;
     left: 50%;
-    width: 70%;
-    transform: translate(-50%, -50%);
+    width: 100%;
+    transform: translate(-50%, 0);
 }
 
 #score {
@@ -196,12 +226,25 @@ canvas {
 #arrow-keys, #touch-screen-left, #mouse {
     display: inline-block;
     vertical-align: middle;
-    width: 4em;
-    margin: 0 1em;
+    width: 60%;
+    margin-top: 30%;
+    margin-bottom: 20%;
+}
+
+#touch-screen-left {
+    width: 50%;
 }
 
 #mouse {
-    width: 2em;
+    width: 15%;
+}
+
+#keyboard-commands {
+    white-space: nowrap;
+}
+
+.command-help {
+    display: none;
 }
 
 @media(max-width: 728px) {

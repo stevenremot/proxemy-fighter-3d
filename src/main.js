@@ -2,6 +2,7 @@ import {WorldObject} from "./world/object";
 import {App} from "./app";
 import {addFullscreenToElement} from "./fullscreen";
 import {setupAppcache} from "./appcache";
+import {setupHelp} from "./help";
 import {MessageScreen} from "./message-screen/base";
 import {ModelLoader} from "./render/model-loader";
 import 'lib/OBJMTLLoader';
@@ -21,15 +22,23 @@ loader.loadModels(new Map([
     ['ship-shotgun', 'assets/models/ship-shotgun'],
     ['miniship', 'assets/models/miniship']
 ])).then((models) => {
+    let startScreen = new MessageScreen(document.getElementById('game-start'));
+
+    setupAppcache(window.applicationCache, document.querySelector('#cache-update'));
+    setupHelp(
+        startScreen,
+        startScreen.domElement.querySelector('button'),
+        document.querySelector('.command-help.keyboard'),
+        document.querySelector('.command-help.touch')
+    );
+
     let app = new App(
         window,
-        new MessageScreen(document.getElementById('game-start')),
+        startScreen,
         new MessageScreen(document.getElementById('game-end')),
         models
     );
     let lastTime = null;
-
-    setupAppcache(window.applicationCache, document.querySelector('#cache-update'));
     addFullscreenToElement(document.getElementById('fullscreen-button'));
 
     function render (time) {

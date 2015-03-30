@@ -25,8 +25,12 @@ export class App {
 
         this._startScreen = startScreen;
         this._endScreen = endScreen;
+        this._isInGame = false;
 
-        this._startScreen.onClick(() => this.startGame(window));
+        this._startScreen.onClick(() => {
+            this.startGame(window);
+            this._isInGame = true;
+        });
         this._endScreen.onClick(() => this.restartGame(window));
 
         this._aimedPos = {
@@ -170,7 +174,7 @@ export class App {
     }
 
     isInGame() {
-        return !this._startScreen.isShown();
+        return this._isInGame;
     }
 
     restartGame(window) {
