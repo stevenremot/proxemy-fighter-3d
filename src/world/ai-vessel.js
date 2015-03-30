@@ -8,16 +8,21 @@ import {addMixin} from "src/core/mixin";
 import {FiniteStateMachine} from "src/core/fsm";
 import {SphericalVector, fromGlCoordinates, cartesianToSpherical} from "src/math/utils";
 import {Boss} from "src/world/boss";
+import {Pattern} from "./weapons/pattern";
+import {GatlingBullet} from "./bullet/gatling";
+import {Cannon} from "./weapons/cannon";
 
-// for BuddyCube
 import {Box} from "src/collision/box";
 
 // reperform detection each 30 frames
-const DETECTION_FREQUENCY = 30;
+const DETECTION_FREQUENCY = 1/2;
+const CHANGE_FREQUENCY = 3;
 
 const ORIGIN = new THREE.Vector3(0,0,0);
 const ANGULAR_TOLERANCE = Math.PI / 6;
-const DEFAULT_SPEED = 40;
+const DEFAULT_SPEED = 60;
+const SHOOT_FREQUENCY = 1/5;
+const BULLET_SPEED = 200;
 
 let tmpDirection = new THREE.Vector3();
 let tmpPosition = new THREE.Vector3();
@@ -33,13 +38,36 @@ export class AiVessel extends WorldObject {
         this._sphericalVelocity = new THREE.Vector2();
         this._sphericalTargetDistance = new THREE.Vector2();
         this._sphericalTarget = new SphericalVector();
+        
         this._detectionCount = 0;
+        this._changeCount = 0;
 
         this.life = life;
-
-        this.collisionGroup = "ai";
-
+        this.collisionGroup = "boss";
         this._onDeadCallbacks = [];
+
+        this.followTargets = [
+            [0, 0],
+            [50, 0],
+            [0, 50],
+            [-50, 0],
+            [-50, 50],
+            [50, 50]
+        ];
+        this._pattern = new Pattern(10 * SHOOT_FREQUENCY)
+            .addShoot([0,0], 0)
+            .addShoot([-5,0], 0)
+            .addShoot([5,0], 0)
+            .addShoot([0,0], 2*SHOOT_FREQUENCY)
+            .addShoot([0,5], 2*SHOOT_FREQUENCY)
+            .addShoot([0,-5], 2*SHOOT_FREQUENCY)
+            .addShoot([0,0], 4*SHOOT_FREQUENCY)
+            .addShoot([5,5], 4*SHOOT_FREQUENCY)
+            .addShoot([-5,-5], 4*SHOOT_FREQUENCY);
+
+        this._cannon = world.createObject(Cannon, this, [0,0]);
+        this._cannon.model.visible = false;
+        this._cannon.length = 10;
 
         this.createFsm();
     }
@@ -49,6 +77,9 @@ export class AiVessel extends WorldObject {
         this._fsm.addState("Detect");
         this._fsm.addState("Spherical");
         this._fsm.addState("Chase");
+        this._fsm.addState("Aim").addCallback(
+            () => this._speed *= 2
+        );
 
         this._fsm.setState("Detect");
     }
@@ -67,6 +98,23 @@ export class AiVessel extends WorldObject {
 
     set speed(speed) {
         this._speed = speed;
+    }
+
+    _shootBullets(positions) {
+        for (let pos of positions) {
+            this.world.createObject(
+                GatlingBullet,
+                this._cannon.offsetedShootPosition(pos),
+                this._cannon.forward.clone().multiplyScalar(BULLET_SPEED)
+            );
+        }
+    }
+
+    changeFollowTarget() {
+        let n = Math.floor(Math.random() * this.followTargets.length);
+
+        this._steerings.followX = this.followTargets[n][0];
+        this._steerings.followY = this.followTargets[n][1];
     }
 
     computeSphericalVelocity() {
@@ -115,8 +163,8 @@ export class AiVessel extends WorldObject {
 
     update(dt) {
         // uncomment for an unpredictable behaviour :D
-        //this._detectionCount++;
-        if (this._fsm.currentState == "Detect" || this._detectionCount == DETECTION_FREQUENCY) {
+        //this._detectionCount += dt;
+        if (this._fsm.currentState == "Detect" || this._detectionCount >= DETECTION_FREQUENCY) {
             if (this._fsm.currentState != "Spherical")
                 this.performDetection();
             this._detectionCount = 0;
@@ -129,16 +177,38 @@ export class AiVessel extends WorldObject {
             if (this.hasReachedSphericalTarget())
                 this._fsm.setState("Chase");
         }
-        else if (this._fsm.currentState == "Chase") {
+        else {
             let velocity = this._steerings.computeDesiredVelocity();
             this.position.add(velocity.multiplyScalar(dt*this._speed));
-            
-            // let the up vector be consistent with target's up vector
-            tmpPlane.setFromNormalAndCoplanarPoint(this.target.position, this.target.forward);
-            tmpPlane.projectPoint(this.up, tmpDirection);
-            if (tmpDirection.dot(this.target.up) < 0)
-                this.up.multiplyScalar(-1);
-            this.lookAt(this.position.clone().add(velocity));
+
+            if (this._fsm.currentState == "Chase") {
+                this.lookAt(this.position.clone().add(velocity));
+
+                // let the up vector be consistent with target's up vector
+                tmpPlane.setFromNormalAndCoplanarPoint(this.target.position, this.target.forward);
+                tmpPlane.projectPoint(this.up, tmpDirection);
+                if (tmpDirection.dot(this.target.up) < 0)
+                    this.up.multiplyScalar(-1);
+
+                if (this._steerings.followIntensity < 0.3)
+                    this._fsm.setState("Aim");
+            }
+
+            if (this._fsm.currentState == "Aim") {
+                this._changeCount += dt;
+
+                if (this._changeCount > CHANGE_FREQUENCY) {
+                    this._changeCount = 0;
+                    this.changeFollowTarget();
+                }
+
+                this.up.copy(this.target.up);
+                this.lookAt(this.target.position);
+                this._cannon.updatePosition();
+                this._cannon.lookAt(this.target.position);
+
+                this._shootBullets(this._pattern.update(dt));
+            }
         }
 
         // compute avoidance steerings

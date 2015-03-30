@@ -5,6 +5,9 @@ let orthoPoint = new THREE.Vector3();
 let temporaryOrthoPoint = new THREE.Vector3();
 let tmpVelocity = new THREE.Vector3();
 
+let tmpTargetPos = new THREE.Vector3();
+let tmpVector = new THREE.Vector3();
+
 /*
  * Steerings that drive the movement of an AI vessel
  *
@@ -26,6 +29,10 @@ export class Steerings {
         this._avoidance = new Map();
         
         this._target = null;
+        this._followTarget = new THREE.Vector3();
+        this.followIntensity = 1;
+        this.followX = 0;
+        this.followY = 0;
 
         this._behaviour.set(
             "follow",
@@ -50,17 +57,26 @@ export class Steerings {
         this._target = target;
     }
 
+    computeFollowTarget() {
+        this._followTarget.copy(this._target.position);
+        tmpTargetPos.copy(this._target.right).multiplyScalar(this.followX);
+        tmpVector.copy(this._target.up).multiplyScalar(this.followY);
+        this._followTarget.add(tmpTargetPos).add(tmpVector);
+    }
+
     follow() {
-        let targetPos = this._target.position.clone().add(
+        this.computeFollowTarget();
+        tmpTargetPos.copy(this._followTarget).add(
             this._target.forward.clone().multiplyScalar(FOLLOW_MIN));
 
-        let distance = this._object.position.distanceTo(targetPos);
+        let distance = this._object.position.distanceTo(tmpTargetPos);
         let intensity = 1;
         if (distance < FOLLOW_MAX)
             intensity = distance / FOLLOW_MAX;
 
-        targetPos.sub(this._object.position).normalize().multiplyScalar(intensity);
-        this._behaviour.get("follow").vector.copy(targetPos);
+        tmpTargetPos.sub(this._object.position).normalize().multiplyScalar(intensity);
+        this.followIntensity = intensity;
+        this._behaviour.get("follow").vector.copy(tmpTargetPos);
     }
 
     stayVisible() {

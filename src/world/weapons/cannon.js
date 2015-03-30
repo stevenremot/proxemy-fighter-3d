@@ -21,6 +21,8 @@ export class Cannon extends WorldObject {
     constructor(world, parent, [ relativeX, relativeY ], model) {
         super(world);
 
+        this.length = LENGTH;
+
         if (!model) {
             let geometry = new THREE.CylinderGeometry(2, 2, LENGTH, 32, 1, false);
             let m = new THREE.Matrix4();
@@ -67,7 +69,7 @@ export class Cannon extends WorldObject {
     }
 
     get shootPosition() {
-        this._shootPosition.copy(this.position).add(this.forward.clone().multiplyScalar(LENGTH));
+        this._shootPosition.copy(this.position).add(this.forward.clone().multiplyScalar(this.length));
         return this._shootPosition;
     }
 
