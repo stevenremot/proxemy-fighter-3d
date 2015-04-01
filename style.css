@@ -176,9 +176,10 @@ button:hover {
     width: 90%;
     position: fixed;
     left: 50%;
-    top: -50%;
+    top: 50%;
     z-index: 20;
     box-sizing: border-box;
+    display: none;
 
     font-size: 1.5rem;
 
@@ -187,12 +188,10 @@ button:hover {
     padding: 10%;
     transform: translate(-50%, -50%);
     text-align: center;
-
-    transition: top 0.3s ease-out;
 }
 
 #cache-update.shown {
-    top: 50%;
+    display: block;
 }
 
 #cache-update ul {
