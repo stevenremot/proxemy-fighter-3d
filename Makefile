@@ -7,3 +7,6 @@ serve:
 
 bundle:
 	./node_modules/.bin/jspm bundle src/main --inject
+
+prod-bundle:
+	./node_modules/.bin/jspm bundle src/main --inject --minify --skip-source-maps
