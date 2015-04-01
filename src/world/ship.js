@@ -7,7 +7,7 @@ import {ShipBullet} from "./bullet/ship";
 import {Cannon} from "./weapons/cannon";
 import {Pattern} from "./weapons/pattern";
 import {LifeContainer} from './life-container';
-import {Box} from 'src/collision/box';
+import {Box, BoxDebugView} from 'src/collision/box';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1/10;

@@ -39,8 +39,8 @@ export class World {
      * @returns this
      */
     update(dt) {
-        this.objects.forEach((object) => object.update(dt));
         this._handleCollisions();
+        this.objects.forEach((object) => object.update(dt));
         return this;
     }
 

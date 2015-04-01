@@ -12,7 +12,7 @@ import {Pattern} from "./weapons/pattern";
 import {GatlingBullet} from "./bullet/gatling";
 import {Cannon} from "./weapons/cannon";
 
-import {Box} from "src/collision/box";
+import {Box, BoxDebugView} from "src/collision/box";
 
 // reperform detection each 30 frames
 const DETECTION_FREQUENCY = 1/2;
@@ -263,5 +263,7 @@ export class BuddyCube extends AiVessel {
             new THREE.Vector3(10,10,10),
             this.model.quaternion
         );
+
+        //world.createObject(BoxDebugView, this.collisionBody);
     }
 }
