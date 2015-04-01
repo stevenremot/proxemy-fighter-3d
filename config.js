@@ -1,5 +1,5 @@
 System.config({
-  "baseURL": "/",
+  "baseURL": "/proxemy-fighter-3d/",
   "transpiler": "babel",
   "paths": {
     "*": "*.js",
@@ -60,4 +60,3 @@ System.config({
     "mrdoob/three.js": "github:mrdoob/three.js@r70"
   }
 });
-
