@@ -92,3 +92,23 @@ export function sphericalToCartesian(spherical, cartesian) {
     cartesian.y = spherical.r * Math.sin(spherical.theta) * Math.sin(spherical.phi);
     cartesian.z = spherical.r * Math.cos(spherical.theta);
 }
+
+export function sphericalToGl(spherical, gl) {
+    gl.y = spherical.r * Math.sin(spherical.theta) * Math.cos(spherical.phi);
+    gl.z = spherical.r * Math.sin(spherical.theta) * Math.sin(spherical.phi);
+    gl.x = spherical.r * Math.cos(spherical.theta);
+}
+
+export function glToSpherical(gl, spherical) {
+    let r = gl.length();
+
+    let theta = 0;
+    if (Math.abs(r) > EPSILON)
+        theta = Math.acos(gl.x / r);
+
+    let phi = Math.atan2(gl.z, gl.y);
+    if (phi < 0)
+        phi += 2*Math.PI;
+
+    spherical.set(r, theta, phi);
+}
