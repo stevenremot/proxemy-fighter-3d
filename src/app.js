@@ -105,6 +105,25 @@ export class App {
             });
     }
 
+    createSky() {
+        let geometry = new THREE.SphereGeometry(250,60,40);
+        let uniforms = {
+            topColor: {type: "c", value: new THREE.Color(0x001133)},
+            bottomColor: {type: "c", value: new THREE.Color(0xff2222)},
+            offset: {type: "f", value: 100},
+            exponent: {type: "f", value: 0.5}
+        };
+        let skyMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.getElementById('sky-vertex').textContent,
+            fragmentShader: document.getElementById('sky-fragment').textContent,
+            uniforms: uniforms,
+            side: THREE.BackSide,
+            fog: false
+        });
+        let sky = new THREE.Mesh(geometry, skyMaterial);
+        this.world.renderContext.scene.add(sky);
+    }
+
     createBoss() {
         let moduleColor = 0x5000c0;
         this.boss = this.world.createObject(Boss, 40);
@@ -148,6 +167,7 @@ export class App {
         this.cube4.onDead(() => this.cube4.destroy());
 
         this.createBoss();
+        this.createSky();
 
         let camera = this.world.renderContext.camera;
         camera.target = this.ship;
