@@ -13,6 +13,17 @@ document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||
                            document.webkitExitPointerLock;
 
+let startScreen = new MessageScreen(document.getElementById('game-start'));
+
+setupAppcache(window.applicationCache, document.querySelector('#cache-update'));
+setupHelp(
+    startScreen,
+    startScreen.domElement.querySelector('button'),
+    document.querySelector('.command-help.keyboard'),
+    document.querySelector('.command-help.touch')
+);
+addFullscreenToElement(document.getElementById('fullscreen-button'));
+
 let loader = new ModelLoader();
 loader.loadModels(new Map([
     ['gatling-base', 'assets/models/gatling-base'],
@@ -22,15 +33,6 @@ loader.loadModels(new Map([
     ['ship-shotgun', 'assets/models/ship-shotgun'],
     ['miniship', 'assets/models/miniship']
 ])).then((models) => {
-    let startScreen = new MessageScreen(document.getElementById('game-start'));
-
-    setupAppcache(window.applicationCache, document.querySelector('#cache-update'));
-    setupHelp(
-        startScreen,
-        startScreen.domElement.querySelector('button'),
-        document.querySelector('.command-help.keyboard'),
-        document.querySelector('.command-help.touch')
-    );
 
     let app = new App(
         window,
@@ -39,7 +41,6 @@ loader.loadModels(new Map([
         models
     );
     let lastTime = null;
-    addFullscreenToElement(document.getElementById('fullscreen-button'));
 
     function render (time) {
         requestAnimationFrame( render );

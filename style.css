@@ -76,6 +76,10 @@ button:hover {
     transform: translate(-50%, 0);
 }
 
+.center-box table {
+    margin: auto;
+}
+
 #score {
     position: absolute;
     top: 0;
