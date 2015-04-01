@@ -11,8 +11,10 @@ import {LifeContainer} from 'src/world/life-container';
 
 const ORIGIN = new THREE.Vector3();
 const RADIUS = 10;
-const SHOOT_PERIOD = 0.5;
+const SHOOT_PERIOD = 0.1;
 const BULLET_SPEED = 350;
+const NOT_SHOOTING_SWITCH_PERIOD = 1.5;
+const SHOOTING_SWITCH_PERIOD = 0.5;
 
 let tmpSphericalVector = new SphericalVector();
 let tmpCartesianVector = new THREE.Vector3();
@@ -56,7 +58,8 @@ export class Gatling extends WorldObject {
         );
         this.up = this.position.clone().normalize();
         this.right = this.up.clone().cross(this.forward);
-        this._count = 0;
+        this._shootCount = 0;
+        this._modeCount = 0;
         this.life = 20;
         this._ship = null;
         this.onLifeChanged(
@@ -64,6 +67,8 @@ export class Gatling extends WorldObject {
                 if (!this.isAlive()) this._bossModule.removeWeapon(this);
             }
         );
+
+        this._isShooting = false;
     }
 
     update(dt) {
@@ -84,10 +89,26 @@ export class Gatling extends WorldObject {
             this.cannon.updatePosition();
             this.cannon.lookAt(ship.position);
 
-            this._count += dt;
-            while (this._count > SHOOT_PERIOD) {
-                this._shootBullet();
-                this._count -= SHOOT_PERIOD;
+            this._modeCount += dt;
+            let switchMode = false;
+            let switchPeriod = this._isShooting ?
+                    SHOOTING_SWITCH_PERIOD : NOT_SHOOTING_SWITCH_PERIOD;
+
+            while (this._modeCount > switchPeriod) {
+                this._modeCount -= switchPeriod;
+                switchMode = true;
+            }
+
+            if (switchMode && Math.random() > 0.5) {
+                this._isShooting = !this._isShooting;
+            }
+
+            if (this._isShooting) {
+                this._shootCount += dt;
+                while (this._shootCount > SHOOT_PERIOD) {
+                    this._shootBullet();
+                    this._shootCount -= SHOOT_PERIOD;
+                }
             }
         }
         this._ship = ship;
