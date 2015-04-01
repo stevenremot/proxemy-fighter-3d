@@ -45,7 +45,10 @@ loader.loadModels(new Map([
     function render (time) {
         requestAnimationFrame( render );
         if (lastTime) {
-            app.update((time - lastTime) / 1000);
+            let delay = (time - lastTime) / 1000;
+            if (delay < 1) {
+                app.update((time - lastTime) / 1000);
+            }
         }
         lastTime = time;
     }
