@@ -1,4 +1,5 @@
 import THREE from 'mrdoob/three.js';
+import {WorldObject} from "src/world/object";
 
 let sqrt2 = Math.sqrt(2);
 
@@ -178,5 +179,29 @@ export class Box {
         }
 
         return true;
+    }
+}
+
+let tmpEuler = new THREE.Euler();
+
+export class BoxDebugView extends WorldObject {
+    constructor(world, box) {
+        super(world);
+        this.box = box;
+
+        let geometry = new THREE.BoxGeometry(box.size.x, box.size.y, box.size.z);
+        let material = new THREE.MeshBasicMaterial(
+            {color: 0xffffff, wireframe: true}
+        );
+
+        this.model = new THREE.Mesh(geometry, material);
+    }
+
+    update(dt) {
+        this.position = this.box.position;
+        tmpEuler.setFromQuaternion(this.box.quaternion);
+        this.model.rotation.x = tmpEuler.x;
+        this.model.rotation.y = tmpEuler.y;
+        this.model.rotation.z = tmpEuler.z;
     }
 }

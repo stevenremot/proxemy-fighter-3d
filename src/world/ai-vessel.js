@@ -12,7 +12,7 @@ import {Pattern} from "./weapons/pattern";
 import {GatlingBullet} from "./bullet/gatling";
 import {Cannon} from "./weapons/cannon";
 
-import {Box} from "src/collision/box";
+import {Box, BoxDebugView} from "src/collision/box";
 
 // reperform detection each 30 frames
 const DETECTION_FREQUENCY = 1/2;
@@ -68,6 +68,9 @@ export class AiVessel extends WorldObject {
         this._cannon = world.createObject(Cannon, this, [0,0]);
         this._cannon.model.visible = false;
         this._cannon.length = 10;
+
+        // init this.right if we don't get in Spherical state
+        this.right = new THREE.Vector3();
 
         this.createFsm();
     }
@@ -203,6 +206,7 @@ export class AiVessel extends WorldObject {
                 }
 
                 this.up.copy(this.target.up);
+                this.right.copy(this.target.right).multiplyScalar(-1);
                 this.lookAt(this.target.position);
                 this._cannon.updatePosition();
                 this._cannon.lookAt(this.target.position);
@@ -263,5 +267,7 @@ export class BuddyCube extends AiVessel {
             new THREE.Vector3(10,10,10),
             this.model.quaternion
         );
+
+        //world.createObject(BoxDebugView, this.collisionBody);
     }
 }

@@ -135,6 +135,18 @@ export class App {
         this.cube = this.world.createObject(BuddyCube, 30, this.ship);
         this.cube.onDead(() => this.cube.destroy());
 
+        this.cube2 = this.world.createObject(BuddyCube, 30, this.ship);
+        this.cube2.position.set(-30, 50, 0);
+        this.cube2.onDead(() => this.cube2.destroy());
+
+        this.cube3 = this.world.createObject(BuddyCube, 30, this.ship);
+        this.cube3.position.set(-30, 50, 0);
+        this.cube3.onDead(() => this.cube3.destroy());
+
+        this.cube4 = this.world.createObject(BuddyCube, 30, this.ship);
+        this.cube4.position.set(-30, 50, 0);
+        this.cube4.onDead(() => this.cube4.destroy());
+
         this.createBoss();
 
         let camera = this.world.renderContext.camera;
