@@ -1,7 +1,7 @@
 import THREE from "mrdoob/three.js";
 
 import {addMixin}from 'src/core/mixin';
-import {SphericalVector, sphericalToCartesian, toGlCoordinates} from "src/math/utils";
+import {SphericalVector, sphericalToCartesian, glToSpherical, sphericalToGl} from "src/math/utils";
 import {WorldObject} from "src/world/object";
 import {Cannon} from "src/world/weapons/cannon";
 import {Sphere} from "src/collision/sphere";
@@ -15,6 +15,7 @@ const SHOOT_PERIOD = 0.1;
 const BULLET_SPEED = 350;
 const NOT_SHOOTING_SWITCH_PERIOD = 1.5;
 const SHOOTING_SWITCH_PERIOD = 0.5;
+const SHOOTING_CONE = 0.1;
 
 let tmpSphericalVector = new SphericalVector();
 let tmpCartesianVector = new THREE.Vector3();
@@ -44,8 +45,7 @@ export class Gatling extends WorldObject {
         this.model.position.add(this.position.clone().normalize());
 
         tmpSphericalVector.set(bossModule.boss.radius, theta, phi);
-        sphericalToCartesian(tmpSphericalVector, tmpCartesianVector);
-        toGlCoordinates(tmpCartesianVector, this.model.position);
+        sphericalToGl(tmpSphericalVector, this.model.position);
 
         this.collisionBody = new Sphere(this.model.position, RADIUS);
         let cannonModel = this.getModelFromCollection('gatling-cannon').clone();
@@ -123,10 +123,16 @@ export class Gatling extends WorldObject {
     }
 
     _shootBullet() {
+        glToSpherical(this.cannon.forward, tmpSphericalVector);
+        tmpSphericalVector.addPhi((Math.random() * 2 - 1) * SHOOTING_CONE);
+        tmpSphericalVector.addTheta((Math.random() * 2 - 1) * SHOOTING_CONE);
+        tmpSphericalVector.r = BULLET_SPEED;
+        sphericalToGl(tmpSphericalVector, tmpCartesianVector);
         this.world.createObject(
             GatlingBullet,
             this.cannon.shootPosition,
-            this.cannon.forward.clone().multiplyScalar(BULLET_SPEED)
+            // This clone is important, please do not remove it!
+            tmpCartesianVector.clone()
         );
     }
 
