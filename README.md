@@ -2,6 +2,8 @@
 
 A spherical boss battle-only shooter.
 
+Play at [http://stevenremot.github.io/proxemy-fighter-3d](http://stevenremot.github.io/proxemy-fighter-3d)
+
 ## Setup for development
 
 Run `make install` to setup dependencies.
