@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import THREE from "mrdoob/three.js";
 
 import {WorldObject} from "./object";
@@ -7,7 +12,7 @@ import {ShipBullet} from "./bullet/ship";
 import {Cannon} from "./weapons/cannon";
 import {Pattern} from "./weapons/pattern";
 import {LifeContainer} from './life-container';
-import {Box} from 'src/collision/box';
+import {Box, BoxDebugView} from 'src/collision/box';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1/10;

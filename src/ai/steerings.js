@@ -1,5 +1,11 @@
+/**
+ * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import {Detector} from "./detection";
 import {Boss} from "src/world/boss";
+import {AiVessel} from "src/world/ai-vessel";
 
 let orthoPoint = new THREE.Vector3();
 let temporaryOrthoPoint = new THREE.Vector3();
@@ -12,22 +18,24 @@ let tmpVector = new THREE.Vector3();
  * Steerings that drive the movement of an AI vessel
  *
  */
+const EPSILON = 0.001;
+
 const FOLLOW_MIN = 50;
 const FOLLOW_MAX = 80;
 
-const AVOIDANCE_MIN = 5;
-const AVOIDANCE_MAX = 10;
+const AVOIDANCE_MIN = 8;
+const AVOIDANCE_MAX = 15;
 
 export class Steerings {
     constructor(object, detector) {
         this._object = object;
         this._detector = detector;
-        
+
         // behaviour steerings that create a desired velocity
         this._behaviour = new Map();
         // steerings to avoid boss or other vessels
         this._avoidance = new Map();
-        
+
         this._target = null;
         this._followTarget = new THREE.Vector3();
         this.followIntensity = 1;
@@ -47,12 +55,16 @@ export class Steerings {
             "avoidBoss",
             {vector: new THREE.Vector3(), update: () => this.avoidBoss()}
         );
+        this._avoidance.set(
+            "avoidVessels",
+            {vector: new THREE.Vector3(), update: () => this.avoidVessels()}
+        );
     }
 
     get target() {
         return this._target;
     }
-    
+
     set target(target) {
         this._target = target;
     }
@@ -85,7 +97,7 @@ export class Steerings {
         else {
             let frustum = this._detector.frustum;
             let intersectionDistance = NaN;
-            
+
             // find closest frustum plane intersection
             for (let p of frustum.planes) {
                 p.orthoPoint(this._object.position, temporaryOrthoPoint);
@@ -107,7 +119,7 @@ export class Steerings {
         // this is ugly
         let radius = this._object.world.getObjectOfType(Boss).radius;
         let dist = Math.max(0, this._object.position.length()-radius);
-        
+
         let intensity = 1;
         if (dist > AVOIDANCE_MIN && dist < AVOIDANCE_MAX)
             intensity = (AVOIDANCE_MAX - dist) / (AVOIDANCE_MAX - AVOIDANCE_MIN);
@@ -115,9 +127,37 @@ export class Steerings {
             intensity = 0;
 
         this._avoidance.get("avoidBoss").vector.copy(this._object.position).normalize().multiplyScalar(intensity);
-
     }
-    
+
+    avoidVessels() {
+        // this is ugly :D
+        let vessels = this._object.world.getObjectsOfType(AiVessel);
+        let intensity = 0;
+        tmpTargetPos.set(0,0,0);
+
+        for (let vessel of vessels) {
+            if (vessel != this._object) {
+                let dist = this._object.position.distanceTo(vessel.position);
+
+                let localIntensity = 1;
+                if (dist > AVOIDANCE_MIN && dist < AVOIDANCE_MAX)
+                    localIntensity = (AVOIDANCE_MAX - dist) / (AVOIDANCE_MAX - AVOIDANCE_MIN);
+                else if (dist >= AVOIDANCE_MAX)
+                    localIntensity = 0;
+
+                tmpVector.copy(this._object.position).sub(vessel.position).multiplyScalar(localIntensity);
+                tmpTargetPos.add(tmpVector);
+                if (intensity < localIntensity)
+                    intensity = localIntensity;
+            }
+        }
+
+        if (tmpTargetPos.length() > EPSILON) {
+            tmpTargetPos.normalize().multiplyScalar(intensity);
+        }
+        this._avoidance.get("avoidVessels").vector.copy(tmpTargetPos);
+    }
+
     computeDesiredVelocity() {
         tmpVelocity.set(0,0,0);
         for (let s of this._behaviour.values()) {
@@ -126,7 +166,7 @@ export class Steerings {
         }
         if (tmpVelocity.lengthSq() > 1)
             tmpVelocity.normalize();
-        
+
         return tmpVelocity;
     }
 
@@ -138,7 +178,7 @@ export class Steerings {
         }
         if (tmpVelocity.lengthSq() > 1)
             tmpVelocity.normalize();
-        
+
         return tmpVelocity;
     }
 }

@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import {WorldObject} from "./world/object";
 import {App} from "./app";
 import {addFullscreenToElement} from "./fullscreen";
@@ -45,7 +50,10 @@ loader.loadModels(new Map([
     function render (time) {
         requestAnimationFrame( render );
         if (lastTime) {
-            app.update((time - lastTime) / 1000);
+            let delay = (time - lastTime) / 1000;
+            if (delay < 1) {
+                app.update((time - lastTime) / 1000);
+            }
         }
         lastTime = time;
     }

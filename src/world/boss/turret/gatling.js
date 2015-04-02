@@ -1,7 +1,12 @@
+/**
+ * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import THREE from "mrdoob/three.js";
 
 import {addMixin}from 'src/core/mixin';
-import {SphericalVector, sphericalToCartesian, toGlCoordinates} from "src/math/utils";
+import {SphericalVector, sphericalToCartesian, glToSpherical, sphericalToGl} from "src/math/utils";
 import {WorldObject} from "src/world/object";
 import {Cannon} from "src/world/weapons/cannon";
 import {Sphere} from "src/collision/sphere";
@@ -11,8 +16,11 @@ import {LifeContainer} from 'src/world/life-container';
 
 const ORIGIN = new THREE.Vector3();
 const RADIUS = 10;
-const SHOOT_PERIOD = 0.5;
+const SHOOT_PERIOD = 0.1;
 const BULLET_SPEED = 350;
+const NOT_SHOOTING_SWITCH_PERIOD = 1.5;
+const SHOOTING_SWITCH_PERIOD = 0.5;
+const SHOOTING_CONE = 0.1;
 
 let tmpSphericalVector = new SphericalVector();
 let tmpCartesianVector = new THREE.Vector3();
@@ -42,8 +50,7 @@ export class Gatling extends WorldObject {
         this.model.position.add(this.position.clone().normalize());
 
         tmpSphericalVector.set(bossModule.boss.radius, theta, phi);
-        sphericalToCartesian(tmpSphericalVector, tmpCartesianVector);
-        toGlCoordinates(tmpCartesianVector, this.model.position);
+        sphericalToGl(tmpSphericalVector, this.model.position);
 
         this.collisionBody = new Sphere(this.model.position, RADIUS);
         let cannonModel = this.getModelFromCollection('gatling-cannon').clone();
@@ -56,7 +63,8 @@ export class Gatling extends WorldObject {
         );
         this.up = this.position.clone().normalize();
         this.right = this.up.clone().cross(this.forward);
-        this._count = 0;
+        this._shootCount = 0;
+        this._modeCount = 0;
         this.life = 20;
         this._ship = null;
         this.onLifeChanged(
@@ -64,6 +72,8 @@ export class Gatling extends WorldObject {
                 if (!this.isAlive()) this._bossModule.removeWeapon(this);
             }
         );
+
+        this._isShooting = false;
     }
 
     update(dt) {
@@ -84,10 +94,26 @@ export class Gatling extends WorldObject {
             this.cannon.updatePosition();
             this.cannon.lookAt(ship.position);
 
-            this._count += dt;
-            while (this._count > SHOOT_PERIOD) {
-                this._shootBullet();
-                this._count -= SHOOT_PERIOD;
+            this._modeCount += dt;
+            let switchMode = false;
+            let switchPeriod = this._isShooting ?
+                    SHOOTING_SWITCH_PERIOD : NOT_SHOOTING_SWITCH_PERIOD;
+
+            while (this._modeCount > switchPeriod) {
+                this._modeCount -= switchPeriod;
+                switchMode = true;
+            }
+
+            if (switchMode && Math.random() > 0.5) {
+                this._isShooting = !this._isShooting;
+            }
+
+            if (this._isShooting) {
+                this._shootCount += dt;
+                while (this._shootCount > SHOOT_PERIOD) {
+                    this._shootBullet();
+                    this._shootCount -= SHOOT_PERIOD;
+                }
             }
         }
         this._ship = ship;
@@ -102,10 +128,16 @@ export class Gatling extends WorldObject {
     }
 
     _shootBullet() {
+        glToSpherical(this.cannon.forward, tmpSphericalVector);
+        tmpSphericalVector.addPhi((Math.random() * 2 - 1) * SHOOTING_CONE);
+        tmpSphericalVector.addTheta((Math.random() * 2 - 1) * SHOOTING_CONE);
+        tmpSphericalVector.r = BULLET_SPEED;
+        sphericalToGl(tmpSphericalVector, tmpCartesianVector);
         this.world.createObject(
             GatlingBullet,
             this.cannon.shootPosition,
-            this.cannon.forward.clone().multiplyScalar(BULLET_SPEED)
+            // This clone is important, please do not remove it!
+            tmpCartesianVector.clone()
         );
     }
 

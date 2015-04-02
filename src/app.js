@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import THREE from "mrdoob/three.js";
 
 import {Ship} from "./world/ship";
@@ -105,6 +110,25 @@ export class App {
             });
     }
 
+    createSky() {
+        let geometry = new THREE.SphereGeometry(250,60,40);
+        let uniforms = {
+            topColor: {type: "c", value: new THREE.Color(0x001133)},
+            bottomColor: {type: "c", value: new THREE.Color(0xff2222)},
+            offset: {type: "f", value: 100},
+            exponent: {type: "f", value: 0.5}
+        };
+        let skyMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.getElementById('sky-vertex').textContent,
+            fragmentShader: document.getElementById('sky-fragment').textContent,
+            uniforms: uniforms,
+            side: THREE.BackSide,
+            fog: false
+        });
+        let sky = new THREE.Mesh(geometry, skyMaterial);
+        this.world.renderContext.scene.add(sky);
+    }
+
     createBoss() {
         let moduleColor = 0x5000c0;
         this.boss = this.world.createObject(Boss, 40);
@@ -135,7 +159,20 @@ export class App {
         this.cube = this.world.createObject(BuddyCube, 30, this.ship);
         this.cube.onDead(() => this.cube.destroy());
 
+        this.cube2 = this.world.createObject(BuddyCube, 30, this.ship);
+        this.cube2.position.set(-30, 50, 0);
+        this.cube2.onDead(() => this.cube2.destroy());
+
+        this.cube3 = this.world.createObject(BuddyCube, 30, this.ship);
+        this.cube3.position.set(-30, 50, 0);
+        this.cube3.onDead(() => this.cube3.destroy());
+
+        this.cube4 = this.world.createObject(BuddyCube, 30, this.ship);
+        this.cube4.position.set(-30, 50, 0);
+        this.cube4.onDead(() => this.cube4.destroy());
+
         this.createBoss();
+        this.createSky();
 
         let camera = this.world.renderContext.camera;
         camera.target = this.ship;
