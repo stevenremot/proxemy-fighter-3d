@@ -1,4 +1,9 @@
 /**
+ * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
+/**
  * @description
  * Execute all callbacks, passing them args as arguments.
  *

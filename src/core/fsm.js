@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import {execCallbacks} from "./util";
 
 /**
@@ -37,7 +42,7 @@ export class FiniteStateMachine {
         this._transitions = new Map();
         this.currentState = null;
     }
-    
+
     /**
      * Add a state and returns it
      */
@@ -45,7 +50,7 @@ export class FiniteStateMachine {
         this._states.set(name, new CallbackCollection());
         return this._states.get(name);
     }
-    
+
     /**
      * Add a transition between state1 and state2 and returns it
      */
@@ -63,7 +68,7 @@ export class FiniteStateMachine {
         let callbacks = this._states.get(name).callbacks;
         execCallbacks(callbacks, ...args);
     }
-    
+
     /**
      * Transition from this._currentState to newState
      * Executes transition callback(s) then newState callback(s)
@@ -78,5 +83,5 @@ export class FiniteStateMachine {
             execCallbacks(this._states.get(newState).callbacks, ...args);
             this.currentState = newState;
         }
-    }    
+    }
 }

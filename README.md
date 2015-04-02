@@ -14,3 +14,8 @@ Run `make serve` to start a server on port 8080.
 
 Run `make bundle` to package all the application in a single js file,
 and register it in `config.js`.
+
+## License
+
+The code is released under the terms of the General Public License
+v3. See `gpl.txt` for details.
