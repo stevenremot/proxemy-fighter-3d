@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import {StraightBullet} from './straight';
 
 const BULLET_POWER = 1;
@@ -13,11 +18,17 @@ export class ShipBullet extends StraightBullet {
      * @constructor
      *
      * @param {World} world
+     */
+    constructor(world) {
+        super(world);
+    }
+
+    /**
      * @param {THREE.Vector3} position
      * @param {THREE.Vector3} direction
      */
-    constructor(world, position, direction) {
-        super(world, {
+    init(position, direction) {
+        super.init({
             position: position,
             direction: direction,
             lifeSpan: LIFE_SPAN,

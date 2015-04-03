@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import THREE from "mrdoob/three.js";
 import {addMixin} from "src/core/mixin";
 import {SphericalObject} from "src/math/spherical-object";

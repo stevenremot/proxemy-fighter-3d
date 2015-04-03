@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 const JOYSTICK_SIZE = 150; // Magic value, I can't get it when joystick is hidden
 
 function restrainRadius(x, y, squareAmplitude) {

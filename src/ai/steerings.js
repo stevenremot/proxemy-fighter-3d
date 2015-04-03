@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import {Detector} from "./detection";
 import {Boss} from "src/world/boss";
 import {AiVessel} from "src/world/ai-vessel";
@@ -25,12 +30,12 @@ export class Steerings {
     constructor(object, detector) {
         this._object = object;
         this._detector = detector;
-        
+
         // behaviour steerings that create a desired velocity
         this._behaviour = new Map();
         // steerings to avoid boss or other vessels
         this._avoidance = new Map();
-        
+
         this._target = null;
         this._followTarget = new THREE.Vector3();
         this.followIntensity = 1;
@@ -59,7 +64,7 @@ export class Steerings {
     get target() {
         return this._target;
     }
-    
+
     set target(target) {
         this._target = target;
     }
@@ -92,7 +97,7 @@ export class Steerings {
         else {
             let frustum = this._detector.frustum;
             let intersectionDistance = NaN;
-            
+
             // find closest frustum plane intersection
             for (let p of frustum.planes) {
                 p.orthoPoint(this._object.position, temporaryOrthoPoint);
@@ -114,7 +119,7 @@ export class Steerings {
         // this is ugly
         let radius = this._object.world.getObjectOfType(Boss).radius;
         let dist = Math.max(0, this._object.position.length()-radius);
-        
+
         let intensity = 1;
         if (dist > AVOIDANCE_MIN && dist < AVOIDANCE_MAX)
             intensity = (AVOIDANCE_MAX - dist) / (AVOIDANCE_MAX - AVOIDANCE_MIN);
@@ -152,7 +157,7 @@ export class Steerings {
         }
         this._avoidance.get("avoidVessels").vector.copy(tmpTargetPos);
     }
-    
+
     computeDesiredVelocity() {
         tmpVelocity.set(0,0,0);
         for (let s of this._behaviour.values()) {
@@ -161,7 +166,7 @@ export class Steerings {
         }
         if (tmpVelocity.lengthSq() > 1)
             tmpVelocity.normalize();
-        
+
         return tmpVelocity;
     }
 
@@ -173,7 +178,7 @@ export class Steerings {
         }
         if (tmpVelocity.lengthSq() > 1)
             tmpVelocity.normalize();
-        
+
         return tmpVelocity;
     }
 }

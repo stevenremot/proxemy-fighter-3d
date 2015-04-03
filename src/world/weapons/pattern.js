@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 export class Pattern {
     constructor(period) {
         this.period = period;
@@ -31,14 +36,14 @@ export class Pattern {
             this._currentShoot.next = shoot;
             this._currentShoot = shoot;
         }
-        
+
         return this;
     }
 
     update(dt) {
         this._currentShootPositions = [];
         this._count += dt;
-        
+
         if (!this._count || this._count > this.period) {
             // reinit
             this._count = 0;
@@ -51,11 +56,11 @@ export class Pattern {
                 this._currentShoot = this._currentShoot.next;
                 if (!this._currentShoot)
                     t = this._count;
-                else 
+                else
                     t = this._currentShoot.time;
             }
         }
-        
+
         return this._currentShootPositions;
     }
 

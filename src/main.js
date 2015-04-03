@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
+ * Licensed under the General Public License, see the file gpl.txt at the root for details.
+ */
+
 import {WorldObject} from "./world/object";
 import {App} from "./app";
 import {addFullscreenToElement} from "./fullscreen";
