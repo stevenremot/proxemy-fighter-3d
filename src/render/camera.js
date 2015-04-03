@@ -131,19 +131,15 @@ export class Camera {
             this._threeCamera
         );
 
-        let intersects = this._rayCaster.intersectObjects(this._pickingObjectsArray);
-        if (intersects.length > 0)
-        {
-            console.log(intersects[0].object.id);
-            vector.copy(intersects[0].point);
-        }
-        else
+        if (!this.pickObjects(this._rayCaster.ray, vector))
             this._rayCaster.ray.at(depth, vector);
     }
 
     addPickingObject(object) {
-        this.pickingObjects.set(object, object.model);
-        this._pickingObjectsArray.push(object.model);
+        if (object.collisionBody) {
+            this.pickingObjects.set(object, object.collisionBody);
+            this._pickingObjectsArray.push(object.collisionBody);
+        }
     }
 
     removePickingObject(object) {
@@ -152,6 +148,24 @@ export class Camera {
         this._pickingObjectsArray = [];
         for (let v of this.pickingObjects.values())
             this._pickingObjectsArray.push(v);
+    }
+
+    pickObjects(ray, vector) {
+        let distance = -1;
+
+        for (let o in this.pickingObjectsArray) {
+            if (o.pick(ray, tmpDistance)) {
+                let d = ray.origin.distanceTo(tmpDistance);
+                if (d < distance || distance < 0) {
+                    distance = d;
+                    tmpTarget.copy(tmpDistance);
+                }
+            }
+        }
+
+        if (distance > 0)
+            vector.copy(tmpTarget);
+        return distance > 0;
     }
 
     /**

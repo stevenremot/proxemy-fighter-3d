@@ -15,13 +15,13 @@ export class Boss extends WorldObject {
         let geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
         let material = new THREE.MeshBasicMaterial({color: 0x999999});
         this.model = new THREE.Mesh(geometry, material);
-        this.pickable = true;
 
         this.collisionBody = new Sphere(
             this.model.position.clone(),
             radius
         );
         this.collisionGroup = "boss";
+        this.pickable = true;
 
         this.modules = [];
         this._onDeadCallbacks = [];

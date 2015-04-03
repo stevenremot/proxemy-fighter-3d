@@ -264,8 +264,10 @@ export class BuddyCube extends AiVessel {
         this.forward = new THREE.Vector3(1,0,0);
 
         this.collisionBody = new Sphere(this.model.position, 10);
+        this.pickable = true;
+
         this.pickingSphere = world.createObject(SphereDebugView, this.collisionBody);
-        this.pickingSphere.pickable = true;
+        //this.pickingSphere.pickable = true;
 
         /*this.collisionBody = new Box(
             this.position,

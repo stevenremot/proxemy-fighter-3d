@@ -21,11 +21,16 @@ export class Sphere {
         this._radius = radius;
         this.boundingBox = new THREE.Box3();
         this._updateBox();
+        this._sphere = new THREE.Sphere();
     }
 
     _updateBox() {
         tmpVector.set(this._radius, this._radius, this._radius);
         this.boundingBox.setFromCenterAndSize(this._position, this._radius);
+    }
+
+    _updateSphere() {
+        this._sphere.set(this._position, this._radius);
     }
 
     get position() {
@@ -35,6 +40,7 @@ export class Sphere {
     set position(position) {
         this._position = position;
         this._updateBox();
+        this._updateSphere();
     }
 
     get radius() {
@@ -44,6 +50,7 @@ export class Sphere {
     set radius(radius) {
         this._radius = radius;
         this._updateBox();
+        this._updateSphere();
     }
 
     /**
@@ -88,6 +95,10 @@ export class Sphere {
         }
 
         return tmpProjection.sub(tmpRelativePosition).length() <= this.radius;
+    }
+
+    pick(ray, intersectionPoint) {
+        ray.intersectSphere(this._sphere, intersectionPoint);
     }
 }
 
