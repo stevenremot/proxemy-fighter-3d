@@ -266,23 +266,12 @@ export class BuddyCube extends AiVessel {
         this.collisionBody = new Sphere(this.model.position, 10);
         this.pickable = true;
 
-        this.pickingSphere = world.createObject(SphereDebugView, this.collisionBody);
-        //this.pickingSphere.pickable = true;
-
-        /*this.collisionBody = new Box(
-            this.position,
-            new THREE.Vector3(10,10,10),
-            this.model.quaternion
-        );
-
-        this.pickingCube = world.createObject(BoxDebugView, this.collisionBody);
-        pickingCube.model.visible = false;
-        this.pickingCube.pickable = true;*/
+        //this.pickingSphere = world.createObject(SphereDebugView, this.collisionBody);
 
         this.onDead(
             () => 
                 {
-                    this.pickingSphere.destroy();
+                    //this.pickingSphere.destroy();
                     this.destroy();
                 }
         );

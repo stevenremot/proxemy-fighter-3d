@@ -9,7 +9,7 @@ import {Detector} from "./ai/detection";
 import {BuddyCube} from "./world/ai-vessel";
 import {Aggregate as Input} from './input/aggregate';
 
-const MAX_LIFE = 1000;
+const MAX_LIFE = 10;
 const FPS = 60;
 const FRAME_DELAY = 1 / FPS;
 
