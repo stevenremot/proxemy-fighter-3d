@@ -9,7 +9,7 @@ import {Detector} from "./ai/detection";
 import {BuddyCube} from "./world/ai-vessel";
 import {Aggregate as Input} from './input/aggregate';
 
-const MAX_LIFE = 10;
+const MAX_LIFE = 1000;
 const FPS = 60;
 const FRAME_DELAY = 1 / FPS;
 
@@ -54,7 +54,7 @@ export class App {
         this.world.renderContext.camera.getAimedPointForPosition(
             this._aimedPos.x,
             this._aimedPos.y,
-            150, // Depth = ship position
+            200, // Depth = camera position
             this.ship.aimedPoint
         );
         this.ship.updateCannonOrientation();
@@ -152,19 +152,15 @@ export class App {
         });
 
         this.cube = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube.onDead(() => this.cube.destroy());
 
         this.cube2 = this.world.createObject(BuddyCube, 30, this.ship);
         this.cube2.position.set(-30, 50, 0);
-        this.cube2.onDead(() => this.cube2.destroy());
 
         this.cube3 = this.world.createObject(BuddyCube, 30, this.ship);
         this.cube3.position.set(-30, 50, 0);
-        this.cube3.onDead(() => this.cube3.destroy());
 
         this.cube4 = this.world.createObject(BuddyCube, 30, this.ship);
         this.cube4.position.set(-30, 50, 0);
-        this.cube4.onDead(() => this.cube4.destroy());
 
         this.createBoss();
         this.createSky();

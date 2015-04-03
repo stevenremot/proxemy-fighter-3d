@@ -198,7 +198,7 @@ export class BoxDebugView extends WorldObject {
     }
 
     update(dt) {
-        this.position = this.box.position;
+        this.position.copy(this.box.position);
         tmpEuler.setFromQuaternion(this.box.quaternion);
         this.model.rotation.x = tmpEuler.x;
         this.model.rotation.y = tmpEuler.y;

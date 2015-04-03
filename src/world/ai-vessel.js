@@ -13,6 +13,7 @@ import {GatlingBullet} from "./bullet/gatling";
 import {Cannon} from "./weapons/cannon";
 
 import {Box, BoxDebugView} from "src/collision/box";
+import {Sphere, SphereDebugView} from "src/collision/sphere";
 
 // reperform detection each 30 frames
 const DETECTION_FREQUENCY = 1/2;
@@ -262,12 +263,26 @@ export class BuddyCube extends AiVessel {
         this.target = ship;
         this.forward = new THREE.Vector3(1,0,0);
 
-        this.collisionBody = new Box(
+        this.collisionBody = new Sphere(this.model.position, 10);
+        this.pickingSphere = world.createObject(SphereDebugView, this.collisionBody);
+        this.pickingSphere.pickable = true;
+
+        /*this.collisionBody = new Box(
             this.position,
             new THREE.Vector3(10,10,10),
             this.model.quaternion
         );
 
-        //world.createObject(BoxDebugView, this.collisionBody);
+        this.pickingCube = world.createObject(BoxDebugView, this.collisionBody);
+        pickingCube.model.visible = false;
+        this.pickingCube.pickable = true;*/
+
+        this.onDead(
+            () => 
+                {
+                    this.pickingSphere.destroy();
+                    this.destroy();
+                }
+        );
     }
 }

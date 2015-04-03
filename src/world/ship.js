@@ -11,7 +11,7 @@ import {Box, BoxDebugView} from 'src/collision/box';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1/10;
-const BULLET_SPEED = 350;
+const BULLET_SPEED = 200;
 const ANGULAR_SPEED = 0.75;
 
 let tmpAimedPoint = new THREE.Vector3();

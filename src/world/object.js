@@ -15,6 +15,21 @@ export class WorldObject {
          */
         this.collisionGroup = null;
         this.id = null;
+
+        this.pickable = false;
+    }
+
+    /**
+     * @property {bool} pickable
+     */
+    get pickable() {
+        return this._pickable;
+    }
+
+    set pickable(bool) {
+        this._pickable = bool;
+        if (this._pickable)
+            this.world.renderContext.camera.addPickingObject(this);
     }
 
     /**
@@ -100,7 +115,7 @@ export class WorldObject {
             this._model.position.copy(position);
         }
         if (this._collisionBody) {
-            this._collisionBody.position = position;
+            this._collisionBody.position = this.position;
         }
     }
 
@@ -159,6 +174,8 @@ export class WorldObject {
     }
 
     destroy() {
+        if (this.pickable)
+            this.world.renderContext.camera.removePickingObject(this);
         this.world.destroy(this.id);
     }
 

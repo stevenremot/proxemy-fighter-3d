@@ -40,6 +40,9 @@ export class Camera {
         this._globalTransformMatrix = new THREE.Matrix4();
         this.frustum = new THREE.Frustum();
         this._rayCaster = new THREE.Raycaster();
+        
+        this.pickingObjects = new Map();
+        this._pickingObjectsArray = [];
     }
 
     get threeCamera() {
@@ -127,7 +130,28 @@ export class Camera {
             { x: x, y: -y },
             this._threeCamera
         );
-        this._rayCaster.ray.at(depth, vector);
+
+        let intersects = this._rayCaster.intersectObjects(this._pickingObjectsArray);
+        if (intersects.length > 0)
+        {
+            console.log(intersects[0].object.id);
+            vector.copy(intersects[0].point);
+        }
+        else
+            this._rayCaster.ray.at(depth, vector);
+    }
+
+    addPickingObject(object) {
+        this.pickingObjects.set(object, object.model);
+        this._pickingObjectsArray.push(object.model);
+    }
+
+    removePickingObject(object) {
+        this.pickingObjects.delete(object);
+        // recompute array
+        this._pickingObjectsArray = [];
+        for (let v of this.pickingObjects.values())
+            this._pickingObjectsArray.push(v);
     }
 
     /**
