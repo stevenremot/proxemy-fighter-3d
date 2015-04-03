@@ -15,8 +15,7 @@ export class World {
     constructor(renderContext, detector) {
         this.renderContext = renderContext;
         this.detector = detector;
-        this.objects = new Map();
-        this._count = 0;
+        this.objects = new Set();
     }
 
     /**
@@ -30,8 +29,7 @@ export class World {
      */
     createObject(objectClass, ...args) {
         let object = new objectClass(this, ...args);
-        object.id = this._count++;
-        this.objects.set(object.id, object);
+        this.objects.add(object);
         return object;
     }
 
@@ -50,23 +48,20 @@ export class World {
     }
 
     _handleCollisions() {
-        let keys = [...this.objects.keys()];
-        for (let i = 0; i < keys.length; i++) {
-            let o1 = this.objects.get(keys[i]);
+        let objects = [...this.objects];
+        for (let i = 0; i < objects.length; i++) {
+            let o1 = objects[i];
 
-            if (o1 !== undefined) {
-                for (let j = i+1; j < keys.length; j++) {
-                    let o2 = this.objects.get(keys[j]);
-                    let objectsCanCollide = o2 !== undefined &&
-                            (o1.canCollideWith(o2) || o2.canCollideWith(o1));
+            for (let j = i+1; j < objects.length; j++) {
+                let o2 = objects[j];
+                let objectsCanCollide = (o1.canCollideWith(o2) || o2.canCollideWith(o1));
 
-                    if (o1.hasCollisionBody() &&
-                        objectsCanCollide &&
-                        o2.hasCollisionBody() &&
-                        o1.collisionBody.collidesWith(o2.collisionBody)) {
-                        o1.onCollisionWith(o2);
-                        o2.onCollisionWith(o1);
-                    }
+                if (o1.hasCollisionBody() &&
+                    objectsCanCollide &&
+                    o2.hasCollisionBody() &&
+                    o1.collisionBody.collidesWith(o2.collisionBody)) {
+                    o1.onCollisionWith(o2);
+                    o2.onCollisionWith(o1);
                 }
             }
         }
@@ -80,13 +75,13 @@ export class World {
      *
      * @returns this
      */
-    destroy(id) {
-        let object = this.objects.get(id);
-        if (object) {
+    destroy(object) {
+        if (this.objects.has(object)) {
             object.model = null;
             object.onDestroy();
-            this.objects.delete(id);
+            this.objects.delete(object);
         }
+
         return this;
     }
 
@@ -97,8 +92,8 @@ export class World {
      * @returns this
      */
     clear() {
-        for (let pair of this.objects) {
-            this.destroy(pair[0]);
+        for (let object of this.objects) {
+            this.destroy(object);
         }
         return this;
     }
@@ -115,7 +110,7 @@ export class World {
      * @returns {WorldObject|null}
      */
     getObjectOfType(Type) {
-        for (let object of this.objects.values()) {
+        for (let object of this.objects) {
             if (object instanceof Type) {
                 return object;
             }
@@ -133,7 +128,7 @@ export class World {
      */
     getObjectsOfType(Type) {
         let result = [];
-        for (let object of this.objects.values()) {
+        for (let object of this.objects) {
             if (object instanceof Type) {
                 result.push(object);
             }

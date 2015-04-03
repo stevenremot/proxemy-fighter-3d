@@ -19,7 +19,6 @@ export class WorldObject {
          * @param {Number} collisionGroup
          */
         this.collisionGroup = null;
-        this.id = null;
     }
 
     /**
@@ -164,7 +163,7 @@ export class WorldObject {
     }
 
     destroy() {
-        this.world.destroy(this.id);
+        this.world.destroy(this);
     }
 
     _updateCollisionBodyQuaternion() {
