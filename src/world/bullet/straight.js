@@ -30,7 +30,30 @@ export class StraightBullet extends WorldObject {
      * @param {Number}        power
      * @param {Number}        color
      */
-    constructor(world, {
+    constructor(world) {
+        super(world);
+
+        this.direction = null;
+        this.lifeSpan = 0;
+        this.power = BULLET_POWER;
+
+        let geometry = new THREE.BoxGeometry(1, 1, 4);
+        let material = new THREE.MeshBasicMaterial({color: 0xc0c000});
+        this.model = new THREE.Mesh(geometry, material);
+
+        this.collisionBody = new Box(
+            this.position.clone(),
+            new THREE.Vector3(1, 1, 4),
+            this.model.quaternion.clone()
+        );
+
+        // Attributes to override
+        this.collisionGroup = null;
+        this.collisionTargetGroup = null;
+        this.power = null;
+    }
+
+    init({
         position,
         direction,
         lifeSpan,
@@ -39,17 +62,10 @@ export class StraightBullet extends WorldObject {
         power,
         color
     }) {
-        super(world);
-
-        let geometry = new THREE.BoxGeometry(1, 1, 4);
-        let material = new THREE.MeshBasicMaterial({color: 0xc0c000});
-        this.model = new THREE.Mesh(geometry, material);
-
         this.position = position;
         this.lookAt(tmpPosition.copy(position).add(direction));
         this.direction = direction;
         this.lifeSpan = lifeSpan;
-        this.power = BULLET_POWER;
 
         this.collisionBody = new Box(
             this.position.clone(),

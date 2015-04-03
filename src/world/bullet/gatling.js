@@ -21,8 +21,16 @@ export class GatlingBullet extends StraightBullet {
      * @param {THREE.Vector3} position
      * @param {THREE.Vector3} direction
      */
-    constructor(world, position, direction) {
-        super(world, {
+    constructor(world) {
+        super(world);
+    }
+
+    /**
+     * @param {THREE.Vector3} position
+     * @param {THREE.Vector3} direction
+     */
+    init(position, direction) {
+        super.init({
             position: position,
             direction: direction,
             lifeSpan: LIFE_SPAN,

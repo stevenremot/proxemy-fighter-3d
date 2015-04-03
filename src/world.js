@@ -16,6 +16,7 @@ export class World {
         this.renderContext = renderContext;
         this.detector = detector;
         this.objects = new Set();
+        this._deadPools = new Map();
     }
 
     /**
@@ -28,7 +29,14 @@ export class World {
      * @returns {WorldObject}
      */
     createObject(objectClass, ...args) {
-        let object = new objectClass(this, ...args);
+        let object;
+        if ('init' in objectClass.prototype) {
+            object = this._fetchFromDeadPool(objectClass) || new objectClass(this);
+            object.init(...args);
+        } else {
+            object = new objectClass(this, ...args);
+        }
+
         this.objects.add(object);
         return object;
     }
@@ -77,12 +85,44 @@ export class World {
      */
     destroy(object) {
         if (this.objects.has(object)) {
-            object.model = null;
+            if (object.model !== null) {
+                this.renderContext.removeModel(object.model);
+            }
             object.onDestroy();
             this.objects.delete(object);
+
+            if ('init' in object) {
+                this._addToDeadPool(object);
+            }
         }
 
         return this;
+    }
+
+    _addToDeadPool(object) {
+        let pool;
+        if (!this._deadPools.has(object.constructor)) {
+            pool = new Set();
+            this._deadPools.set(object.constructor, pool);
+        } else {
+            pool = this._deadPools.get(object.constructor);
+        }
+        pool.add(object);
+    }
+
+    _fetchFromDeadPool(constructor) {
+        if (this._deadPools.has(constructor)) {
+            let pool = this._deadPools.get(constructor);
+            if (pool.size > 0) {
+                let object = pool.values().next().value;
+                pool.delete(object);
+                if (object.model) {
+                    this.renderContext.addModel(object.model);
+                }
+                return object;
+            }
+        }
+        return null;
     }
 
     /**
