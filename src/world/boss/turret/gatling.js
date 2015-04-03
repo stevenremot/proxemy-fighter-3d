@@ -6,7 +6,7 @@
 import THREE from "mrdoob/three.js";
 
 import {addMixin}from 'src/core/mixin';
-import {SphericalVector, sphericalToCartesian, glToSpherical, sphericalToGl} from "src/math/utils";
+import {SphericalVector, sphericalToCartesian, glToSpherical, sphericalToGl, toGlCoordinates} from "src/math/utils";
 import {WorldObject} from "src/world/object";
 import {Cannon} from "src/world/weapons/cannon";
 import {Sphere} from "src/collision/sphere";
@@ -50,7 +50,8 @@ export class Gatling extends WorldObject {
         this.model.position.add(this.position.clone().normalize());
 
         tmpSphericalVector.set(bossModule.boss.radius, theta, phi);
-        sphericalToGl(tmpSphericalVector, this.model.position);
+        sphericalToCartesian(tmpSphericalVector, tmpCartesianVector);
+        toGlCoordinates(tmpCartesianVector, this.model.position);
 
         this.collisionBody = new Sphere(this.model.position, RADIUS);
         let cannonModel = this.getModelFromCollection('gatling-cannon').clone();
