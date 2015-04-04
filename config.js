@@ -12,6 +12,7 @@ System.config({
       "src/math/utils",
       "src/core/mixin",
       "src/collision/box",
+      "src/world/explosion",
       "src/world/weapons/cannon",
       "src/world/weapons/pattern",
       "src/core/util",
@@ -60,4 +61,3 @@ System.config({
     "mrdoob/three.js": "github:mrdoob/three.js@r70"
   }
 });
-
