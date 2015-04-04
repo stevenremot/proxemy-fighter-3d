@@ -130,7 +130,10 @@ export class App {
         let moduleColor = 0x5000c0;
         this.boss = this.world.createObject(Boss, 40);
         this.boss
-            .onDead(() => this.showEndScreen('You won!'))
+            .onDead(() => {
+                this.destroyVessels();
+                this.showEndScreen('You won!');
+            })
             .addModule([0, Math.PI/3],[0, 2*Math.PI], moduleColor)
             .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], moduleColor)
             .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], moduleColor)
@@ -142,7 +145,7 @@ export class App {
 
     }
 
-    setupScene() {
+    setupShip() {
         this.ship = this.world.createObject(Ship, 1, MAX_LIFE);
         this.ship.position = new THREE.Vector3(150, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
@@ -153,18 +156,37 @@ export class App {
             }
         });
         this.hud.handleLifeChanged(this.ship.life);
+    }
 
-        this.cube = this.world.createObject(BuddyCube, 30, this.ship);
+    setupVessels() {
+        this.vessels = new Set();
+        this.vessels.add(this.world.createObject(BuddyCube, 30, this.ship));
 
-        this.cube2 = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube2.position.set(-30, 50, 0);
+        let vessel;
+        vessel = this.world.createObject(BuddyCube, 30, this.ship);
+        vessel.position.set(-30, 50, 0);
+        this.vessels.add(vessel);
 
-        this.cube3 = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube3.position.set(-30, 50, 0);
+        vessel = this.world.createObject(BuddyCube, 30, this.ship);
+        vessel.position.set(-30, 50, 0);
+        this.vessels.add(vessel);
 
-        this.cube4 = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube4.position.set(-30, 50, 0);
+        vessel = this.world.createObject(BuddyCube, 30, this.ship);
+        vessel.position.set(-30, 50, 0);
+        this.vessels.add(vessel);
+    }
 
+    destroyVessels() {
+        for (let vessel of this.vessels) {
+            if (vessel.isAlive()) {
+                vessel.hurt(30000);
+            }
+        }
+    }
+
+    setupScene() {
+        this.setupShip();
+        this.setupVessels();
         this.createBoss();
         this.createSky();
 
@@ -230,7 +252,6 @@ export class App {
     }
 
     showEndScreen(message) {
-        this._isInGame = false;
         this.ship.isShooting = false;
         document.exitPointerLock();
         this._endScreen.message = message;

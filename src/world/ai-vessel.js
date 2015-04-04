@@ -52,6 +52,11 @@ export class AiVessel extends WorldObject {
         this.life = life;
         this.collisionGroup = "boss";
         this._onDeadCallbacks = [];
+        this.onLifeChanged(() => {
+            if (!this.isAlive()) {
+                this._triggerOnDead();
+            }
+        });
 
         this.followTargets = [
             [0, 0],
@@ -78,6 +83,7 @@ export class AiVessel extends WorldObject {
 
         // init this.right if we don't get in Spherical state
         this.right = new THREE.Vector3();
+        this._bossRadius = null;
 
         this.createFsm();
     }
@@ -233,10 +239,6 @@ export class AiVessel extends WorldObject {
 
     onCollisionWith(object) {
         this.hurt(object.power);
-
-        if (!this.isAlive()) {
-            this._triggerOnDead();
-        }
     }
 
     onDead(callback) {

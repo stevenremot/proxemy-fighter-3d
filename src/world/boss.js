@@ -8,6 +8,7 @@ import THREE from 'mrdoob/three.js';
 import {Module} from "./boss/module";
 import {WorldObject} from "./object";
 import {Sphere} from "src/collision/sphere";
+import {Explosion} from './explosion';
 
 export class Boss extends WorldObject {
     constructor(world, radius) {
@@ -61,11 +62,20 @@ export class Boss extends WorldObject {
 
         if (!this.isAlive()) {
             this._triggerOnDead();
+            this.world.createObject(Explosion, {
+                position: this.position,
+                minRadius: 1,
+                maxRadius: 150,
+                maxOpacity: 1,
+                color: 0xff00ff,
+                lifeSpan: 2
+            });
+            this.destroy();
         }
     }
 
     addModule(thetaRange, phiRange, c) {
-        let life = 100;
+        let life = 1;
         let material = new THREE.MeshLambertMaterial({color: c});
         this.modules.push(
             this.world.createObject(
