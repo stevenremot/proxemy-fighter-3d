@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
@@ -8,6 +8,7 @@ import THREE from 'mrdoob/three.js';
 import {Module} from "./boss/module";
 import {WorldObject} from "./object";
 import {Sphere} from "src/collision/sphere";
+import {Explosion} from './explosion';
 
 export class Boss extends WorldObject {
     constructor(world, radius) {
@@ -26,6 +27,7 @@ export class Boss extends WorldObject {
             radius
         );
         this.collisionGroup = "boss";
+        this.pickable = true;
 
         this.modules = [];
         this._onDeadCallbacks = [];
@@ -60,6 +62,15 @@ export class Boss extends WorldObject {
 
         if (!this.isAlive()) {
             this._triggerOnDead();
+            this.world.createObject(Explosion, {
+                position: this.position,
+                minRadius: 1,
+                maxRadius: 150,
+                maxOpacity: 1,
+                color: 0xff00ff,
+                lifeSpan: 2
+            });
+            this.destroy();
         }
     }
 

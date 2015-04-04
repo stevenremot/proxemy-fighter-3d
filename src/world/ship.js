@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
@@ -13,6 +13,7 @@ import {Cannon} from "./weapons/cannon";
 import {Pattern} from "./weapons/pattern";
 import {LifeContainer} from './life-container';
 import {Box, BoxDebugView} from 'src/collision/box';
+import {Explosion} from './explosion';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);
 const SHOOT_FREQUENCY = 1/10;
@@ -80,6 +81,19 @@ export class Ship extends WorldObject {
 
         this.maxLife = maxLife;
         this.life = maxLife;
+        this.onLifeChanged(() => {
+            if (!this.isAlive()) {
+                this.world.createObject(Explosion, {
+                    position: this.position,
+                    minRadius: 1,
+                    maxRadius: 20,
+                    color: 0xffff00,
+                    lifeSpan: 1,
+                    maxOpacity: 0.9
+                });
+                this.destroy();
+            }
+        });
     }
 
     update(dt) {

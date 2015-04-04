@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
@@ -21,8 +21,16 @@ export class GatlingBullet extends StraightBullet {
      * @param {THREE.Vector3} position
      * @param {THREE.Vector3} direction
      */
-    constructor(world, position, direction) {
-        super(world, {
+    constructor(world) {
+        super(world);
+    }
+
+    /**
+     * @param {THREE.Vector3} position
+     * @param {THREE.Vector3} direction
+     */
+    init(position, direction) {
+        super.init({
             position: position,
             direction: direction,
             lifeSpan: LIFE_SPAN,

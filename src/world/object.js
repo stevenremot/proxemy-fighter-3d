@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
@@ -19,7 +19,21 @@ export class WorldObject {
          * @param {Number} collisionGroup
          */
         this.collisionGroup = null;
-        this.id = null;
+
+        this.pickable = false;
+    }
+
+    /**
+     * @property {bool} pickable
+     */
+    get pickable() {
+        return this._pickable;
+    }
+
+    set pickable(bool) {
+        this._pickable = bool;
+        if (this._pickable)
+            this.world.renderContext.camera.addPickingObject(this);
     }
 
     /**
@@ -105,7 +119,7 @@ export class WorldObject {
             this._model.position.copy(position);
         }
         if (this._collisionBody) {
-            this._collisionBody.position = position;
+            this._collisionBody.position = this.position;
         }
     }
 
@@ -164,7 +178,9 @@ export class WorldObject {
     }
 
     destroy() {
-        this.world.destroy(this.id);
+        if (this.pickable)
+            this.world.renderContext.camera.removePickingObject(this);
+        this.world.destroy(this);
     }
 
     _updateCollisionBodyQuaternion() {

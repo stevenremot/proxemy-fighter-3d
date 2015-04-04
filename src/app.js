@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
@@ -25,24 +25,6 @@ export class App {
         let params = this.createRenderContext(window, models);
         this.world = new World(params.renderContext, params.detector);
 
-        this.setupScene();
-        this._frameTime = 0;
-
-        this._startScreen = startScreen;
-        this._endScreen = endScreen;
-        this._isInGame = false;
-
-        this._startScreen.onClick(() => {
-            this.startGame(window);
-            this._isInGame = true;
-        });
-        this._endScreen.onClick(() => this.restartGame(window));
-
-        this._aimedPos = {
-            x: 0,
-            y: 0
-        };
-
         this.hud = new Hud(window, MAX_LIFE);
         this.hud.sights.onPositionChanged(
             (x, y) => {
@@ -50,6 +32,21 @@ export class App {
                 this._aimedPos.y = y;
             }
         );
+
+        this.setupScene();
+        this._frameTime = 0;
+
+        this._startScreen = startScreen;
+        this._endScreen = endScreen;
+        this._isInGame = false;
+
+        this._startScreen.onClick(() => this.startGame(window));
+        this._endScreen.onClick(() => this.restartGame(window));
+
+        this._aimedPos = {
+            x: 0,
+            y: 0
+        };
 
         this._startScreen.message = 'Click / touch to start';
 
@@ -59,7 +56,7 @@ export class App {
         this.world.renderContext.camera.getAimedPointForPosition(
             this._aimedPos.x,
             this._aimedPos.y,
-            150, // Depth = ship position
+            200, // Depth = camera position
             this.ship.aimedPoint
         );
         this.ship.updateCannonOrientation();
@@ -133,7 +130,10 @@ export class App {
         let moduleColor = 0x5000c0;
         this.boss = this.world.createObject(Boss, 40);
         this.boss
-            .onDead(() => this.showEndScreen('You won!'))
+            .onDead(() => {
+                this.destroyVessels();
+                this.showEndScreen('You won!');
+            })
             .addModule([0, Math.PI/3],[0, 2*Math.PI], moduleColor)
             .addModule([Math.PI/3, Math.PI/2], [0, 3*Math.PI/4], moduleColor)
             .addModule([Math.PI/3, Math.PI/2], [3*Math.PI/4, 2*Math.PI], moduleColor)
@@ -145,7 +145,7 @@ export class App {
 
     }
 
-    setupScene() {
+    setupShip() {
         this.ship = this.world.createObject(Ship, 1, MAX_LIFE);
         this.ship.position = new THREE.Vector3(150, 0, 0);
         this.ship.forward = new THREE.Vector3(-1, 0, 0);
@@ -155,22 +155,38 @@ export class App {
                 this.showEndScreen('You lost :\'(');
             }
         });
+        this.hud.handleLifeChanged(this.ship.life);
+    }
 
-        this.cube = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube.onDead(() => this.cube.destroy());
+    setupVessels() {
+        this.vessels = new Set();
+        this.vessels.add(this.world.createObject(BuddyCube, 30, this.ship));
 
-        this.cube2 = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube2.position.set(-30, 50, 0);
-        this.cube2.onDead(() => this.cube2.destroy());
+        let vessel;
+        vessel = this.world.createObject(BuddyCube, 30, this.ship);
+        vessel.position.set(-30, 50, 0);
+        this.vessels.add(vessel);
 
-        this.cube3 = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube3.position.set(-30, 50, 0);
-        this.cube3.onDead(() => this.cube3.destroy());
+        vessel = this.world.createObject(BuddyCube, 30, this.ship);
+        vessel.position.set(-30, 50, 0);
+        this.vessels.add(vessel);
 
-        this.cube4 = this.world.createObject(BuddyCube, 30, this.ship);
-        this.cube4.position.set(-30, 50, 0);
-        this.cube4.onDead(() => this.cube4.destroy());
+        vessel = this.world.createObject(BuddyCube, 30, this.ship);
+        vessel.position.set(-30, 50, 0);
+        this.vessels.add(vessel);
+    }
 
+    destroyVessels() {
+        for (let vessel of this.vessels) {
+            if (vessel.isAlive()) {
+                vessel.hurt(30000);
+            }
+        }
+    }
+
+    setupScene() {
+        this.setupShip();
+        this.setupVessels();
         this.createBoss();
         this.createSky();
 
@@ -227,7 +243,12 @@ export class App {
         window.document.getElementById('lifebar').style.display = "block";
         window.document.getElementById('sights').style.display = "block";
         this.boss.hud = this.hud;
-        this.input = this.createInput(window);
+
+        if (!this.input) {
+            this.input = this.createInput(window);
+        }
+        this.input.lock();
+        this._isInGame = true;
     }
 
     showEndScreen(message) {

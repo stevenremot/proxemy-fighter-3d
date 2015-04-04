@@ -14,16 +14,18 @@ canvas {
     height: 100%
 }
 
-button {
+button, a {
     background-color: white;
     border-radius: 0.5em;
+    border: none;
     color: black;
     font-size: 1em;
     padding: 0.5em;
     margin-top: 0.5em;
+    text-decoration: none;
 }
 
-button:hover {
+button:hover, a:hover {
     transform: scale(1.1, 1.1);
     cursor: pointer;
 }
@@ -45,22 +47,36 @@ button:hover {
 }
 
 .front-screen h1 {
-    margin-bottom: 3em;
+    position: absolute;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    text-align: center;
 }
 
 
 .message {
     position: fixed;
     left: 50%;
-    bottom: 2.5em;
+    bottom: 5em;
     transform: translate(-50%, 0);
 }
 
-.front-screen button {
+.front-screen button,
+.front-screen a {
     position: fixed;
     left: 50%;
-    bottom: 0.5em;
+    width: 5em;
     transform: translate(-50%, 0);
+    box-sizing: border-box;
+}
+
+.front-screen button {
+    bottom: 3em;
+}
+
+.front-screen a {
+    bottom: 0.5em;
 }
 
 #game-end {
@@ -78,6 +94,7 @@ button:hover {
 
 .center-box table {
     margin: auto;
+    border-spacing: 1em;
 }
 
 #score {
@@ -129,8 +146,8 @@ button:hover {
 
 #sights {
     position: absolute;
-    width: 140px;
-    height: 80px;
+    width: 70px;
+    height: 40px;
     top: 200px;
     left: 200px;
     display: none;
@@ -229,7 +246,7 @@ button:hover {
 #arrow-keys, #touch-screen-left, #mouse {
     display: inline-block;
     vertical-align: middle;
-    width: 60%;
+    width: 4em;
     margin-top: 30%;
     margin-bottom: 20%;
 }
@@ -239,7 +256,7 @@ button:hover {
 }
 
 #mouse {
-    width: 15%;
+    width: 1.5em;
 }
 
 #keyboard-commands {

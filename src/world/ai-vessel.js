@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
@@ -16,8 +16,10 @@ import {Boss} from "src/world/boss";
 import {Pattern} from "./weapons/pattern";
 import {GatlingBullet} from "./bullet/gatling";
 import {Cannon} from "./weapons/cannon";
+import {Explosion}from 'src/world/explosion';
 
 import {Box, BoxDebugView} from "src/collision/box";
+import {Sphere, SphereDebugView} from "src/collision/sphere";
 
 // reperform detection each 30 frames
 const DETECTION_FREQUENCY = 1/2;
@@ -50,6 +52,11 @@ export class AiVessel extends WorldObject {
         this.life = life;
         this.collisionGroup = "boss";
         this._onDeadCallbacks = [];
+        this.onLifeChanged(() => {
+            if (!this.isAlive()) {
+                this._triggerOnDead();
+            }
+        });
 
         this.followTargets = [
             [0, 0],
@@ -76,6 +83,7 @@ export class AiVessel extends WorldObject {
 
         // init this.right if we don't get in Spherical state
         this.right = new THREE.Vector3();
+        this._bossRadius = null;
 
         this.createFsm();
     }
@@ -231,10 +239,6 @@ export class AiVessel extends WorldObject {
 
     onCollisionWith(object) {
         this.hurt(object.power);
-
-        if (!this.isAlive()) {
-            this._triggerOnDead();
-        }
     }
 
     onDead(callback) {
@@ -267,12 +271,25 @@ export class BuddyCube extends AiVessel {
         this.target = ship;
         this.forward = new THREE.Vector3(1,0,0);
 
-        this.collisionBody = new Box(
-            this.position,
-            new THREE.Vector3(10,10,10),
-            this.model.quaternion
-        );
+        this.collisionBody = new Sphere(this.model.position, 10);
+        this.pickable = true;
 
-        //world.createObject(BoxDebugView, this.collisionBody);
+        //this.pickingSphere = world.createObject(SphereDebugView, this.collisionBody);
+
+        this.onDead(
+            () =>
+                {
+                    //this.pickingSphere.destroy();
+                    this.world.createObject(Explosion, {
+                        position: this.position,
+                        minRadius: 0.5,
+                        maxRadius: 15,
+                        lifeSpan: 0.25,
+                        color: 0xffa000,
+                        maxOpacity: 0.75
+                    });
+                    this.destroy();
+                }
+        );
     }
 }

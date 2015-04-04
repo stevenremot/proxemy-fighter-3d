@@ -1,11 +1,12 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
 import THREE from 'mrdoob/three.js';
 
 import {Box} from './box';
+import {WorldObject} from 'src/world/object';
 
 let tmpVector = new THREE.Vector3();
 let tmpRelativePosition = new THREE.Vector3();
@@ -25,11 +26,16 @@ export class Sphere {
         this._radius = radius;
         this.boundingBox = new THREE.Box3();
         this._updateBox();
+        this._sphere = new THREE.Sphere();
     }
 
     _updateBox() {
         tmpVector.set(this._radius, this._radius, this._radius);
         this.boundingBox.setFromCenterAndSize(this._position, this._radius);
+    }
+
+    _updateSphere() {
+        this._sphere.set(this._position, this._radius);
     }
 
     get position() {
@@ -39,6 +45,7 @@ export class Sphere {
     set position(position) {
         this._position = position;
         this._updateBox();
+        this._updateSphere();
     }
 
     get radius() {
@@ -48,6 +55,7 @@ export class Sphere {
     set radius(radius) {
         this._radius = radius;
         this._updateBox();
+        this._updateSphere();
     }
 
     /**
@@ -92,5 +100,26 @@ export class Sphere {
         }
 
         return tmpProjection.sub(tmpRelativePosition).length() <= this.radius;
+    }
+
+    pick(ray, intersectionPoint) {
+        ray.intersectSphere(this._sphere, intersectionPoint);
+    }
+}
+
+export class SphereDebugView extends WorldObject {
+    constructor(world, sphere) {
+        super(world);
+        this.sphere = sphere;
+        
+        let geometry = new THREE.SphereGeometry(sphere.radius);
+        let material = new THREE.MeshBasicMaterial(
+            {color: 0xffffff, wireframe: true}
+        );
+        this.model = new THREE.Mesh(geometry, material);
+    }
+
+    update(dt) {
+        this.position.copy(this.sphere.position);
     }
 }

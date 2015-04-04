@@ -1,6 +1,8 @@
 # Proxemy fighter 3D
 
-A spherical boss battle-only shooter.
+A spherical boss battle shooter.
+
+Play at [http://stevenremot.github.io/proxemy-fighter-3d](http://stevenremot.github.io/proxemy-fighter-3d)
 
 ## Setup for development
 

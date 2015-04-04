@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 The Proxemy Fighter 3D Team
+ * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
@@ -45,6 +45,9 @@ export class Camera {
         this._globalTransformMatrix = new THREE.Matrix4();
         this.frustum = new THREE.Frustum();
         this._rayCaster = new THREE.Raycaster();
+        
+        this.pickingObjects = new Map();
+        this._pickingObjectsArray = [];
     }
 
     get threeCamera() {
@@ -132,7 +135,42 @@ export class Camera {
             { x: x, y: -y },
             this._threeCamera
         );
-        this._rayCaster.ray.at(depth, vector);
+
+        if (!this.pickObjects(this._rayCaster.ray, vector))
+            this._rayCaster.ray.at(depth, vector);
+    }
+
+    addPickingObject(object) {
+        if (object.collisionBody) {
+            this.pickingObjects.set(object, object.collisionBody);
+            this._pickingObjectsArray.push(object.collisionBody);
+        }
+    }
+
+    removePickingObject(object) {
+        this.pickingObjects.delete(object);
+        // recompute array
+        this._pickingObjectsArray = [];
+        for (let v of this.pickingObjects.values())
+            this._pickingObjectsArray.push(v);
+    }
+
+    pickObjects(ray, vector) {
+        let distance = -1;
+
+        for (let o in this.pickingObjectsArray) {
+            if (o.pick(ray, tmpDistance)) {
+                let d = ray.origin.distanceTo(tmpDistance);
+                if (d < distance || distance < 0) {
+                    distance = d;
+                    tmpTarget.copy(tmpDistance);
+                }
+            }
+        }
+
+        if (distance > 0)
+            vector.copy(tmpTarget);
+        return distance > 0;
     }
 
     /**
