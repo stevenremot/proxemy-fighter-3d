@@ -13,4 +13,9 @@ export class Score {
         this.value += points;
         this.domElement.textContent = this.value.toString();
     }
+
+    reset() {
+        this.value = 0;
+        this.domElement.textContent = this.value.toString();
+    }
 }

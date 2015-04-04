@@ -64,6 +64,10 @@ export class Hud {
         execCallbacks(this._callbacks.onPointsAdded, points);
     }
 
+    resetPoints() {
+        this._score.reset();
+    }
+
     get sights() {
         return this._sights;
     }

@@ -237,6 +237,7 @@ export class App {
     }
 
     startGame(window) {
+        this.hud.resetPoints();
         this._startScreen.hide();
         this._endScreen.hide();
 
