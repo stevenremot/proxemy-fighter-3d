@@ -13,6 +13,7 @@ import {Sphere} from "src/collision/sphere";
 import {Ship} from "src/world/ship";
 import {GatlingBullet} from "src/world/bullet/gatling";
 import {LifeContainer} from 'src/world/life-container';
+import {Explosion} from 'src/world/explosion';
 
 const ORIGIN = new THREE.Vector3();
 const RADIUS = 10;
@@ -143,6 +144,14 @@ export class Gatling extends WorldObject {
     }
 
     onDestroy() {
+        this.world.createObject(Explosion, {
+            position: this.position,
+            minRadius: 0.5,
+            maxRadius: 15,
+            lifeSpan: 0.25,
+            color: 0xffa000,
+            maxOpacity: 0.75
+        });
         this.cannon.destroy();
         this._bossModule.startReviveWeaponTimeout();
     }
