@@ -100,7 +100,7 @@ button:hover, a:hover {
 #score {
     position: absolute;
     top: 0;
-    right: 50%;
+    right: 1em;
 
     color: white;
 
