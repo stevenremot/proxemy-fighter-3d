@@ -25,6 +25,14 @@ export class App {
         let params = this.createRenderContext(window, models);
         this.world = new World(params.renderContext, params.detector);
 
+        this.hud = new Hud(window, MAX_LIFE);
+        this.hud.sights.onPositionChanged(
+            (x, y) => {
+                this._aimedPos.x = x;
+                this._aimedPos.y = y;
+            }
+        );
+
         this.setupScene();
         this._frameTime = 0;
 
@@ -42,14 +50,6 @@ export class App {
             x: 0,
             y: 0
         };
-
-        this.hud = new Hud(window, MAX_LIFE);
-        this.hud.sights.onPositionChanged(
-            (x, y) => {
-                this._aimedPos.x = x;
-                this._aimedPos.y = y;
-            }
-        );
 
         this._startScreen.message = 'Click / touch to start';
 
@@ -155,6 +155,7 @@ export class App {
                 this.showEndScreen('You lost :\'(');
             }
         });
+        this.hud.handleLifeChanged(this.ship.life);
 
         this.cube = this.world.createObject(BuddyCube, 30, this.ship);
 
