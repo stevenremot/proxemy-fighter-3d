@@ -7,6 +7,7 @@ import THREE from "mrdoob/three.js";
 
 import {WorldObject} from "../object";
 import {Box} from "src/collision/box";
+import {Explosion} from '../explosion';
 
 const BULLET_POWER = 1;
 
@@ -96,6 +97,14 @@ export class StraightBullet extends WorldObject {
     }
 
     onCollisionWith(object) {
+        this.world.createObject(Explosion, {
+            position: this.position,
+            minRadius: 1,
+            maxRadius: 3,
+            maxOpacity: 0.75,
+            color: 0xffff00,
+            lifeSpan: 0.25
+        });
         this.destroy();
     }
 
