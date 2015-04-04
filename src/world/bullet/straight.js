@@ -12,6 +12,15 @@ const BULLET_POWER = 1;
 
 let tmpPosition = new THREE.Vector3();
 
+let texture = THREE.ImageUtils.loadTexture('assets/laser_test.png');
+let uniforms = {
+    laserColor: {type: "c", value: new THREE.Color(0xffff00)},
+    uTex: {type: "t", value: texture},
+    exponent: {type: "f", value: 8},
+    alphaMin: {type: "f", value: 0.2}
+};
+
+
 /**
  * @description
  * The projectile shot by the player ship.
@@ -38,7 +47,14 @@ export class StraightBullet extends WorldObject {
         this.power = BULLET_POWER;
 
         let geometry = new THREE.BoxGeometry(1, 1, 4);
-        let material = new THREE.MeshBasicMaterial({color: 0xc0c000});
+        //let material = new THREE.MeshBasicMaterial({color: 0xc0c000});
+        let material = new THREE.ShaderMaterial({
+            vertexShader: document.getElementById('laser-vertex').textContent,
+            fragmentShader: document.getElementById('laser-fragment').textContent,
+            uniforms: uniforms,
+            transparent: true
+        });
+
         this.model = new THREE.Mesh(geometry, material);
 
         this.collisionBody = new Box(
