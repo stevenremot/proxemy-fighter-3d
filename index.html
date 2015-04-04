@@ -228,6 +228,32 @@
 	            gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( h, exponent ), 0.0 ) ), 1.0 );
 	        }
         </script>
+
+        <script type = "x-shader/x-vertex" id="laser-vertex">
+          varying vec2 vUv;
+  
+          void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        </script>
+
+        <script type="x-shader/x-fragment" id="laser-fragment">
+            uniform sampler2D uTex;
+            uniform vec3 laserColor;
+            uniform float exponent;
+            uniform float alphaMin;
+            varying vec2 vUv;
+
+            void main() {
+                vec4 texelColor = texture2D(uTex, vUv);
+
+                if (texelColor.a < alphaMin)
+                    gl_FragColor = vec4(laserColor, alphaMin*2.0);
+                else
+                    gl_FragColor = vec4(mix(laserColor, vec3(texelColor.a,texelColor.a,texelColor.a), pow(texelColor.a, exponent)), texelColor.a);
+            }
+        </script>
         
         <script src="jspm_packages/babel-polyfill.js"></script>
         <script src="jspm_packages/system.js"></script>
