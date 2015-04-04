@@ -40,10 +40,7 @@ export class App {
         this._endScreen = endScreen;
         this._isInGame = false;
 
-        this._startScreen.onClick(() => {
-            this.startGame(window);
-            this._isInGame = true;
-        });
+        this._startScreen.onClick(() => this.startGame(window));
         this._endScreen.onClick(() => this.restartGame(window));
 
         this._aimedPos = {
@@ -229,9 +226,11 @@ export class App {
             this.input = this.createInput(window);
         }
         this.input.lock();
+        this._isInGame = true;
     }
 
     showEndScreen(message) {
+        this._isInGame = false;
         this.ship.isShooting = false;
         document.exitPointerLock();
         this._endScreen.message = message;
