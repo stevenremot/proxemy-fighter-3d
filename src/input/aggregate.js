@@ -19,6 +19,9 @@ export class Aggregate {
         ];
     }
 
+    lock() {
+        this.inputs[0].lock();
+    }
 
     /**
      * @description

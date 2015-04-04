@@ -49,6 +49,8 @@ export class KeyboardInput {
         document.addEventListener('keydown', (evt) => this._handleKeyDown(evt));
         document.addEventListener('keyup', (evt) => this._handleKeyUp(evt));
 
+        this._canvas = canvas;
+
         // Requesting pointer lock on click for more usability
         canvas.requestPointerLock = canvas.requestPointerLock ||
             canvas.mozRequestPointerLock ||
@@ -57,8 +59,15 @@ export class KeyboardInput {
         canvas.addEventListener('mousemove', (evt) => this._handleMouseMove(evt));
         canvas.addEventListener('mousedown', (evt) => this._handleMouseDown(evt));
         canvas.addEventListener('mouseup', (evt) => this._handleMouseUp(evt));
-        canvas.addEventListener('click', () => canvas.requestPointerLock());
-        canvas.requestPointerLock();
+        canvas.addEventListener('click', () => this.lock());
+    }
+
+    /**
+     * @description
+     * Request pointer lock for the canvas.
+     */
+    lock() {
+        this._canvas.requestPointerLock();
     }
 
     /**
