@@ -223,7 +223,11 @@ export class App {
         window.document.getElementById('lifebar').style.display = "block";
         window.document.getElementById('sights').style.display = "block";
         this.boss.hud = this.hud;
-        this.input = this.createInput(window);
+
+        if (!this.input) {
+            this.input = this.createInput(window);
+        }
+        this.input.lock();
     }
 
     showEndScreen(message) {
