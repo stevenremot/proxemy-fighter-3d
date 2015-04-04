@@ -56,7 +56,7 @@ export class Explosion extends WorldObject {
             let ratio = this._lifeTime / this._lifeSpan;
             let radius = this._minRadius + (this._maxRadius - this._minRadius) * ratio;
             this.model.scale.set(radius, radius, radius);
-            this._material.opacity = this._maxOpacity * ratio;
+            this._material.opacity = this._maxOpacity * (1 -ratio);
             this._material.needsUpdate = true;
         }
     }
