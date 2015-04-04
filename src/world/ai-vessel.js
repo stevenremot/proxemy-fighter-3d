@@ -16,6 +16,7 @@ import {Boss} from "src/world/boss";
 import {Pattern} from "./weapons/pattern";
 import {GatlingBullet} from "./bullet/gatling";
 import {Cannon} from "./weapons/cannon";
+import {Explosion}from 'src/world/explosion';
 
 import {Box, BoxDebugView} from "src/collision/box";
 import {Sphere, SphereDebugView} from "src/collision/sphere";
@@ -274,9 +275,17 @@ export class BuddyCube extends AiVessel {
         //this.pickingSphere = world.createObject(SphereDebugView, this.collisionBody);
 
         this.onDead(
-            () => 
+            () =>
                 {
                     //this.pickingSphere.destroy();
+                    this.world.createObject(Explosion, {
+                        position: this.position,
+                        minRadius: 0.5,
+                        maxRadius: 15,
+                        lifeSpan: 0.25,
+                        color: 0xffa000,
+                        maxOpacity: 0.75
+                    });
                     this.destroy();
                 }
         );
