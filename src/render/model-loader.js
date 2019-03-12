@@ -11,7 +11,8 @@ import * as THREE from 'three';
  */
 export class ModelLoader {
     constructor() {
-        this._threeLoader = new THREE.OBJMTLLoader();
+        this._threeObjLoader = new THREE.OBJLoader();
+	this._threeMtlLoader = new THREE.MTLLoader();
     }
 
     /**
@@ -49,13 +50,16 @@ export class ModelLoader {
      */
     loadModel(url) {
         return new Promise((resolve, reject) => {
-            this._threeLoader.load(
-                `${url}.obj`,
-                `${url}.mtl`,
-                resolve,
-                () => {},
-                reject
-            );
+	    this._threeMtlLoader.load(`${url}.mtl`, (materials) => {
+  		materials.preload();
+  		this._threeObjLoader.setMaterials(materials);
+            	this._threeObjLoader.load(
+                    `${url}.obj`,
+                    resolve,
+                    () => {},
+                    reject
+                );
+	    });
         });
     }
 }

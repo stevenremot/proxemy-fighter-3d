@@ -3,6 +3,7 @@
     "parcel-bundler": "^1.12.0"
   },
   "dependencies": {
-    "three": "^0.102.1"
+    "three": "^0.102.1",
+    "three-obj-mtl-loader": "^1.0.3"
   }
 }
