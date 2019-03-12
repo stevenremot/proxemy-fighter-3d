@@ -4,7 +4,7 @@
  */
 
 
-import THREE from 'mrdoob/three.js';
+import * as THREE from 'three';
 
 import {WorldObject}from './object';
 

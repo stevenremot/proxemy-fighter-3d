@@ -1,12 +1,11 @@
 install:
 	npm install
-	./node_modules/.bin/jspm install
 
 serve:
-	./node_modules/.bin/http-server -c0
+	npx parcel serve index.html
 
 bundle:
-	./node_modules/.bin/jspm bundle src/main --inject
+	npx parcel build index.html
 
 prod-bundle:
-	./node_modules/.bin/jspm bundle src/main --inject --minify --skip-source-maps
+	npx parcel build index.html

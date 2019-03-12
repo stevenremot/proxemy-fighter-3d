@@ -2,10 +2,11 @@
  * Copyright (C) 2015 Alexandre Kazmierowski, Steven Rémot
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
+import * as THREE from 'three';
 
 import {Detector} from "./detection";
-import {Boss} from "src/world/boss";
-import {AiVessel} from "src/world/ai-vessel";
+import {Boss} from "/src/world/boss";
+import {AiVessel} from "/src/world/ai-vessel";
 
 let orthoPoint = new THREE.Vector3();
 let temporaryOrthoPoint = new THREE.Vector3();

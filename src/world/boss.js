@@ -3,11 +3,11 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from 'mrdoob/three.js';
+import * as THREE from 'three';
 
 import {Module} from "./boss/module";
 import {WorldObject} from "./object";
-import {Sphere} from "src/collision/sphere";
+import {Sphere} from "/src/collision/sphere";
 import {Explosion} from './explosion';
 
 export class Boss extends WorldObject {

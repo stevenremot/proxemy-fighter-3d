@@ -3,10 +3,10 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from "mrdoob/three.js";
+import * as THREE from "three";
 
 import {WorldObject} from "../object";
-import {Box} from "src/collision/box";
+import {Box} from "/src/collision/box";
 import {Explosion} from '../explosion';
 
 const BULLET_POWER = 1;

@@ -3,23 +3,23 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from "mrdoob/three.js";
+import * as THREE from "three";
 
 import {WorldObject} from "./object";
-import {Steerings} from "src/ai/steerings";
+import {Steerings} from "/src/ai/steerings";
 import {LifeContainer} from "./life-container";
-import {SphericalObject} from "src/math/spherical-object";
-import {addMixin} from "src/core/mixin";
-import {FiniteStateMachine} from "src/core/fsm";
-import {SphericalVector, fromGlCoordinates, cartesianToSpherical} from "src/math/utils";
-import {Boss} from "src/world/boss";
+import {SphericalObject} from "/src/math/spherical-object";
+import {addMixin} from "/src/core/mixin";
+import {FiniteStateMachine} from "/src/core/fsm";
+import {SphericalVector, fromGlCoordinates, cartesianToSpherical} from "/src/math/utils";
+import {Boss} from "/src/world/boss";
 import {Pattern} from "./weapons/pattern";
 import {GatlingBullet} from "./bullet/gatling";
 import {Cannon} from "./weapons/cannon";
-import {Explosion}from 'src/world/explosion';
+import {Explosion}from '/src/world/explosion';
 
-import {Box, BoxDebugView} from "src/collision/box";
-import {Sphere, SphereDebugView} from "src/collision/sphere";
+import {Box, BoxDebugView} from "/src/collision/box";
+import {Sphere, SphereDebugView} from "/src/collision/sphere";
 
 // reperform detection each 30 frames
 const DETECTION_FREQUENCY = 1/2;

@@ -3,10 +3,10 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from 'mrdoob/three.js';
+import * as THREE from 'three';
 
 import {Box} from './box';
-import {WorldObject} from 'src/world/object';
+import {WorldObject} from '/src/world/object';
 
 let tmpVector = new THREE.Vector3();
 let tmpRelativePosition = new THREE.Vector3();
@@ -111,7 +111,7 @@ export class SphereDebugView extends WorldObject {
     constructor(world, sphere) {
         super(world);
         this.sphere = sphere;
-        
+
         let geometry = new THREE.SphereGeometry(sphere.radius);
         let material = new THREE.MeshBasicMaterial(
             {color: 0xffffff, wireframe: true}

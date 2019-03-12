@@ -3,8 +3,8 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from "mrdoob/three.js";
-import {WorldObject} from "src/world/object";
+import * as THREE from "three";
+import {WorldObject} from "/src/world/object";
 
 const ORIGIN = new THREE.Vector3();
 const LENGTH = 20;

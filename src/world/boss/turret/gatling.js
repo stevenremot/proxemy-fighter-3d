@@ -3,17 +3,17 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from "mrdoob/three.js";
+import * as THREE from "three";
 
-import {addMixin}from 'src/core/mixin';
-import {SphericalVector, sphericalToCartesian, glToSpherical, sphericalToGl, toGlCoordinates} from "src/math/utils";
-import {WorldObject} from "src/world/object";
-import {Cannon} from "src/world/weapons/cannon";
-import {Sphere} from "src/collision/sphere";
-import {Ship} from "src/world/ship";
-import {GatlingBullet} from "src/world/bullet/gatling";
-import {LifeContainer} from 'src/world/life-container';
-import {Explosion} from 'src/world/explosion';
+import {addMixin}from '/src/core/mixin';
+import {SphericalVector, sphericalToCartesian, glToSpherical, sphericalToGl, toGlCoordinates} from "/src/math/utils";
+import {WorldObject} from "/src/world/object";
+import {Cannon} from "/src/world/weapons/cannon";
+import {Sphere} from "/src/collision/sphere";
+import {Ship} from "/src/world/ship";
+import {GatlingBullet} from "/src/world/bullet/gatling";
+import {LifeContainer} from '/src/world/life-container';
+import {Explosion} from '/src/world/explosion';
 
 const ORIGIN = new THREE.Vector3();
 const RADIUS = 10;

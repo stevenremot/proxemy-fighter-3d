@@ -3,15 +3,15 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from "mrdoob/three.js";
+import * as THREE from "three";
 
-import {addMixin} from 'src/core/mixin';
+import {addMixin} from '/src/core/mixin';
 import {cartesianToSpherical, SphericalVector, fromGlCoordinates}
-    from "src/math/utils";
-import {WorldObject} from "src/world/object";
-import {FiniteStateMachine} from "src/core/fsm";
+    from "/src/math/utils";
+import {WorldObject} from "/src/world/object";
+import {FiniteStateMachine} from "/src/core/fsm";
 import {Gatling} from "./turret/gatling";
-import {LifeContainer} from "src/world/life-container";
+import {LifeContainer} from "/src/world/life-container";
 
 const WEAPON_REVIVE_TIMEOUT = 20;
 

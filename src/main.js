@@ -10,9 +10,9 @@ import {setupAppcache} from "./appcache";
 import {setupHelp} from "./help";
 import {MessageScreen} from "./message-screen/base";
 import {ModelLoader} from "./render/model-loader";
-import 'lib/OBJMTLLoader';
-import 'lib/OBJLoader';
-import 'lib/MTLLoader';
+import '../lib/OBJMTLLoader';
+import '../lib/OBJLoader';
+import '../lib/MTLLoader';
 
 document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||

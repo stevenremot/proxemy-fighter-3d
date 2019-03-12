@@ -3,7 +3,7 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from "mrdoob/three.js";
+import * as THREE from "three";
 
 import {Ship} from "./world/ship";
 import {Boss} from "./world/boss";

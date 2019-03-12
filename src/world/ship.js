@@ -3,16 +3,16 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import THREE from "mrdoob/three.js";
+import * as THREE from "three";
 
 import {WorldObject} from "./object";
-import {SphericalObject} from "src/math/spherical-object";
-import {addMixin} from "src/core/mixin";
+import {SphericalObject} from "/src/math/spherical-object";
+import {addMixin} from "/src/core/mixin";
 import {ShipBullet} from "./bullet/ship";
 import {Cannon} from "./weapons/cannon";
 import {Pattern} from "./weapons/pattern";
 import {LifeContainer} from './life-container';
-import {Box, BoxDebugView} from 'src/collision/box';
+import {Box, BoxDebugView} from '/src/collision/box';
 import {Explosion} from './explosion';
 
 const ORIGIN = new THREE.Vector3(0, 0, 0);

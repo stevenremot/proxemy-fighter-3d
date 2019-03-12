@@ -3,7 +3,7 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import {execCallbacks} from "src/core/util";
+import {execCallbacks} from "/src/core/util";
 
 const KEY_DIRECTIONS = {
     Left: [-1, 0],

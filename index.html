@@ -4,7 +4,8 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no" />
         <title>Proxemy fighter 3D</title>
-        <link rel="stylesheet" media="screen" href="style.css" />
+        <link rel="stylesheet" media="screen" href="./style.css" />
+        <script src="./src/main.js" async defer></script>
     </head>
     <body>
         <div id="game-start" class="front-screen">
@@ -256,13 +257,6 @@
                 else
                     gl_FragColor = vec4(mix(laserColor, vec3(texelColor.a,texelColor.a,texelColor.a), pow(texelColor.a, exponent)), texelColor.a);
             }
-        </script>
-
-        <script src="jspm_packages/babel-polyfill.js"></script>
-        <script src="jspm_packages/system.js"></script>
-        <script src="config.js"></script>
-        <script>
-            System.import('src/main');
         </script>
     </body>
 </html>
