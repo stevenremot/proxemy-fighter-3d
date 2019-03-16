@@ -11,7 +11,7 @@
  * @param {...Any}     args
  */
 export function execCallbacks(callbacks, ...args) {
-    for (let callback of callbacks) {
-        callback(...args);
-    }
+  for (let callback of callbacks) {
+    callback(...args);
+  }
 }

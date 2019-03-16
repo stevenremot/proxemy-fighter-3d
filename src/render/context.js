@@ -3,7 +3,7 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
-import {Camera} from "./camera";
+import { Camera } from "./camera";
 
 /**
  * @description
@@ -13,80 +13,80 @@ import {Camera} from "./camera";
  * - scene
  */
 export class Context {
-    constructor(renderer, threeCamera, scene, modelCollection) {
-        /**
-         * @description
-         * Scene renderer
-         */
-        this.renderer = renderer;
-
-        /**
-         * @description
-         * Scene graph
-         */
-        this.scene = scene;
-
-        /**
-         * @description
-         * Well... camera
-         */
-        this.camera = new Camera(threeCamera);
-
-        this.modelCollection = modelCollection;
-    }
+  constructor(renderer, threeCamera, scene, modelCollection) {
+    /**
+     * @description
+     * Scene renderer
+     */
+    this.renderer = renderer;
 
     /**
      * @description
-     * Add a THREE model to the scene.
-     *
-     * @param {THREE.Mesh} model
-     *
-     * @returns this
+     * Scene graph
      */
-    addModel(model) {
-        this.scene.add(model);
-        return this;
-    }
+    this.scene = scene;
 
     /**
      * @description
-     * Remove a THREE model from the scene.
-     *
-     * @param {THREE.Mesh} model
-     *
-     * @returns this
+     * Well... camera
      */
-    removeModel(model) {
-        this.scene.remove(model);
-        return this;
-    }
+    this.camera = new Camera(threeCamera);
 
-    /**
-     * @description
-     * Render the current scene.
-     *
-     * @returns this
-     */
-    render() {
-        this.renderer.render(this.scene, this.camera.threeCamera);
-        return this;
-    }
+    this.modelCollection = modelCollection;
+  }
 
-    /**
-     * Return the canvas in which the rendering is done.
-     *
-     * @returns {HTMLCanvasElement}
-     */
-    get domElement() {
-        return this.renderer.domElement;
-    }
+  /**
+   * @description
+   * Add a THREE model to the scene.
+   *
+   * @param {THREE.Mesh} model
+   *
+   * @returns this
+   */
+  addModel(model) {
+    this.scene.add(model);
+    return this;
+  }
 
-    /**
-     * @description
-     * Resize the rendering area.
-     */
-    setSize(width, height) {
-        this.renderer.setSize(width, height);
-        this.camera.aspect = width / height;
-    }
+  /**
+   * @description
+   * Remove a THREE model from the scene.
+   *
+   * @param {THREE.Mesh} model
+   *
+   * @returns this
+   */
+  removeModel(model) {
+    this.scene.remove(model);
+    return this;
+  }
+
+  /**
+   * @description
+   * Render the current scene.
+   *
+   * @returns this
+   */
+  render() {
+    this.renderer.render(this.scene, this.camera.threeCamera);
+    return this;
+  }
+
+  /**
+   * Return the canvas in which the rendering is done.
+   *
+   * @returns {HTMLCanvasElement}
+   */
+  get domElement() {
+    return this.renderer.domElement;
+  }
+
+  /**
+   * @description
+   * Resize the rendering area.
+   */
+  setSize(width, height) {
+    this.renderer.setSize(width, height);
+    this.camera.aspect = width / height;
+  }
 }
