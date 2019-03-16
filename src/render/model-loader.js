@@ -48,13 +48,13 @@ export class ModelLoader {
      * @returns {Promise} A promise that resolves to the 3D object
      *                    representing the obj model.
      */
-    loadModel(url) {
+    loadModel(resource) {
         return new Promise((resolve, reject) => {
-	    this._threeMtlLoader.load(`${url}.mtl`, (materials) => {
+	    this._threeMtlLoader.load(`${resource.mtl}`, (materials) => {
   		materials.preload();
   		this._threeObjLoader.setMaterials(materials);
             	this._threeObjLoader.load(
-                    `${url}.obj`,
+                    `${resource.obj}`,
                     resolve,
                     () => {},
                     reject

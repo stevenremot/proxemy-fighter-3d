@@ -3,6 +3,8 @@
  * Licensed under the General Public License, see the file gpl.txt at the root for details.
  */
 
+import {OBJLoader, MTLLoader} from 'three-obj-mtl-loader';
+
 import {WorldObject} from "./world/object";
 import {App} from "./app";
 import {addFullscreenToElement} from "./fullscreen";
@@ -10,10 +12,7 @@ import {setupAppcache} from "./appcache";
 import {setupHelp} from "./help";
 import {MessageScreen} from "./message-screen/base";
 import {ModelLoader} from "./render/model-loader";
-import {OBJLoader, MTLLoader} from 'three-obj-mtl-loader';
-/*import '../lib/OBJMTLLoader';
-import '../lib/OBJLoader';
-import '../lib/MTLLoader';*/
+import * as resources from './resources';
 
 document.exitPointerLock = document.exitPointerLock    ||
                            document.mozExitPointerLock ||
@@ -32,12 +31,12 @@ addFullscreenToElement(document.getElementById('fullscreen-button'));
 
 let loader = new ModelLoader();
 loader.loadModels(new Map([
-    ['gatling-base', 'assets/models/gatling-base'],
-    ['gatling-cannon', 'assets/models/gatling-cannon'],
-    ['ship', 'assets/models/ship'],
-    ['ship-turret', 'assets/models/ship-turret'],
-    ['ship-shotgun', 'assets/models/ship-shotgun'],
-    ['miniship', 'assets/models/miniship']
+    ['gatling-base', resources.gatlingBase],
+    ['gatling-cannon', resources.gatlingCannon],
+    ['ship', resources.ship],
+    ['ship-turret', resources.shipTurret],
+    ['ship-shotgun', resources.shipShotgun],
+    ['miniship', resources.miniship]
 ])).then((models) => {
 
     let app = new App(

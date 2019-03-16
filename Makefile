@@ -1,3 +1,5 @@
+.PHONY: install serve bundle prod-bundle clean
+
 install:
 	npm install
 
@@ -5,7 +7,9 @@ serve:
 	npx parcel serve index.html
 
 bundle:
-	npx parcel build index.html
+	npx parcel build index.html assets
 
-prod-bundle:
-	npx parcel build index.html
+prod-bundle: bundle
+
+clean:
+	rm -rf dist
